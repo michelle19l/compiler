@@ -483,8 +483,9 @@ char *yytext;
     //main.l词法分析文件 通过flex编译后生成lex.yy.cc 在文件中引用common.h来使用自定义语法树结点的方法 引用main.tab.hh来使用语法分析过程中声明的token 配合语法分析器使用 生成的整个过程通过yylex()进行调用
     #include"common.h"
     #include"main.tab.hh"
-#line 487 "lex.yy.cc"
+    int lines=0;
 #line 488 "lex.yy.cc"
+#line 489 "lex.yy.cc"
 
 #define INITIAL 0
 
@@ -701,10 +702,10 @@ YY_DECL
 		}
 
 	{
-#line 13 "main.l"
+#line 14 "main.l"
 
 
-#line 708 "lex.yy.cc"
+#line 709 "lex.yy.cc"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -763,9 +764,9 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 15 "main.l"
+#line 16 "main.l"
 {
-    TreeNode *node = new TreeNode(NODE_BOOL);
+    TreeNode *node = new TreeNode(lines,NODE_BOOL);
     node->bool_val = true;
     yylval = node;
     return TRUE;
@@ -773,9 +774,9 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 21 "main.l"
+#line 22 "main.l"
 {
-    TreeNode *node = new TreeNode(NODE_BOOL);
+    TreeNode *node = new TreeNode(lines,NODE_BOOL);
     node->bool_val = false;
     yylval = node;
     return FALSE;
@@ -783,89 +784,89 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 28 "main.l"
+#line 29 "main.l"
 return INT;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 29 "main.l"
+#line 30 "main.l"
 return VOID;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 31 "main.l"
+#line 32 "main.l"
 return IF;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 32 "main.l"
+#line 33 "main.l"
 return WHILE;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 33 "main.l"
+#line 34 "main.l"
 return ELSE;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 35 "main.l"
+#line 36 "main.l"
 return PRINTF;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 36 "main.l"
+#line 37 "main.l"
 return SCANF;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 38 "main.l"
+#line 39 "main.l"
 return ASSIGN;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 40 "main.l"
+#line 41 "main.l"
 return ADD;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 42 "main.l"
+#line 43 "main.l"
 return NOT;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 43 "main.l"
+#line 44 "main.l"
 return EQUAL;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 45 "main.l"
+#line 46 "main.l"
 return SEMICOLON;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 46 "main.l"
+#line 47 "main.l"
 return LPAREN;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 47 "main.l"
+#line 48 "main.l"
 return RPAREN;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 48 "main.l"
+#line 49 "main.l"
 return LBRACE;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 49 "main.l"
+#line 50 "main.l"
 return RBRACE;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 51 "main.l"
+#line 52 "main.l"
 {
-    TreeNode *node = new TreeNode(NODE_CONST);
+    TreeNode *node = new TreeNode(lines,NODE_CONST);
     node->int_val = atoi(yytext);
     yylval = node;
     return INTEGER;
@@ -873,9 +874,9 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 57 "main.l"
+#line 58 "main.l"
 {
-    TreeNode *node = new TreeNode(NODE_VAR);
+    TreeNode *node = new TreeNode(lines,NODE_VAR);
     node->var_name = string(yytext);
     yylval = node;
     return ID;
@@ -884,20 +885,20 @@ YY_RULE_SETUP
 case 21:
 /* rule 21 can match eol */
 YY_RULE_SETUP
-#line 63 "main.l"
-
+#line 64 "main.l"
+{lines++;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 64 "main.l"
+#line 65 "main.l"
 
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 66 "main.l"
+#line 67 "main.l"
 ECHO;
 	YY_BREAK
-#line 901 "lex.yy.cc"
+#line 902 "lex.yy.cc"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1902,5 +1903,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 66 "main.l"
+#line 67 "main.l"
 

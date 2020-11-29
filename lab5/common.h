@@ -2,6 +2,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include"pch.h"
 #include "tree.h"
 #define YYSTYPE TreeNode *
 

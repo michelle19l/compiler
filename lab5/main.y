@@ -1,8 +1,9 @@
 %{
     #include"common.h"
-    extern TreeNode * root;
+    TreeNode * root;
     int yylex();
     int yyerror( char const * );
+    extern int lines;
 %}
 %defines
 
@@ -25,7 +26,9 @@
 
 %%
 program
-    : statements {root=new TreeNode(NODE_PROG);root->addChild($1);}
+    : statements {root=new TreeNode(lines,NODE_PROG);root->addChild($1);
+    if(root->sibling!=nullptr)cout<<"brother"<<endl;
+    }
     ;
 statements
     : statement {$$=$1;}
@@ -36,17 +39,24 @@ statement
     | if_else {$$=$1;}
     | while {$$=$1;}
     | LBRACE statements RBRACE {$$=$2;}
+    | SEMICOLON 
+        {
+            $$=new TreeNode(lines,NODE_STMT);
+            $$->stmtType=STMT_NULL;//空语句
+            $$->child=nullptr;
+            if($$->sibling)cout<<";brother"<<endl;
+        }
     ;
 if_else
     : IF bool_statment statement %prec LOWER_THEN_ELSE {
-        TreeNode *node=new TreeNode(NODE_STMT);
+        TreeNode *node=new TreeNode(lines,NODE_STMT);
         node->stmtType=STMT_IF;
         node->addChild($2);
         node->addChild($3);
         $$=node;
     }
     | IF bool_statment statement ELSE statement {
-        TreeNode *node=new TreeNode(NODE_STMT);
+        TreeNode *node=new TreeNode(lines,NODE_STMT);
         node->stmtType=STMT_IF;
         node->addChild($2);
         node->addChild($3);
@@ -56,7 +66,7 @@ if_else
     ;
 while
     : WHILE bool_statment statement {
-        TreeNode *node=new TreeNode(NODE_STMT);
+        TreeNode *node=new TreeNode(lines,NODE_STMT);
         node->stmtType=STMT_WHILE;
         node->addChild($2);
         node->addChild($3);
@@ -68,7 +78,7 @@ bool_statment
     ;
 instruction
     : type ID ASSIGN expr SEMICOLON {
-        TreeNode *node=new TreeNode(NODE_STMT);
+        TreeNode *node=new TreeNode(lines,NODE_STMT);
         node->stmtType=STMT_DECL;
         node->addChild($1);
         node->addChild($2);
@@ -76,26 +86,40 @@ instruction
         $$=node;
     }
     | ID ASSIGN expr SEMICOLON {
-        TreeNode *node=new TreeNode(NODE_STMT);
+        TreeNode *node=new TreeNode(lines,NODE_STMT);
         node->stmtType=STMT_ASSIGN;
         node->addChild($1);
         node->addChild($3);
         $$=node;  
     }
-    | printf SEMICOLON {$$=$1;}
+    | printf SEMICOLON 
+        {
+            //$$=$1;
+            TreeNode *node=new TreeNode(lines,NODE_STMT);
+            node->stmtType=STMT_PRINTF;
+            node->addChild($1);
+            $$=node;
+        }
     | scanf SEMICOLON {$$=$1;}
     ;
 printf
     : PRINTF LPAREN expr RPAREN {
-        TreeNode *node=new TreeNode(NODE_STMT);
+        TreeNode *node=new TreeNode(lines,NODE_STMT);
         node->stmtType=STMT_PRINTF;
         node->addChild($3);
+        $$=node;
+    }
+    |PRINTF LPAREN  RPAREN 
+    {
+        //printf();用于测试
+        TreeNode *node=new TreeNode(lines,NODE_STMT);
+        node->stmtType=STMT_PRINTF;
         $$=node;
     }
     ;
 scanf
     : SCANF LPAREN expr RPAREN {
-        TreeNode *node=new TreeNode(NODE_STMT);
+        TreeNode *node=new TreeNode(lines,NODE_STMT);
         node->stmtType=STMT_SCANF;
         node->addChild($3);
         $$=node;
@@ -105,14 +129,14 @@ bool_expr
     : TRUE {$$=$1;}
     | FALSE {$$=$1;}
     | expr EQUAL expr {
-        TreeNode *node=new TreeNode(NODE_OP);
+        TreeNode *node=new TreeNode(lines,NODE_OP);
         node->opType=OP_EQUAL;
         node->addChild($1);
         node->addChild($3);
         $$=node;
     }
     | NOT bool_expr {
-        TreeNode *node=new TreeNode(NODE_OP);
+        TreeNode *node=new TreeNode(lines,NODE_OP);
         node->opType=OP_NOT;
         node->addChild($2);
         $$=node;        
@@ -122,7 +146,7 @@ expr
     : ID {$$=$1;}
     | INTEGER {$$=$1;}
     | expr ADD expr {
-        TreeNode *node=new TreeNode(NODE_OP);
+        TreeNode *node=new TreeNode(lines,NODE_OP);
         node->opType=OP_ADD;
         node->addChild($1);
         node->addChild($3);
@@ -132,12 +156,12 @@ expr
     ;
 type
     : INT {
-        TreeNode *node=new TreeNode(NODE_TYPE);
+        TreeNode *node=new TreeNode(lines,NODE_TYPE);
         node->varType=VAR_INTEGER;
         $$=node; 
     }
     | VOID {
-        TreeNode *node=new TreeNode(NODE_TYPE);
+        TreeNode *node=new TreeNode(lines,NODE_TYPE);
         node->varType=VAR_VOID;
         $$=node;         
     }

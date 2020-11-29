@@ -1,7 +1,6 @@
 #ifndef TREE_H
 #define TREE_H
-#include<iostream>
-#include<string>
+#include"pch.h"
 
 using std::cerr;
 using std::cout;
@@ -24,6 +23,7 @@ enum NodeType{
 };
 
 enum StmtType{
+    STMT_NULL=1,//空语句
     STMT_IF,
     STMT_WHILE,
     STMT_DECL,
@@ -43,13 +43,14 @@ enum VarType{
     VAR_VOID
 };
 
-class TreeNode {
+struct TreeNode {
 public:
     int nodeID;//结点标号
     NodeType nodeType;//
+    int lineno;//行号
 
-    TreeNode *child[MAX_CHILD];
-    TreeNode *sibling = nullptr;
+    TreeNode *child=nullptr;
+    TreeNode *sibling =nullptr;
     TreeNode *father=nullptr;//父结点
 
     int int_val;bool bool_val;string var_name;string op;
@@ -69,70 +70,19 @@ public:
     ***/
 
     static int current_node_id;
-    TreeNode(NodeType type)
-    {
-        //语句标号
-        //具体类型和属性
-        for(int i=0;i<MAX_CHILD;i++)
-            child[MAX_CHILD]=nullptr;
-        sibling=nullptr;
-        father=nullptr;
-        nodeType=type;
-    }
-    void addChild(TreeNode *temp)//将temp添加为this的子节点
-    {
-        temp->father=this;
-        for(int i=0;i<MAX_CHILD;i++)
-            if(child[i]==nullptr)
-                child[i]=temp;
-    }
-    void addSibling(TreeNode *temp)//将temp添加为this的右兄弟结点
-    {
-        this->sibling=temp;
-        this->father->addChild(temp);
-    }
+    TreeNode(int lines,NodeType type);
+    TreeNode(TreeNode* temp);
+    void addChild(TreeNode *temp);//将temp添加为this的子节点
+    
+    void addSibling(TreeNode *temp);//将temp添加为this的右兄弟结点
 
-    void genNodeId()//从根节点开始逐个赋Id 实现方式同学们可以自行修改
-    {
-        if(this->father==nullptr) current_node_id=0;
-        this->nodeID=current_node_id;
-        current_node_id++;
-        for(int i=0;i<MAX_CHILD;i++)
-        {
-            if(this->child[i]!=nullptr)
-            {
-                this->child[i]->genNodeId();
-            }
-            else break;
-        }
-    }
-    void printNodeInfo()
-    {
-        //打印行号、结点标号、结点类型、孩子
-        cout<<"\t@"<<nodeID<<'\t'<<nodeTypeInfo()<<"\tchildren:\t";
-        for(int i=0;i<MAX_CHILD;i++)
-        {
-            if(child[i]!=nullptr)
-                cout<<'@'<<child[i]->nodeID<<" ";
-            else
-                break;
-        }
 
-    }
-    void printNodeConnection(){}
-    string nodeTypeInfo(){}
-    void printAST()//打印语法树结点
-    {
-        //中序遍历
-        if(this==nullptr)return;
-        printNodeInfo();
-        for(int i=0;i<MAX_CHILD;i++)
-        {
-            if(child[i]!=nullptr)
-                child[i]->printNodeInfo();
-            else break;
-        }
-    }
+    void genNodeId();//从根节点开始逐个赋Id 实现方式同学们可以自行修改
+
+    void printNodeInfo();//打印单个结点的信息
+    //void printNodeConnection(){}
+    string nodeTypeInfo();//获取结点的属性信息；
+    void printAST();//打印语法树结点
 };
-int TreeNode::current_node_id=0;
+
 #endif

@@ -6,6 +6,8 @@ lex.yy.cc: main.l
 	flex -o lex.yy.cc main.l
 main: lex.yy.cc main.tab.cc
 	g++ $(shell ls *.cpp *.cc) -o main.out
+pch.h.gch: src/pch.h
+	g++ -x c++-header -o pch.h.gch -c pch.h
 run: main
 	./main.out
 test:main
