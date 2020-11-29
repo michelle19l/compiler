@@ -22,6 +22,7 @@
 %right ASSIGN
 %nonassoc LOWER_THEN_ELSE
 %nonassoc ELSE 
+
 %%
 program
     : statements {root=new TreeNode(NODE_PROG);root->addChild($1);}
@@ -126,7 +127,8 @@ expr
         node->addChild($1);
         node->addChild($3);
         $$=node;   
-    }
+     }
+    |
     ;
 type
     : INT {
