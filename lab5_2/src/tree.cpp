@@ -63,7 +63,7 @@ void TreeNode::printAST() {
 void TreeNode::printSpecialInfo() {
     switch(this->nodeType){
         case NODE_CONST:
-            break;
+            {cout<<cType2String();break;}
         case NODE_VAR:
             break;
         case NODE_EXPR:
@@ -87,9 +87,11 @@ string TreeNode::sType2String() {
     switch(this->stype)
     {
         case STMT_DECL://变量的声明或者定义
-            return "declaration";
+            return "stmt: declaration";
         case STMT_DEFINE:
-            return "define";
+            return "stmt: define";
+        case STMT_SKIP:
+            return "stmt: empty";
         default:
             return "unknown stmt";
     }
@@ -129,4 +131,22 @@ string TreeNode::tType2String ()
 {
     string a="type: ";
     return a+type->getTypeInfo();
+}
+
+string TreeNode::cType2String()
+{
+    string a="const: ";
+    switch(this->contype){
+        case CON_INT:
+            return a+"int";
+        case CON_CHAR:
+            {
+                return a+"char '"+this->ch_val+"'";
+            }
+        case CON_STRING:
+            return a+"string \""+this->str_val+"\"";
+        
+        default:
+            return "unknown const type";
+    }
 }

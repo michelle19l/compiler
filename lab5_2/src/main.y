@@ -57,7 +57,7 @@ expr
     $$ = $1;
 }
 | CHAR {
-    $$ = $1;
+    $$ =$1;
 }
 | STRING {
     $$ = $1;
@@ -67,6 +67,7 @@ expr
 T: T_INT {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_INT;} 
 | T_CHAR {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_CHAR;}
 | T_BOOL {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_BOOL;}
+| T_STRING {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_STRING;}
 ;
 
 %%
