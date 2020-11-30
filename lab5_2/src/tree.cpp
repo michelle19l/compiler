@@ -24,16 +24,17 @@ TreeNode::TreeNode(int lineno, NodeType type) {
 
 void TreeNode::genNodeId() {//自顶向下生成id
     this->nodeID=current_node_id;
-    if(this->sibling!=nullptr)
-     {
-        current_node_id++;
-        this->sibling->genNodeId();
-    }
     if(this->child!=nullptr)
      {
         current_node_id++;
         this->child->genNodeId();
     }
+    if(this->sibling!=nullptr)
+     {
+        current_node_id++;
+        this->sibling->genNodeId();
+    }
+
     return;
 }
 
@@ -52,10 +53,11 @@ void TreeNode::printChildrenId() {
 
 void TreeNode::printAST() {
     this->printNodeInfo();
-    if(this->sibling!=nullptr)
-        this->sibling->printAST();
     if(this->child!=nullptr)
         this->child->printAST();
+    if(this->sibling!=nullptr)
+        this->sibling->printAST();
+
 }
 
 

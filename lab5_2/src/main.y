@@ -33,6 +33,10 @@ program
 statements
 :  statement {$$=$1;}
 |  statements statement {$$=$1; $$->addSibling($2);}
+| LBRACE statements RBRACE {
+    $$=$2;
+    //作用域
+}
 ;
 
 statement
@@ -106,21 +110,36 @@ expr
     node->optype=OP_ADD;
     node->addChild($1);
     node->addChild($3);
+    node=$$;
 }
 | expr SUB expr{
-
+    $$=new TreeNode($1->lineno,NODE_EXPR);
+    $$->optype=OP_SUB;
+    $$->addChild($1);
+    $$->addChild($3);
 }
 | NEG expr{
-
+    $$=new TreeNode($1->lineno,NODE_EXPR);
+    $$->optype=OP_NEG;
+    $$->addChild($2);
 }
 | expr MUL expr{
-
+    $$=new TreeNode($1->lineno,NODE_EXPR);
+    $$->optype=OP_MUL;
+    $$->addChild($1);
+    $$->addChild($3);
 }
 | expr DIV expr{
-
+    $$=new TreeNode($1->lineno,NODE_EXPR);
+    $$->optype=OP_DIV;
+    $$->addChild($1);
+    $$->addChild($3);
 }
 | expr MOD expr{
-
+    $$=new TreeNode($1->lineno,NODE_EXPR);
+    $$->optype=OP_MOD;
+    $$->addChild($1);
+    $$->addChild($3);
 }
 |IDENTIFIER {
     $$ = $1;
