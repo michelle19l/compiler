@@ -25,7 +25,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "bool" return T_BOOL;
 "char" return T_CHAR;
 
-"=" return LOP_ASSIGN;
+"="  return LOP_ASSIGN;
 
 ";" return  SEMICOLON;
 

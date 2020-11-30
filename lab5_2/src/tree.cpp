@@ -70,7 +70,7 @@ void TreeNode::printSpecialInfo() {
             break;
         case NODE_STMT:
             {
-                cout<<sType2String(this->stype);
+                cout<<sType2String();
                 break;
             }
         case NODE_TYPE:
@@ -83,8 +83,16 @@ void TreeNode::printSpecialInfo() {
     }
 }
 
-string TreeNode::sType2String(StmtType type) {
-    return "?";
+string TreeNode::sType2String() {
+    switch(this->stype)
+    {
+        case STMT_DECL://变量的声明或者定义
+            return "declaration";
+        case STMT_DEFINE:
+            return "define";
+        default:
+            return "unknown stmt";
+    }
 }
 
 
@@ -106,7 +114,7 @@ string TreeNode::nodeType2String (){
                 return "program";
         
         default:
-                return "unknown";
+                return "unknown nodetype";
     }
     return "unknown__";
 }

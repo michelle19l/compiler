@@ -34,7 +34,7 @@ statement
 declaration
 : T IDENTIFIER LOP_ASSIGN expr{  // declare and init
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
-    node->stype = STMT_DECL;
+    node->stype = STMT_DEFINE;
     node->addChild($1);
     node->addChild($2);
     node->addChild($4);

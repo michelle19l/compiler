@@ -1245,7 +1245,7 @@ yyreduce:
 #line 35 "src/main.y" /* yacc.c:1646  */
     {  // declare and init
     TreeNode* node = new TreeNode((yyvsp[-3])->lineno, NODE_STMT);
-    node->stype = STMT_DECL;
+    node->stype = STMT_DEFINE;
     node->addChild((yyvsp[-3]));
     node->addChild((yyvsp[-2]));
     node->addChild((yyvsp[0]));

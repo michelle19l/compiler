@@ -23,7 +23,8 @@ enum OperatorType
 
 enum StmtType {
     STMT_SKIP=1,//空语句
-    STMT_DECL,//声明语句
+    STMT_DEFINE,//定义语句
+    STMT_DECL,//声明
 }
 ;
 
@@ -62,7 +63,7 @@ public:
 public:
     string nodeType2String ();//结点基本类型
     // static string opType2String (OperatorType type);
-    static string sType2String (StmtType type);//语句类型
+    string sType2String ();//语句类型
     string tType2String ();//int bool
 
 public:
