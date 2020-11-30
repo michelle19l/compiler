@@ -37,7 +37,6 @@ declaration
     node->stype = STMT_DECL;
     node->addChild($1);
     node->addChild($2);
-
     node->addChild($4);
     $$ = node;   
 } 

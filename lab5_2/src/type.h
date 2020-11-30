@@ -8,6 +8,7 @@ enum ValueType
     VALUE_BOOL=1,
     VALUE_INT,
     VALUE_CHAR,
+    
     VALUE_STRING,
     COMPOSE_STRUCT,
     COMPOSE_UNION,

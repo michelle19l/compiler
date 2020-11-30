@@ -1,4 +1,5 @@
-0	@0	program	children: @1
-1	@1	statement	children: @2 @3
-1	@2	type	children:
-1	@3	variable	children:
+0	@0	program	children: @1	
+1	@1	statement	children: @2 @3 @4	?
+1	@2	type	children:	type: int
+1	@3	variable	children:	
+1	@4	const	children:	

@@ -60,9 +60,10 @@ public:
 
     static int current_node_id;
 public:
-    string nodeType2String ();
+    string nodeType2String ();//结点基本类型
     // static string opType2String (OperatorType type);
-    static string sType2String (StmtType type);
+    static string sType2String (StmtType type);//语句类型
+    string tType2String ();//int bool
 
 public:
     TreeNode(int lineno, NodeType type);

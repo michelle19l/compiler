@@ -40,6 +40,7 @@ void TreeNode::genNodeId() {//自顶向下生成id
 void TreeNode::printNodeInfo() {
     cout<<lineno<<"\t@"<<nodeID<<"\t"<<nodeType2String()<<"\tchildren:";
     printChildrenId();
+    cout<<'\t';
     printSpecialInfo();
     cout<<endl;
 }
@@ -69,11 +70,14 @@ void TreeNode::printSpecialInfo() {
             break;
         case NODE_STMT:
             {
-                sType2String(this->stype);
+                cout<<sType2String(this->stype);
                 break;
             }
         case NODE_TYPE:
-            break;
+           { 
+                cout<<tType2String(); 
+                break;
+            }
         default:
             break;
     }
@@ -110,3 +114,11 @@ string TreeNode::nodeType2String (){
 // string opType2String (OperatorType type){
 //      return "a";
 //  }
+
+
+//Type::getTypeInfo()
+string TreeNode::tType2String ()
+{
+    string a="type: ";
+    return a+type->getTypeInfo();
+}
