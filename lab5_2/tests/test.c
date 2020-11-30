@@ -1,2 +1,1 @@
-char b='c';
-string c="adfsd";
+if(a&&b) ;

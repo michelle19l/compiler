@@ -6,14 +6,23 @@
     int yylex();
     int yyerror( char const * );
 %}
+
+%token IF ELSE
 %token T_CHAR T_INT T_STRING T_BOOL 
 
 %token LOP_ASSIGN 
 
 %token SEMICOLON
 
-%token IDENTIFIER INTEGER CHAR BOOL STRING
+%token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
 
+%token IDENTIFIER INTEGER CHAR BOOL STRING
+%token ADD SUB
+%token MUL DIV MOD
+%token OR
+%token AND 
+%token NOT
+%token NEG
 %left LOP_EQ
 
 %%
@@ -29,7 +38,49 @@ statements
 statement
 : SEMICOLON  {$$ = new TreeNode(lineno, NODE_STMT); $$->stype = STMT_SKIP;}
 | declaration SEMICOLON {$$ = $1;}
+| if_else {$$=$1;}
 ;
+
+if_else
+: IF bool_statements statement ELSE statement {//if(..) {} else{}
+    TreeNode *node=new TreeNode(lineno,NODE_STMT);
+    node->stype=STMT_IF;
+    node->addChild($2);//bool表达式
+    node->addChild($3);//if后执行的语句
+    node->addChild($5);//else后执行的语句
+    $$=node;
+    }
+| IF bool_statements statement {
+    TreeNode *node=new TreeNode(lineno,NODE_STMT);
+    node->stype=STMT_IF;
+    node->addChild($2);//bool表达式
+    node->addChild($3);//if后执行的语句
+    $$=node;
+}
+
+;
+
+bool_statements
+:  LPAREN bool_statements RPAREN{ $$=$2;}
+| bool_statements AND bool_statement{
+    $$=new TreeNode(lineno,NODE_EXPR);
+    $$->optype=OP_AND;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+| bool_statements OR bool_statement{
+
+}
+| NOT bool_statements{
+
+}
+| bool_statement{$$=$1;}
+;
+
+bool_statement
+: expr{$$=$1;}
+;
+
 
 declaration
 : T IDENTIFIER LOP_ASSIGN expr{  // declare and init
@@ -50,7 +101,28 @@ declaration
 ;
 
 expr
-: IDENTIFIER {
+: expr ADD expr{
+    TreeNode* node = new TreeNode($1->lineno, NODE_EXPR);
+    node->optype=OP_ADD;
+    node->addChild($1);
+    node->addChild($3);
+}
+| expr SUB expr{
+
+}
+| NEG expr{
+
+}
+| expr MUL expr{
+
+}
+| expr DIV expr{
+
+}
+| expr MOD expr{
+
+}
+|IDENTIFIER {
     $$ = $1;
 }
 | INTEGER {

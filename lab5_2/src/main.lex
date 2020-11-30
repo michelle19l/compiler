@@ -28,6 +28,30 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 
 "="  return LOP_ASSIGN;
 
+"if" return IF;
+"else" return ELSE;
+
+
+
+"+" return ADD;
+"-" return SUB;
+"*" return MUL;
+"/" return DIV;
+"%" return MOD;
+
+"&&" return AND;
+"||" return OR;
+"!" return NOT;
+
+
+"(" return LPAREN;
+")" return RPAREN;
+"[" return LBRACK;
+"]" return RBRACK;
+"{" return LBRACE;
+"}" return RBRACE;
+
+
 ";" return  SEMICOLON;
 
 {INTEGER} {
@@ -67,6 +91,10 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
     yylval = node;
     return IDENTIFIER;
 }
+
+
+
+
 
 {WHILTESPACE} /* do nothing */
 

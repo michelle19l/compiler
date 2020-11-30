@@ -23,14 +23,24 @@ enum ConstType//常量
 };
 enum OperatorType
 {
-    OP_ASIGN=1,  // =
+    //OP_ASIGN=1,  // =
     OP_EQUAL,//==
+    OP_ADD,//+
+    OP_SUB,
+    OP_MUL,
+    OP_DIV,
+    OP_MOD,
+    OP_NEG,//负号
+    OP_AND,
+    OP_OR,
+    OP_NOT,
 };
 
 enum StmtType {
     STMT_SKIP=1,//空语句
     STMT_DEFINE,//定义语句
     STMT_DECL,//声明
+    STMT_IF,//if语句
 };
 
 struct TreeNode {
@@ -72,6 +82,8 @@ public:
     string sType2String ();//语句类型
     string tType2String ();//int bool
     string cType2String();//常量
+    string opType2String();//表达式
+    string varName2String();//变量名
 
 public:
     TreeNode(int lineno, NodeType type);

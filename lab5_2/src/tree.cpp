@@ -65,14 +65,11 @@ void TreeNode::printSpecialInfo() {
         case NODE_CONST:
             {cout<<cType2String();break;}
         case NODE_VAR:
-            break;
+            {cout<<varName2String();break;}
         case NODE_EXPR:
-            break;
+            {cout<<opType2String();break;}
         case NODE_STMT:
-            {
-                cout<<sType2String();
-                break;
-            }
+            {cout<<sType2String();break;}
         case NODE_TYPE:
            { 
                 cout<<tType2String(); 
@@ -92,6 +89,8 @@ string TreeNode::sType2String() {
             return "stmt: define";
         case STMT_SKIP:
             return "stmt: empty";
+        case STMT_IF:
+            return "stmt: if_else";
         default:
             return "unknown stmt";
     }
@@ -149,4 +148,39 @@ string TreeNode::cType2String()
         default:
             return "unknown const type";
     }
+}
+
+string TreeNode:: opType2String()
+{
+    string a="op: ";
+    switch(this->optype)
+    {
+        case OP_EQUAL:
+            return a+"==";
+        case OP_ADD:
+            return a+"+";
+        case OP_SUB:
+            return a+"-（减）";
+        case OP_MUL:
+            return a+"*";
+        case OP_DIV:
+            return a+"/";
+        case OP_MOD:
+            return a+"%";
+        case OP_NEG:
+            return a+"%";
+        case OP_AND:
+            return a+"&&";
+        case OP_OR:
+            return a+"||";
+        case OP_NOT:
+            return a+"!";
+        default:
+            return "unknown op";
+    }
+}
+string TreeNode::varName2String()
+{
+    string a="var_name: ";
+    return a+this->var_name;
 }
