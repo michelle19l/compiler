@@ -68,4 +68,5 @@ void TreeNode::genNodeId()//从根节点开始逐个赋Id 实现方式同学们�
 		t->genNodeId();
 	}
 }
-string TreeNode::nodeTypeInfo(){return "";}
+string TreeNode::nodeTypeInfo()
+{return "";}
