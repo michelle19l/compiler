@@ -23,20 +23,38 @@ TreeNode::TreeNode(int lineno, NodeType type) {
 }
 
 void TreeNode::genNodeId() {//自顶向下生成id
-    if(this==nullptr)return;
-
+    this->nodeID=current_node_id;
+    if(this->sibling!=nullptr)
+     {
+        current_node_id++;
+        this->sibling->genNodeId();
+    }
+    if(this->child!=nullptr)
+     {
+        current_node_id++;
+        this->child->genNodeId();
+    }
+    return;
 }
 
 void TreeNode::printNodeInfo() {
-
+    cout<<lineno<<"\t@"<<nodeID<<"\t"<<nodeType2String()<<"\tchildren:";
+    printChildrenId();
+    printSpecialInfo();
+    cout<<endl;
 }
 
 void TreeNode::printChildrenId() {
-
+    for(TreeNode*t=this->child;t!=nullptr;t=t->sibling)
+        cout<<" @"<<t->nodeID;
 }
 
 void TreeNode::printAST() {
-
+    this->printNodeInfo();
+    if(this->sibling!=nullptr)
+        this->sibling->printAST();
+    if(this->child!=nullptr)
+        this->child->printAST();
 }
 
 
@@ -50,7 +68,10 @@ void TreeNode::printSpecialInfo() {
         case NODE_EXPR:
             break;
         case NODE_STMT:
-            break;
+            {
+                sType2String(this->stype);
+                break;
+            }
         case NODE_TYPE:
             break;
         default:
@@ -63,6 +84,29 @@ string TreeNode::sType2String(StmtType type) {
 }
 
 
-string TreeNode::nodeType2String (NodeType type){
-    return "<>";
+string TreeNode::nodeType2String (){
+    switch(this->nodeType)
+    {
+        case  NODE_CONST://常量
+                return "const";
+        case  NODE_VAR://变量
+                return "variable";
+        case  NODE_EXPR://表达式
+                return "expression";
+        case  NODE_TYPE://类型
+                return "type";
+
+        case  NODE_STMT://语句
+                return "statement";
+        case  NODE_PROG://程序
+                return "program";
+        
+        default:
+                return "unknown";
+    }
+    return "unknown__";
 }
+
+// string opType2String (OperatorType type){
+//      return "a";
+//  }

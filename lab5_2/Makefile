@@ -4,6 +4,7 @@ TARGET := ./bin/main
 
 all: run
 
+
 src/main.lex.yy.c: src/main.lex
 	 flex --noyywrap -o src/main.lex.yy.cpp  src/main.lex 
 
@@ -29,3 +30,4 @@ clean:
 
 test: 
 	./bin/main tests/test.c > result.txt
+

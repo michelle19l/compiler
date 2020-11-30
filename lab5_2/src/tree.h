@@ -6,7 +6,7 @@
 
 enum NodeType
 {
-    NODE_CONST, //常量
+    NODE_CONST=1, //常量
     NODE_VAR,//变量
     NODE_EXPR,//表达式
     NODE_TYPE,//类型
@@ -17,12 +17,12 @@ enum NodeType
 
 enum OperatorType
 {
-    OP_ASIGN,  // ==
-    OP_EQUAL,//=
+    OP_ASIGN=1,  // =
+    OP_EQUAL,//==
 };
 
 enum StmtType {
-    STMT_SKIP,//空语句
+    STMT_SKIP=1,//空语句
     STMT_DECL,//声明语句
 }
 ;
@@ -60,8 +60,8 @@ public:
 
     static int current_node_id;
 public:
-    static string nodeType2String (NodeType type);
-    static string opType2String (OperatorType type);
+    string nodeType2String ();
+    // static string opType2String (OperatorType type);
     static string sType2String (StmtType type);
 
 public:
