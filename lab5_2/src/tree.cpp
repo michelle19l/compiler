@@ -2,10 +2,13 @@
 
 int TreeNode::current_node_id=0;
 void TreeNode::addChild(TreeNode* child) {
+    
     if(this->child==nullptr)
-        this->child=child;
+        {this->child=child;
+        cout<<this->nodeType2String()<<" child"<<endl;}
     else
     {
+        cout<<this->nodeType2String()<<" sib"<<endl;
         TreeNode* t=this->child;
         for(;t->sibling!=nullptr;t=t->sibling);
         t->sibling=child;
@@ -13,7 +16,13 @@ void TreeNode::addChild(TreeNode* child) {
 }
 
 void TreeNode::addSibling(TreeNode* sibling){
-    this->sibling=sibling;
+    TreeNode *p = this;
+    while(p->sibling != nullptr)
+    {
+        p = p->sibling;
+    }
+    p->sibling = sibling;
+    cout<<this->nodeType2String()<<" sib"<<endl;
 }
 
 TreeNode::TreeNode(int lineno, NodeType type) {
@@ -24,16 +33,21 @@ TreeNode::TreeNode(int lineno, NodeType type) {
 
 void TreeNode::genNodeId() {//自顶向下生成id
     this->nodeID=current_node_id;
+    cout<<current_node_id<<endl;
     if(this->child!=nullptr)
      {
+         cout<<"child"<<current_node_id<<endl;
         current_node_id++;
         this->child->genNodeId();
     }
+    else cout<<"childnull"<<current_node_id<<endl;
     if(this->sibling!=nullptr)
      {
+         cout<<"sib"<<current_node_id<<endl;
         current_node_id++;
         this->sibling->genNodeId();
     }
+    else cout<<"sibnull"<<current_node_id<<endl;
 
     return;
 }

@@ -1,4 +1,49 @@
-0	@0	program	children: @1	
-1	@1	statement	children: @2 @3	stmt: +=
-1	@2	variable	children:	var_name: a
-1	@3	const	children:	const: int 2
+statement child
+statement sib
+statement child
+statement sib
+statement sib
+statement child
+statement sib
+statement sib
+program child
+0
+child0
+1
+child1
+2
+childnull2
+sib2
+3
+childnull3
+sibnull3
+sib3
+4
+child4
+5
+childnull5
+sib5
+6
+childnull6
+sibnull6
+sib6
+7
+child7
+8
+childnull8
+sib8
+9
+childnull9
+sibnull9
+sibnull9
+sibnull9
+0	@0	program	children: @1 @4 @7	
+1	@1	statement	children: @2 @3	stmt: declaration
+1	@2	type	children:	type: int
+1	@3	variable	children:	var_name: a
+2	@4	statement	children: @5 @6	stmt: declaration
+2	@5	type	children:	type: int
+2	@6	variable	children:	var_name: b
+3	@7	statement	children: @8 @9	stmt: declaration
+3	@8	type	children:	type: int
+3	@9	variable	children:	var_name: c

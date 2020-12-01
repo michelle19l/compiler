@@ -10,9 +10,9 @@ Terminals unused in grammar
 
 
 State 65 conflicts: 1 shift/reduce
-State 73 conflicts: 13 reduce/reduce
-State 85 conflicts: 12 shift/reduce
-State 129 conflicts: 12 shift/reduce
+State 72 conflicts: 13 shift/reduce
+State 84 conflicts: 12 shift/reduce
+State 130 conflicts: 12 shift/reduce
 
 
 Grammar
@@ -53,128 +53,129 @@ Grammar
 
    25 printf: PRINTF LPAREN STRING RPAREN
    26       | PRINTF LPAREN STRING COMMA exprs RPAREN
+   27       | PRINTF LPAREN idlist RPAREN
 
-   27 scanf: SCANF LPAREN STRING COMMA address_idlist RPAREN
+   28 scanf: SCANF LPAREN STRING COMMA address_idlist RPAREN
 
-   28 address_idlist: address_idlist COMMA get_address_id
-   29               | get_address_id
+   29 address_idlist: address_idlist COMMA get_address_id
+   30               | get_address_id
 
-   30 get_address_id: GET_ADDRESS IDENTIFIER
+   31 get_address_id: GET_ADDRESS IDENTIFIER
 
-   31 while: WHILE bool_statements statements
+   32 while: WHILE bool_statements statements
 
-   32 if_else: IF bool_statements statements ELSE statements
-   33        | IF bool_statements statement
+   33 if_else: IF bool_statements statements ELSE statements
+   34        | IF bool_statements statements
 
-   34 bool_statements: LPAREN bool_statements RPAREN
-   35                | bool_statements AND bool_statements
-   36                | bool_statements OR bool_statements
-   37                | NOT bool_statements
-   38                | bool_statement
+   35 bool_statements: LPAREN bool_statements RPAREN
+   36                | bool_statements AND bool_statements
+   37                | bool_statements OR bool_statements
+   38                | NOT bool_statements
+   39                | bool_statement
 
-   39 bool_statement: expr
-   40               | bool_statement GREAT bool_statement
-   41               | bool_statement LESS bool_statement
-   42               | bool_statement GREAT_EQ bool_statement
-   43               | bool_statement LESS_EQ bool_statement
-   44               | bool_statement LOP_EQ bool_statement
-   45               | bool_statement NOT_EQ bool_statement
+   40 bool_statement: expr
+   41               | bool_statement GREAT bool_statement
+   42               | bool_statement LESS bool_statement
+   43               | bool_statement GREAT_EQ bool_statement
+   44               | bool_statement LESS_EQ bool_statement
+   45               | bool_statement LOP_EQ bool_statement
+   46               | bool_statement NOT_EQ bool_statement
 
-   46 declaration: T assigns
-   47            | T idlist
+   47 declaration: T assigns
+   48            | T idlist
 
-   48 assigns: assigns COMMA assign
-   49        | assign
+   49 assigns: assigns COMMA assign
+   50        | assign
 
-   50 assign: IDENTIFIER LOP_ASSIGN expr
+   51 assign: IDENTIFIER LOP_ASSIGN expr
 
-   51 opassign: IDENTIFIER ADD_ASSIGN expr
-   52         | IDENTIFIER SUB_ASSIGN expr
-   53         | IDENTIFIER MUL_ASSIGN expr
-   54         | IDENTIFIER DIV_ASSIGN expr
-   55         | IDENTIFIER MOD_ASSIGN expr
+   52 opassign: IDENTIFIER ADD_ASSIGN expr
+   53         | IDENTIFIER SUB_ASSIGN expr
+   54         | IDENTIFIER MUL_ASSIGN expr
+   55         | IDENTIFIER DIV_ASSIGN expr
+   56         | IDENTIFIER MOD_ASSIGN expr
 
-   56 idlist: idlist COMMA IDENTIFIER
-   57       | IDENTIFIER
+   57 idlist: idlist COMMA IDENTIFIER
+   58       | IDENTIFIER
 
-   58 exprs: exprs COMMA expr
-   59      | expr
+   59 exprs: exprs COMMA expr
+   60      | expr
 
-   60 expr: LPAREN expr RPAREN
-   61     | expr ADD expr
-   62     | expr SUB expr
-   63     | SUB expr
-   64     | ADD expr
-   65     | expr MUL expr
-   66     | expr DIV expr
-   67     | expr MOD expr
-   68     | IDENTIFIER
-   69     | INTEGER
-   70     | CHAR
-   71     | STRING
+   61 expr: LPAREN expr RPAREN
+   62     | expr ADD expr
+   63     | expr SUB expr
+   64     | SUB expr
+   65     | ADD expr
+   66     | expr MUL expr
+   67     | expr DIV expr
+   68     | expr MOD expr
+   69     | IDENTIFIER
+   70     | INTEGER
+   71     | CHAR
+   72     | STRING
 
-   72 T: T_INT
-   73  | T_CHAR
-   74  | T_BOOL
-   75  | T_STRING
-   76  | T_INT_POINTER
-   77  | T_CHAR_POINTER
+   73 T: T_INT
+   74  | T_CHAR
+   75  | T_BOOL
+   76  | T_STRING
+   77  | T_INT_POINTER
+   78  | T_CHAR_POINTER
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-IF (258) 32 33
-ELSE (259) 32
-WHILE (260) 31
+IF (258) 33 34
+ELSE (259) 33
+WHILE (260) 32
 FOR (261)
 RETURN (262)
-T_CHAR (263) 73
-T_INT (264) 72
-T_STRING (265) 75
-T_BOOL (266) 74
-T_INT_POINTER (267) 76
-T_CHAR_POINTER (268) 77
-PRINTF (269) 25 26
-SCANF (270) 27
-LOP_ASSIGN (271) 50
-ADD_ASSIGN (272) 51
-SUB_ASSIGN (273) 52
-MOD_ASSIGN (274) 55
-DIV_ASSIGN (275) 54
-MUL_ASSIGN (276) 53
+T_CHAR (263) 74
+T_INT (264) 73
+T_STRING (265) 76
+T_BOOL (266) 75
+T_INT_POINTER (267) 77
+T_CHAR_POINTER (268) 78
+PRINTF (269) 25 26 27
+SCANF (270) 28
+LOP_ASSIGN (271) 51
+ADD_ASSIGN (272) 52
+SUB_ASSIGN (273) 53
+MOD_ASSIGN (274) 56
+DIV_ASSIGN (275) 55
+MUL_ASSIGN (276) 54
 SEMICOLON (277) 6 7 8 11 12 13 15 16
-COMMA (278) 22 26 27 28 48 56 58
+COMMA (278) 22 26 28 29 49 57 59
 POINT (279)
-LPAREN (280) 17 18 19 20 21 25 26 27 34 60
-RPAREN (281) 17 18 19 20 21 25 26 27 34 60
+LPAREN (280) 17 18 19 20 21 25 26 27 28 35 61
+RPAREN (281) 17 18 19 20 21 25 26 27 28 35 61
 LBRACK (282)
 RBRACK (283)
 LBRACE (284) 4 5 19
 RBRACE (285) 4 5 19
-IDENTIFIER (286) 17 18 19 20 21 24 30 50 51 52 53 54 55 56 57 68
-INTEGER (287) 69
-CHAR (288) 70
+IDENTIFIER (286) 17 18 19 20 21 24 31 51 52 53 54 55 56 57 58 69
+INTEGER (287) 70
+CHAR (288) 71
 BOOL (289)
-STRING (290) 25 26 27 71
-LOP_EQ (291) 44
-GREAT (292) 40
-LESS (293) 41
-GREAT_EQ (294) 42
-LESS_EQ (295) 43
-NOT_EQ (296) 45
-ADD (297) 61 64
-SUB (298) 62 63
-MUL (299) 65
-DIV (300) 66
-MOD (301) 67
-OR (302) 36
-AND (303) 35
-NOT (304) 37
+STRING (290) 25 26 28 72
+LOP_EQ (291) 45
+GREAT (292) 41
+LESS (293) 42
+GREAT_EQ (294) 43
+LESS_EQ (295) 44
+NOT_EQ (296) 46
+ADD (297) 62 65
+SUB (298) 63 64
+MUL (299) 66
+DIV (300) 67
+MOD (301) 68
+OR (302) 37
+AND (303) 36
+NOT (304) 38
 NEG (305)
 POS (306)
-GET_ADDRESS (307) 30
+GET_ADDRESS (307) 31
 GET_VALUE (308)
 
 
@@ -185,9 +186,9 @@ $accept (54)
 program (55)
     on left: 1, on right: 0
 statements (56)
-    on left: 2 3 4 5, on right: 1 3 4 19 31 32
+    on left: 2 3 4 5, on right: 1 3 4 19 32 33 34
 statement (57)
-    on left: 6 7 8 9 10 11 12 13 14 15 16, on right: 2 3 33
+    on left: 6 7 8 9 10 11 12 13 14 15 16, on right: 2 3
 function_decl (58)
     on left: 17 18, on right: 13
 function_def (59)
@@ -199,38 +200,38 @@ params (61)
 param (62)
     on left: 24, on right: 22 23
 printf (63)
-    on left: 25 26, on right: 11
+    on left: 25 26 27, on right: 11
 scanf (64)
-    on left: 27, on right: 12
+    on left: 28, on right: 12
 address_idlist (65)
-    on left: 28 29, on right: 27 28
+    on left: 29 30, on right: 28 29
 get_address_id (66)
-    on left: 30, on right: 28 29
+    on left: 31, on right: 29 30
 while (67)
-    on left: 31, on right: 10
+    on left: 32, on right: 10
 if_else (68)
-    on left: 32 33, on right: 9
+    on left: 33 34, on right: 9
 bool_statements (69)
-    on left: 34 35 36 37 38, on right: 31 32 33 34 35 36 37
+    on left: 35 36 37 38 39, on right: 32 33 34 35 36 37 38
 bool_statement (70)
-    on left: 39 40 41 42 43 44 45, on right: 38 40 41 42 43 44 45
+    on left: 40 41 42 43 44 45 46, on right: 39 41 42 43 44 45 46
 declaration (71)
-    on left: 46 47, on right: 7
+    on left: 47 48, on right: 7
 assigns (72)
-    on left: 48 49, on right: 46 48
+    on left: 49 50, on right: 47 49
 assign (73)
-    on left: 50, on right: 8 48 49
+    on left: 51, on right: 8 49 50
 opassign (74)
-    on left: 51 52 53 54 55, on right: 16
+    on left: 52 53 54 55 56, on right: 16
 idlist (75)
-    on left: 56 57, on right: 20 47 56
+    on left: 57 58, on right: 20 27 48 57
 exprs (76)
-    on left: 58 59, on right: 26 58
+    on left: 59 60, on right: 26 59
 expr (77)
-    on left: 60 61 62 63 64 65 66 67 68 69 70 71, on right: 39 50 51
-    52 53 54 55 58 59 60 61 62 63 64 65 66 67
+    on left: 61 62 63 64 65 66 67 68 69 70 71 72, on right: 40 51 52
+    53 54 55 56 59 60 61 62 63 64 65 66 67 68
 T (78)
-    on left: 72 73 74 75 76 77, on right: 17 18 19 24 46 47
+    on left: 73 74 75 76 77 78, on right: 17 18 19 24 47 48
 
 
 State 0
@@ -269,8 +270,8 @@ State 0
 
 State 1
 
-   32 if_else: IF . bool_statements statements ELSE statements
-   33        | IF . bool_statements statement
+   33 if_else: IF . bool_statements statements ELSE statements
+   34        | IF . bool_statements statements
 
     LPAREN      shift, and go to state 28
     IDENTIFIER  shift, and go to state 29
@@ -288,7 +289,7 @@ State 1
 
 State 2
 
-   31 while: WHILE . bool_statements statements
+   32 while: WHILE . bool_statements statements
 
     LPAREN      shift, and go to state 28
     IDENTIFIER  shift, and go to state 29
@@ -306,57 +307,58 @@ State 2
 
 State 3
 
-   73 T: T_CHAR .
-
-    $default  reduce using rule 73 (T)
-
-
-State 4
-
-   72 T: T_INT .
-
-    $default  reduce using rule 72 (T)
-
-
-State 5
-
-   75 T: T_STRING .
-
-    $default  reduce using rule 75 (T)
-
-
-State 6
-
-   74 T: T_BOOL .
+   74 T: T_CHAR .
 
     $default  reduce using rule 74 (T)
 
 
-State 7
+State 4
 
-   76 T: T_INT_POINTER .
+   73 T: T_INT .
+
+    $default  reduce using rule 73 (T)
+
+
+State 5
+
+   76 T: T_STRING .
 
     $default  reduce using rule 76 (T)
 
 
-State 8
+State 6
 
-   77 T: T_CHAR_POINTER .
+   75 T: T_BOOL .
+
+    $default  reduce using rule 75 (T)
+
+
+State 7
+
+   77 T: T_INT_POINTER .
 
     $default  reduce using rule 77 (T)
+
+
+State 8
+
+   78 T: T_CHAR_POINTER .
+
+    $default  reduce using rule 78 (T)
 
 
 State 9
 
    25 printf: PRINTF . LPAREN STRING RPAREN
    26       | PRINTF . LPAREN STRING COMMA exprs RPAREN
+   27       | PRINTF . LPAREN idlist RPAREN
 
     LPAREN  shift, and go to state 40
 
 
 State 10
 
-   27 scanf: SCANF . LPAREN STRING COMMA address_idlist RPAREN
+   28 scanf: SCANF . LPAREN STRING COMMA address_idlist RPAREN
 
     LPAREN  shift, and go to state 41
 
@@ -407,12 +409,12 @@ State 13
 
    20 function_use: IDENTIFIER . LPAREN idlist RPAREN
    21             | IDENTIFIER . LPAREN RPAREN
-   50 assign: IDENTIFIER . LOP_ASSIGN expr
-   51 opassign: IDENTIFIER . ADD_ASSIGN expr
-   52         | IDENTIFIER . SUB_ASSIGN expr
-   53         | IDENTIFIER . MUL_ASSIGN expr
-   54         | IDENTIFIER . DIV_ASSIGN expr
-   55         | IDENTIFIER . MOD_ASSIGN expr
+   51 assign: IDENTIFIER . LOP_ASSIGN expr
+   52 opassign: IDENTIFIER . ADD_ASSIGN expr
+   53         | IDENTIFIER . SUB_ASSIGN expr
+   54         | IDENTIFIER . MUL_ASSIGN expr
+   55         | IDENTIFIER . DIV_ASSIGN expr
+   56         | IDENTIFIER . MOD_ASSIGN expr
 
     LOP_ASSIGN  shift, and go to state 44
     ADD_ASSIGN  shift, and go to state 45
@@ -546,8 +548,8 @@ State 27
    17 function_decl: T . IDENTIFIER LPAREN RPAREN
    18              | T . IDENTIFIER LPAREN params RPAREN
    19 function_def: T . IDENTIFIER LPAREN params RPAREN LBRACE statements RBRACE
-   46 declaration: T . assigns
-   47            | T . idlist
+   47 declaration: T . assigns
+   48            | T . idlist
 
     IDENTIFIER  shift, and go to state 60
 
@@ -558,8 +560,8 @@ State 27
 
 State 28
 
-   34 bool_statements: LPAREN . bool_statements RPAREN
-   60 expr: LPAREN . expr RPAREN
+   35 bool_statements: LPAREN . bool_statements RPAREN
+   61 expr: LPAREN . expr RPAREN
 
     LPAREN      shift, and go to state 28
     IDENTIFIER  shift, and go to state 29
@@ -577,35 +579,35 @@ State 28
 
 State 29
 
-   68 expr: IDENTIFIER .
-
-    $default  reduce using rule 68 (expr)
-
-
-State 30
-
-   69 expr: INTEGER .
+   69 expr: IDENTIFIER .
 
     $default  reduce using rule 69 (expr)
 
 
-State 31
+State 30
 
-   70 expr: CHAR .
+   70 expr: INTEGER .
 
     $default  reduce using rule 70 (expr)
 
 
-State 32
+State 31
 
-   71 expr: STRING .
+   71 expr: CHAR .
 
     $default  reduce using rule 71 (expr)
 
 
+State 32
+
+   72 expr: STRING .
+
+    $default  reduce using rule 72 (expr)
+
+
 State 33
 
-   64 expr: ADD . expr
+   65 expr: ADD . expr
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -620,7 +622,7 @@ State 33
 
 State 34
 
-   63 expr: SUB . expr
+   64 expr: SUB . expr
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -635,7 +637,7 @@ State 34
 
 State 35
 
-   37 bool_statements: NOT . bool_statements
+   38 bool_statements: NOT . bool_statements
 
     LPAREN      shift, and go to state 28
     IDENTIFIER  shift, and go to state 29
@@ -653,10 +655,10 @@ State 35
 
 State 36
 
-   32 if_else: IF bool_statements . statements ELSE statements
-   33        | IF bool_statements . statement
-   35 bool_statements: bool_statements . AND bool_statements
-   36                | bool_statements . OR bool_statements
+   33 if_else: IF bool_statements . statements ELSE statements
+   34        | IF bool_statements . statements
+   36 bool_statements: bool_statements . AND bool_statements
+   37                | bool_statements . OR bool_statements
 
     IF              shift, and go to state 1
     WHILE           shift, and go to state 2
@@ -675,7 +677,7 @@ State 36
     AND             shift, and go to state 71
 
     statements     go to state 72
-    statement      go to state 73
+    statement      go to state 16
     function_decl  go to state 17
     function_def   go to state 18
     function_use   go to state 19
@@ -691,47 +693,47 @@ State 36
 
 State 37
 
-   38 bool_statements: bool_statement .
-   40 bool_statement: bool_statement . GREAT bool_statement
-   41               | bool_statement . LESS bool_statement
-   42               | bool_statement . GREAT_EQ bool_statement
-   43               | bool_statement . LESS_EQ bool_statement
-   44               | bool_statement . LOP_EQ bool_statement
-   45               | bool_statement . NOT_EQ bool_statement
+   39 bool_statements: bool_statement .
+   41 bool_statement: bool_statement . GREAT bool_statement
+   42               | bool_statement . LESS bool_statement
+   43               | bool_statement . GREAT_EQ bool_statement
+   44               | bool_statement . LESS_EQ bool_statement
+   45               | bool_statement . LOP_EQ bool_statement
+   46               | bool_statement . NOT_EQ bool_statement
 
-    LOP_EQ    shift, and go to state 74
-    GREAT     shift, and go to state 75
-    LESS      shift, and go to state 76
-    GREAT_EQ  shift, and go to state 77
-    LESS_EQ   shift, and go to state 78
-    NOT_EQ    shift, and go to state 79
+    LOP_EQ    shift, and go to state 73
+    GREAT     shift, and go to state 74
+    LESS      shift, and go to state 75
+    GREAT_EQ  shift, and go to state 76
+    LESS_EQ   shift, and go to state 77
+    NOT_EQ    shift, and go to state 78
 
-    $default  reduce using rule 38 (bool_statements)
+    $default  reduce using rule 39 (bool_statements)
 
 
 State 38
 
-   39 bool_statement: expr .
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
+   40 bool_statement: expr .
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
 
-    ADD  shift, and go to state 80
-    SUB  shift, and go to state 81
-    MUL  shift, and go to state 82
-    DIV  shift, and go to state 83
-    MOD  shift, and go to state 84
+    ADD  shift, and go to state 79
+    SUB  shift, and go to state 80
+    MUL  shift, and go to state 81
+    DIV  shift, and go to state 82
+    MOD  shift, and go to state 83
 
-    $default  reduce using rule 39 (bool_statement)
+    $default  reduce using rule 40 (bool_statement)
 
 
 State 39
 
-   31 while: WHILE bool_statements . statements
-   35 bool_statements: bool_statements . AND bool_statements
-   36                | bool_statements . OR bool_statements
+   32 while: WHILE bool_statements . statements
+   36 bool_statements: bool_statements . AND bool_statements
+   37                | bool_statements . OR bool_statements
 
     IF              shift, and go to state 1
     WHILE           shift, and go to state 2
@@ -749,7 +751,7 @@ State 39
     OR              shift, and go to state 70
     AND             shift, and go to state 71
 
-    statements     go to state 85
+    statements     go to state 84
     statement      go to state 16
     function_decl  go to state 17
     function_def   go to state 18
@@ -768,15 +770,19 @@ State 40
 
    25 printf: PRINTF LPAREN . STRING RPAREN
    26       | PRINTF LPAREN . STRING COMMA exprs RPAREN
+   27       | PRINTF LPAREN . idlist RPAREN
 
-    STRING  shift, and go to state 86
+    IDENTIFIER  shift, and go to state 85
+    STRING      shift, and go to state 86
+
+    idlist  go to state 87
 
 
 State 41
 
-   27 scanf: SCANF LPAREN . STRING COMMA address_idlist RPAREN
+   28 scanf: SCANF LPAREN . STRING COMMA address_idlist RPAREN
 
-    STRING  shift, and go to state 87
+    STRING  shift, and go to state 88
 
 
 State 42
@@ -802,7 +808,7 @@ State 43
     PRINTF          shift, and go to state 9
     SCANF           shift, and go to state 10
     SEMICOLON       shift, and go to state 11
-    RBRACE          shift, and go to state 88
+    RBRACE          shift, and go to state 89
     IDENTIFIER      shift, and go to state 13
 
     statement      go to state 52
@@ -821,22 +827,7 @@ State 43
 
 State 44
 
-   50 assign: IDENTIFIER LOP_ASSIGN . expr
-
-    LPAREN      shift, and go to state 66
-    IDENTIFIER  shift, and go to state 29
-    INTEGER     shift, and go to state 30
-    CHAR        shift, and go to state 31
-    STRING      shift, and go to state 32
-    ADD         shift, and go to state 33
-    SUB         shift, and go to state 34
-
-    expr  go to state 89
-
-
-State 45
-
-   51 opassign: IDENTIFIER ADD_ASSIGN . expr
+   51 assign: IDENTIFIER LOP_ASSIGN . expr
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -849,9 +840,9 @@ State 45
     expr  go to state 90
 
 
-State 46
+State 45
 
-   52 opassign: IDENTIFIER SUB_ASSIGN . expr
+   52 opassign: IDENTIFIER ADD_ASSIGN . expr
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -864,9 +855,9 @@ State 46
     expr  go to state 91
 
 
-State 47
+State 46
 
-   55 opassign: IDENTIFIER MOD_ASSIGN . expr
+   53 opassign: IDENTIFIER SUB_ASSIGN . expr
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -879,9 +870,9 @@ State 47
     expr  go to state 92
 
 
-State 48
+State 47
 
-   54 opassign: IDENTIFIER DIV_ASSIGN . expr
+   56 opassign: IDENTIFIER MOD_ASSIGN . expr
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -894,9 +885,9 @@ State 48
     expr  go to state 93
 
 
-State 49
+State 48
 
-   53 opassign: IDENTIFIER MUL_ASSIGN . expr
+   55 opassign: IDENTIFIER DIV_ASSIGN . expr
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -909,13 +900,28 @@ State 49
     expr  go to state 94
 
 
+State 49
+
+   54 opassign: IDENTIFIER MUL_ASSIGN . expr
+
+    LPAREN      shift, and go to state 66
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    CHAR        shift, and go to state 31
+    STRING      shift, and go to state 32
+    ADD         shift, and go to state 33
+    SUB         shift, and go to state 34
+
+    expr  go to state 95
+
+
 State 50
 
    20 function_use: IDENTIFIER LPAREN . idlist RPAREN
    21             | IDENTIFIER LPAREN . RPAREN
 
-    RPAREN      shift, and go to state 95
-    IDENTIFIER  shift, and go to state 96
+    RPAREN      shift, and go to state 96
+    IDENTIFIER  shift, and go to state 85
 
     idlist  go to state 97
 
@@ -988,47 +994,47 @@ State 60
    17 function_decl: T IDENTIFIER . LPAREN RPAREN
    18              | T IDENTIFIER . LPAREN params RPAREN
    19 function_def: T IDENTIFIER . LPAREN params RPAREN LBRACE statements RBRACE
-   50 assign: IDENTIFIER . LOP_ASSIGN expr
-   57 idlist: IDENTIFIER .
+   51 assign: IDENTIFIER . LOP_ASSIGN expr
+   58 idlist: IDENTIFIER .
 
     LOP_ASSIGN  shift, and go to state 44
     LPAREN      shift, and go to state 98
 
-    $default  reduce using rule 57 (idlist)
+    $default  reduce using rule 58 (idlist)
 
 
 State 61
 
-   46 declaration: T assigns .
-   48 assigns: assigns . COMMA assign
+   47 declaration: T assigns .
+   49 assigns: assigns . COMMA assign
 
     COMMA  shift, and go to state 99
-
-    $default  reduce using rule 46 (declaration)
-
-
-State 62
-
-   49 assigns: assign .
-
-    $default  reduce using rule 49 (assigns)
-
-
-State 63
-
-   47 declaration: T idlist .
-   56 idlist: idlist . COMMA IDENTIFIER
-
-    COMMA  shift, and go to state 100
 
     $default  reduce using rule 47 (declaration)
 
 
+State 62
+
+   50 assigns: assign .
+
+    $default  reduce using rule 50 (assigns)
+
+
+State 63
+
+   48 declaration: T idlist .
+   57 idlist: idlist . COMMA IDENTIFIER
+
+    COMMA  shift, and go to state 100
+
+    $default  reduce using rule 48 (declaration)
+
+
 State 64
 
-   34 bool_statements: LPAREN bool_statements . RPAREN
-   35                | bool_statements . AND bool_statements
-   36                | bool_statements . OR bool_statements
+   35 bool_statements: LPAREN bool_statements . RPAREN
+   36                | bool_statements . AND bool_statements
+   37                | bool_statements . OR bool_statements
 
     RPAREN  shift, and go to state 101
     OR      shift, and go to state 70
@@ -1037,28 +1043,28 @@ State 64
 
 State 65
 
-   39 bool_statement: expr .
-   60 expr: LPAREN expr . RPAREN
-   61     | expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
+   40 bool_statement: expr .
+   61 expr: LPAREN expr . RPAREN
+   62     | expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
 
     RPAREN  shift, and go to state 102
-    ADD     shift, and go to state 80
-    SUB     shift, and go to state 81
-    MUL     shift, and go to state 82
-    DIV     shift, and go to state 83
-    MOD     shift, and go to state 84
+    ADD     shift, and go to state 79
+    SUB     shift, and go to state 80
+    MUL     shift, and go to state 81
+    DIV     shift, and go to state 82
+    MOD     shift, and go to state 83
 
-    RPAREN    [reduce using rule 39 (bool_statement)]
-    $default  reduce using rule 39 (bool_statement)
+    RPAREN    [reduce using rule 40 (bool_statement)]
+    $default  reduce using rule 40 (bool_statement)
 
 
 State 66
 
-   60 expr: LPAREN . expr RPAREN
+   61 expr: LPAREN . expr RPAREN
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -1073,40 +1079,40 @@ State 66
 
 State 67
 
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   64     | ADD expr .
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   65     | ADD expr .
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
 
-    $default  reduce using rule 64 (expr)
+    $default  reduce using rule 65 (expr)
 
 
 State 68
 
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   63     | SUB expr .
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   64     | SUB expr .
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
 
-    $default  reduce using rule 63 (expr)
+    $default  reduce using rule 64 (expr)
 
 
 State 69
 
-   35 bool_statements: bool_statements . AND bool_statements
-   36                | bool_statements . OR bool_statements
-   37                | NOT bool_statements .
+   36 bool_statements: bool_statements . AND bool_statements
+   37                | bool_statements . OR bool_statements
+   38                | NOT bool_statements .
 
-    $default  reduce using rule 37 (bool_statements)
+    $default  reduce using rule 38 (bool_statements)
 
 
 State 70
 
-   36 bool_statements: bool_statements OR . bool_statements
+   37 bool_statements: bool_statements OR . bool_statements
 
     LPAREN      shift, and go to state 28
     IDENTIFIER  shift, and go to state 29
@@ -1124,7 +1130,7 @@ State 70
 
 State 71
 
-   35 bool_statements: bool_statements AND . bool_statements
+   36 bool_statements: bool_statements AND . bool_statements
 
     LPAREN      shift, and go to state 28
     IDENTIFIER  shift, and go to state 29
@@ -1143,7 +1149,8 @@ State 71
 State 72
 
     3 statements: statements . statement
-   32 if_else: IF bool_statements statements . ELSE statements
+   33 if_else: IF bool_statements statements . ELSE statements
+   34        | IF bool_statements statements .
 
     IF              shift, and go to state 1
     ELSE            shift, and go to state 106
@@ -1158,6 +1165,21 @@ State 72
     SCANF           shift, and go to state 10
     SEMICOLON       shift, and go to state 11
     IDENTIFIER      shift, and go to state 13
+
+    IF              [reduce using rule 34 (if_else)]
+    ELSE            [reduce using rule 34 (if_else)]
+    WHILE           [reduce using rule 34 (if_else)]
+    T_CHAR          [reduce using rule 34 (if_else)]
+    T_INT           [reduce using rule 34 (if_else)]
+    T_STRING        [reduce using rule 34 (if_else)]
+    T_BOOL          [reduce using rule 34 (if_else)]
+    T_INT_POINTER   [reduce using rule 34 (if_else)]
+    T_CHAR_POINTER  [reduce using rule 34 (if_else)]
+    PRINTF          [reduce using rule 34 (if_else)]
+    SCANF           [reduce using rule 34 (if_else)]
+    SEMICOLON       [reduce using rule 34 (if_else)]
+    IDENTIFIER      [reduce using rule 34 (if_else)]
+    $default        reduce using rule 34 (if_else)
 
     statement      go to state 52
     function_decl  go to state 17
@@ -1175,43 +1197,7 @@ State 72
 
 State 73
 
-    2 statements: statement .
-   33 if_else: IF bool_statements statement .
-
-    $end            reduce using rule 33 (if_else)
-    IF              reduce using rule 2 (statements)
-    IF              [reduce using rule 33 (if_else)]
-    ELSE            reduce using rule 2 (statements)
-    ELSE            [reduce using rule 33 (if_else)]
-    WHILE           reduce using rule 2 (statements)
-    WHILE           [reduce using rule 33 (if_else)]
-    T_CHAR          reduce using rule 2 (statements)
-    T_CHAR          [reduce using rule 33 (if_else)]
-    T_INT           reduce using rule 2 (statements)
-    T_INT           [reduce using rule 33 (if_else)]
-    T_STRING        reduce using rule 2 (statements)
-    T_STRING        [reduce using rule 33 (if_else)]
-    T_BOOL          reduce using rule 2 (statements)
-    T_BOOL          [reduce using rule 33 (if_else)]
-    T_INT_POINTER   reduce using rule 2 (statements)
-    T_INT_POINTER   [reduce using rule 33 (if_else)]
-    T_CHAR_POINTER  reduce using rule 2 (statements)
-    T_CHAR_POINTER  [reduce using rule 33 (if_else)]
-    PRINTF          reduce using rule 2 (statements)
-    PRINTF          [reduce using rule 33 (if_else)]
-    SCANF           reduce using rule 2 (statements)
-    SCANF           [reduce using rule 33 (if_else)]
-    SEMICOLON       reduce using rule 2 (statements)
-    SEMICOLON       [reduce using rule 33 (if_else)]
-    RBRACE          reduce using rule 33 (if_else)
-    IDENTIFIER      reduce using rule 2 (statements)
-    IDENTIFIER      [reduce using rule 33 (if_else)]
-    $default        reduce using rule 2 (statements)
-
-
-State 74
-
-   44 bool_statement: bool_statement LOP_EQ . bool_statement
+   45 bool_statement: bool_statement LOP_EQ . bool_statement
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -1225,9 +1211,9 @@ State 74
     expr            go to state 38
 
 
-State 75
+State 74
 
-   40 bool_statement: bool_statement GREAT . bool_statement
+   41 bool_statement: bool_statement GREAT . bool_statement
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -1241,9 +1227,9 @@ State 75
     expr            go to state 38
 
 
-State 76
+State 75
 
-   41 bool_statement: bool_statement LESS . bool_statement
+   42 bool_statement: bool_statement LESS . bool_statement
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -1257,9 +1243,9 @@ State 76
     expr            go to state 38
 
 
-State 77
+State 76
 
-   42 bool_statement: bool_statement GREAT_EQ . bool_statement
+   43 bool_statement: bool_statement GREAT_EQ . bool_statement
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -1273,9 +1259,9 @@ State 77
     expr            go to state 38
 
 
-State 78
+State 77
 
-   43 bool_statement: bool_statement LESS_EQ . bool_statement
+   44 bool_statement: bool_statement LESS_EQ . bool_statement
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -1289,9 +1275,9 @@ State 78
     expr            go to state 38
 
 
-State 79
+State 78
 
-   45 bool_statement: bool_statement NOT_EQ . bool_statement
+   46 bool_statement: bool_statement NOT_EQ . bool_statement
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -1305,9 +1291,9 @@ State 79
     expr            go to state 38
 
 
-State 80
+State 79
 
-   61 expr: expr ADD . expr
+   62 expr: expr ADD . expr
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -1320,9 +1306,9 @@ State 80
     expr  go to state 113
 
 
-State 81
+State 80
 
-   62 expr: expr SUB . expr
+   63 expr: expr SUB . expr
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -1335,9 +1321,9 @@ State 81
     expr  go to state 114
 
 
-State 82
+State 81
 
-   65 expr: expr MUL . expr
+   66 expr: expr MUL . expr
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -1350,9 +1336,9 @@ State 82
     expr  go to state 115
 
 
-State 83
+State 82
 
-   66 expr: expr DIV . expr
+   67 expr: expr DIV . expr
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -1365,9 +1351,9 @@ State 83
     expr  go to state 116
 
 
-State 84
+State 83
 
-   67 expr: expr MOD . expr
+   68 expr: expr MOD . expr
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -1380,10 +1366,10 @@ State 84
     expr  go to state 117
 
 
-State 85
+State 84
 
     3 statements: statements . statement
-   31 while: WHILE bool_statements statements .
+   32 while: WHILE bool_statements statements .
 
     IF              shift, and go to state 1
     WHILE           shift, and go to state 2
@@ -1398,19 +1384,19 @@ State 85
     SEMICOLON       shift, and go to state 11
     IDENTIFIER      shift, and go to state 13
 
-    IF              [reduce using rule 31 (while)]
-    WHILE           [reduce using rule 31 (while)]
-    T_CHAR          [reduce using rule 31 (while)]
-    T_INT           [reduce using rule 31 (while)]
-    T_STRING        [reduce using rule 31 (while)]
-    T_BOOL          [reduce using rule 31 (while)]
-    T_INT_POINTER   [reduce using rule 31 (while)]
-    T_CHAR_POINTER  [reduce using rule 31 (while)]
-    PRINTF          [reduce using rule 31 (while)]
-    SCANF           [reduce using rule 31 (while)]
-    SEMICOLON       [reduce using rule 31 (while)]
-    IDENTIFIER      [reduce using rule 31 (while)]
-    $default        reduce using rule 31 (while)
+    IF              [reduce using rule 32 (while)]
+    WHILE           [reduce using rule 32 (while)]
+    T_CHAR          [reduce using rule 32 (while)]
+    T_INT           [reduce using rule 32 (while)]
+    T_STRING        [reduce using rule 32 (while)]
+    T_BOOL          [reduce using rule 32 (while)]
+    T_INT_POINTER   [reduce using rule 32 (while)]
+    T_CHAR_POINTER  [reduce using rule 32 (while)]
+    PRINTF          [reduce using rule 32 (while)]
+    SCANF           [reduce using rule 32 (while)]
+    SEMICOLON       [reduce using rule 32 (while)]
+    IDENTIFIER      [reduce using rule 32 (while)]
+    $default        reduce using rule 32 (while)
 
     statement      go to state 52
     function_decl  go to state 17
@@ -1426,6 +1412,13 @@ State 85
     T              go to state 27
 
 
+State 85
+
+   58 idlist: IDENTIFIER .
+
+    $default  reduce using rule 58 (idlist)
+
+
 State 86
 
    25 printf: PRINTF LPAREN STRING . RPAREN
@@ -1437,147 +1430,149 @@ State 86
 
 State 87
 
-   27 scanf: SCANF LPAREN STRING . COMMA address_idlist RPAREN
+   27 printf: PRINTF LPAREN idlist . RPAREN
+   57 idlist: idlist . COMMA IDENTIFIER
 
-    COMMA  shift, and go to state 120
+    COMMA   shift, and go to state 100
+    RPAREN  shift, and go to state 120
 
 
 State 88
+
+   28 scanf: SCANF LPAREN STRING . COMMA address_idlist RPAREN
+
+    COMMA  shift, and go to state 121
+
+
+State 89
 
     4 statements: LBRACE statements RBRACE .
 
     $default  reduce using rule 4 (statements)
 
 
-State 89
-
-   50 assign: IDENTIFIER LOP_ASSIGN expr .
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
-
-    ADD  shift, and go to state 80
-    SUB  shift, and go to state 81
-    MUL  shift, and go to state 82
-    DIV  shift, and go to state 83
-    MOD  shift, and go to state 84
-
-    $default  reduce using rule 50 (assign)
-
-
 State 90
 
-   51 opassign: IDENTIFIER ADD_ASSIGN expr .
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
+   51 assign: IDENTIFIER LOP_ASSIGN expr .
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
 
-    ADD  shift, and go to state 80
-    SUB  shift, and go to state 81
-    MUL  shift, and go to state 82
-    DIV  shift, and go to state 83
-    MOD  shift, and go to state 84
+    ADD  shift, and go to state 79
+    SUB  shift, and go to state 80
+    MUL  shift, and go to state 81
+    DIV  shift, and go to state 82
+    MOD  shift, and go to state 83
 
-    $default  reduce using rule 51 (opassign)
+    $default  reduce using rule 51 (assign)
 
 
 State 91
 
-   52 opassign: IDENTIFIER SUB_ASSIGN expr .
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
+   52 opassign: IDENTIFIER ADD_ASSIGN expr .
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
 
-    ADD  shift, and go to state 80
-    SUB  shift, and go to state 81
-    MUL  shift, and go to state 82
-    DIV  shift, and go to state 83
-    MOD  shift, and go to state 84
+    ADD  shift, and go to state 79
+    SUB  shift, and go to state 80
+    MUL  shift, and go to state 81
+    DIV  shift, and go to state 82
+    MOD  shift, and go to state 83
 
     $default  reduce using rule 52 (opassign)
 
 
 State 92
 
-   55 opassign: IDENTIFIER MOD_ASSIGN expr .
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
+   53 opassign: IDENTIFIER SUB_ASSIGN expr .
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
 
-    ADD  shift, and go to state 80
-    SUB  shift, and go to state 81
-    MUL  shift, and go to state 82
-    DIV  shift, and go to state 83
-    MOD  shift, and go to state 84
-
-    $default  reduce using rule 55 (opassign)
-
-
-State 93
-
-   54 opassign: IDENTIFIER DIV_ASSIGN expr .
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
-
-    ADD  shift, and go to state 80
-    SUB  shift, and go to state 81
-    MUL  shift, and go to state 82
-    DIV  shift, and go to state 83
-    MOD  shift, and go to state 84
-
-    $default  reduce using rule 54 (opassign)
-
-
-State 94
-
-   53 opassign: IDENTIFIER MUL_ASSIGN expr .
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
-
-    ADD  shift, and go to state 80
-    SUB  shift, and go to state 81
-    MUL  shift, and go to state 82
-    DIV  shift, and go to state 83
-    MOD  shift, and go to state 84
+    ADD  shift, and go to state 79
+    SUB  shift, and go to state 80
+    MUL  shift, and go to state 81
+    DIV  shift, and go to state 82
+    MOD  shift, and go to state 83
 
     $default  reduce using rule 53 (opassign)
 
 
+State 93
+
+   56 opassign: IDENTIFIER MOD_ASSIGN expr .
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
+
+    ADD  shift, and go to state 79
+    SUB  shift, and go to state 80
+    MUL  shift, and go to state 81
+    DIV  shift, and go to state 82
+    MOD  shift, and go to state 83
+
+    $default  reduce using rule 56 (opassign)
+
+
+State 94
+
+   55 opassign: IDENTIFIER DIV_ASSIGN expr .
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
+
+    ADD  shift, and go to state 79
+    SUB  shift, and go to state 80
+    MUL  shift, and go to state 81
+    DIV  shift, and go to state 82
+    MOD  shift, and go to state 83
+
+    $default  reduce using rule 55 (opassign)
+
+
 State 95
+
+   54 opassign: IDENTIFIER MUL_ASSIGN expr .
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
+
+    ADD  shift, and go to state 79
+    SUB  shift, and go to state 80
+    MUL  shift, and go to state 81
+    DIV  shift, and go to state 82
+    MOD  shift, and go to state 83
+
+    $default  reduce using rule 54 (opassign)
+
+
+State 96
 
    21 function_use: IDENTIFIER LPAREN RPAREN .
 
     $default  reduce using rule 21 (function_use)
 
 
-State 96
-
-   57 idlist: IDENTIFIER .
-
-    $default  reduce using rule 57 (idlist)
-
-
 State 97
 
    20 function_use: IDENTIFIER LPAREN idlist . RPAREN
-   56 idlist: idlist . COMMA IDENTIFIER
+   57 idlist: idlist . COMMA IDENTIFIER
 
     COMMA   shift, and go to state 100
-    RPAREN  shift, and go to state 121
+    RPAREN  shift, and go to state 122
 
 
 State 98
@@ -1592,83 +1587,83 @@ State 98
     T_BOOL          shift, and go to state 6
     T_INT_POINTER   shift, and go to state 7
     T_CHAR_POINTER  shift, and go to state 8
-    RPAREN          shift, and go to state 122
+    RPAREN          shift, and go to state 123
 
-    params  go to state 123
-    param   go to state 124
-    T       go to state 125
+    params  go to state 124
+    param   go to state 125
+    T       go to state 126
 
 
 State 99
 
-   48 assigns: assigns COMMA . assign
+   49 assigns: assigns COMMA . assign
 
-    IDENTIFIER  shift, and go to state 126
+    IDENTIFIER  shift, and go to state 127
 
-    assign  go to state 127
+    assign  go to state 128
 
 
 State 100
 
-   56 idlist: idlist COMMA . IDENTIFIER
+   57 idlist: idlist COMMA . IDENTIFIER
 
-    IDENTIFIER  shift, and go to state 128
+    IDENTIFIER  shift, and go to state 129
 
 
 State 101
 
-   34 bool_statements: LPAREN bool_statements RPAREN .
-
-    $default  reduce using rule 34 (bool_statements)
-
-
-State 102
-
-   60 expr: LPAREN expr RPAREN .
-
-    $default  reduce using rule 60 (expr)
-
-
-State 103
-
-   60 expr: LPAREN expr . RPAREN
-   61     | expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
-
-    RPAREN  shift, and go to state 102
-    ADD     shift, and go to state 80
-    SUB     shift, and go to state 81
-    MUL     shift, and go to state 82
-    DIV     shift, and go to state 83
-    MOD     shift, and go to state 84
-
-
-State 104
-
-   35 bool_statements: bool_statements . AND bool_statements
-   36                | bool_statements . OR bool_statements
-   36                | bool_statements OR bool_statements .
-
-    AND  shift, and go to state 71
-
-    $default  reduce using rule 36 (bool_statements)
-
-
-State 105
-
-   35 bool_statements: bool_statements . AND bool_statements
-   35                | bool_statements AND bool_statements .
-   36                | bool_statements . OR bool_statements
+   35 bool_statements: LPAREN bool_statements RPAREN .
 
     $default  reduce using rule 35 (bool_statements)
 
 
+State 102
+
+   61 expr: LPAREN expr RPAREN .
+
+    $default  reduce using rule 61 (expr)
+
+
+State 103
+
+   61 expr: LPAREN expr . RPAREN
+   62     | expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
+
+    RPAREN  shift, and go to state 102
+    ADD     shift, and go to state 79
+    SUB     shift, and go to state 80
+    MUL     shift, and go to state 81
+    DIV     shift, and go to state 82
+    MOD     shift, and go to state 83
+
+
+State 104
+
+   36 bool_statements: bool_statements . AND bool_statements
+   37                | bool_statements . OR bool_statements
+   37                | bool_statements OR bool_statements .
+
+    AND  shift, and go to state 71
+
+    $default  reduce using rule 37 (bool_statements)
+
+
+State 105
+
+   36 bool_statements: bool_statements . AND bool_statements
+   36                | bool_statements AND bool_statements .
+   37                | bool_statements . OR bool_statements
+
+    $default  reduce using rule 36 (bool_statements)
+
+
 State 106
 
-   32 if_else: IF bool_statements statements ELSE . statements
+   33 if_else: IF bool_statements statements ELSE . statements
 
     IF              shift, and go to state 1
     WHILE           shift, and go to state 2
@@ -1684,7 +1679,7 @@ State 106
     LBRACE          shift, and go to state 12
     IDENTIFIER      shift, and go to state 13
 
-    statements     go to state 129
+    statements     go to state 130
     statement      go to state 16
     function_decl  go to state 17
     function_def   go to state 18
@@ -1701,148 +1696,148 @@ State 106
 
 State 107
 
-   40 bool_statement: bool_statement . GREAT bool_statement
-   41               | bool_statement . LESS bool_statement
-   42               | bool_statement . GREAT_EQ bool_statement
-   43               | bool_statement . LESS_EQ bool_statement
-   44               | bool_statement . LOP_EQ bool_statement
-   44               | bool_statement LOP_EQ bool_statement .
-   45               | bool_statement . NOT_EQ bool_statement
-
-    $default  reduce using rule 44 (bool_statement)
-
-
-State 108
-
-   40 bool_statement: bool_statement . GREAT bool_statement
-   40               | bool_statement GREAT bool_statement .
-   41               | bool_statement . LESS bool_statement
-   42               | bool_statement . GREAT_EQ bool_statement
-   43               | bool_statement . LESS_EQ bool_statement
-   44               | bool_statement . LOP_EQ bool_statement
-   45               | bool_statement . NOT_EQ bool_statement
-
-    $default  reduce using rule 40 (bool_statement)
-
-
-State 109
-
-   40 bool_statement: bool_statement . GREAT bool_statement
-   41               | bool_statement . LESS bool_statement
-   41               | bool_statement LESS bool_statement .
-   42               | bool_statement . GREAT_EQ bool_statement
-   43               | bool_statement . LESS_EQ bool_statement
-   44               | bool_statement . LOP_EQ bool_statement
-   45               | bool_statement . NOT_EQ bool_statement
-
-    $default  reduce using rule 41 (bool_statement)
-
-
-State 110
-
-   40 bool_statement: bool_statement . GREAT bool_statement
-   41               | bool_statement . LESS bool_statement
-   42               | bool_statement . GREAT_EQ bool_statement
-   42               | bool_statement GREAT_EQ bool_statement .
-   43               | bool_statement . LESS_EQ bool_statement
-   44               | bool_statement . LOP_EQ bool_statement
-   45               | bool_statement . NOT_EQ bool_statement
-
-    $default  reduce using rule 42 (bool_statement)
-
-
-State 111
-
-   40 bool_statement: bool_statement . GREAT bool_statement
-   41               | bool_statement . LESS bool_statement
-   42               | bool_statement . GREAT_EQ bool_statement
-   43               | bool_statement . LESS_EQ bool_statement
-   43               | bool_statement LESS_EQ bool_statement .
-   44               | bool_statement . LOP_EQ bool_statement
-   45               | bool_statement . NOT_EQ bool_statement
-
-    $default  reduce using rule 43 (bool_statement)
-
-
-State 112
-
-   40 bool_statement: bool_statement . GREAT bool_statement
-   41               | bool_statement . LESS bool_statement
-   42               | bool_statement . GREAT_EQ bool_statement
-   43               | bool_statement . LESS_EQ bool_statement
-   44               | bool_statement . LOP_EQ bool_statement
-   45               | bool_statement . NOT_EQ bool_statement
-   45               | bool_statement NOT_EQ bool_statement .
+   41 bool_statement: bool_statement . GREAT bool_statement
+   42               | bool_statement . LESS bool_statement
+   43               | bool_statement . GREAT_EQ bool_statement
+   44               | bool_statement . LESS_EQ bool_statement
+   45               | bool_statement . LOP_EQ bool_statement
+   45               | bool_statement LOP_EQ bool_statement .
+   46               | bool_statement . NOT_EQ bool_statement
 
     $default  reduce using rule 45 (bool_statement)
 
 
+State 108
+
+   41 bool_statement: bool_statement . GREAT bool_statement
+   41               | bool_statement GREAT bool_statement .
+   42               | bool_statement . LESS bool_statement
+   43               | bool_statement . GREAT_EQ bool_statement
+   44               | bool_statement . LESS_EQ bool_statement
+   45               | bool_statement . LOP_EQ bool_statement
+   46               | bool_statement . NOT_EQ bool_statement
+
+    $default  reduce using rule 41 (bool_statement)
+
+
+State 109
+
+   41 bool_statement: bool_statement . GREAT bool_statement
+   42               | bool_statement . LESS bool_statement
+   42               | bool_statement LESS bool_statement .
+   43               | bool_statement . GREAT_EQ bool_statement
+   44               | bool_statement . LESS_EQ bool_statement
+   45               | bool_statement . LOP_EQ bool_statement
+   46               | bool_statement . NOT_EQ bool_statement
+
+    $default  reduce using rule 42 (bool_statement)
+
+
+State 110
+
+   41 bool_statement: bool_statement . GREAT bool_statement
+   42               | bool_statement . LESS bool_statement
+   43               | bool_statement . GREAT_EQ bool_statement
+   43               | bool_statement GREAT_EQ bool_statement .
+   44               | bool_statement . LESS_EQ bool_statement
+   45               | bool_statement . LOP_EQ bool_statement
+   46               | bool_statement . NOT_EQ bool_statement
+
+    $default  reduce using rule 43 (bool_statement)
+
+
+State 111
+
+   41 bool_statement: bool_statement . GREAT bool_statement
+   42               | bool_statement . LESS bool_statement
+   43               | bool_statement . GREAT_EQ bool_statement
+   44               | bool_statement . LESS_EQ bool_statement
+   44               | bool_statement LESS_EQ bool_statement .
+   45               | bool_statement . LOP_EQ bool_statement
+   46               | bool_statement . NOT_EQ bool_statement
+
+    $default  reduce using rule 44 (bool_statement)
+
+
+State 112
+
+   41 bool_statement: bool_statement . GREAT bool_statement
+   42               | bool_statement . LESS bool_statement
+   43               | bool_statement . GREAT_EQ bool_statement
+   44               | bool_statement . LESS_EQ bool_statement
+   45               | bool_statement . LOP_EQ bool_statement
+   46               | bool_statement . NOT_EQ bool_statement
+   46               | bool_statement NOT_EQ bool_statement .
+
+    $default  reduce using rule 46 (bool_statement)
+
+
 State 113
 
-   61 expr: expr . ADD expr
-   61     | expr ADD expr .
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
+   62 expr: expr . ADD expr
+   62     | expr ADD expr .
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
 
-    MUL  shift, and go to state 82
-    DIV  shift, and go to state 83
-    MOD  shift, and go to state 84
-
-    $default  reduce using rule 61 (expr)
-
-
-State 114
-
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   62     | expr SUB expr .
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
-
-    MUL  shift, and go to state 82
-    DIV  shift, and go to state 83
-    MOD  shift, and go to state 84
+    MUL  shift, and go to state 81
+    DIV  shift, and go to state 82
+    MOD  shift, and go to state 83
 
     $default  reduce using rule 62 (expr)
 
 
+State 114
+
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   63     | expr SUB expr .
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
+
+    MUL  shift, and go to state 81
+    DIV  shift, and go to state 82
+    MOD  shift, and go to state 83
+
+    $default  reduce using rule 63 (expr)
+
+
 State 115
 
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   65     | expr MUL expr .
-   66     | expr . DIV expr
-   67     | expr . MOD expr
-
-    $default  reduce using rule 65 (expr)
-
-
-State 116
-
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   66     | expr DIV expr .
-   67     | expr . MOD expr
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   66     | expr MUL expr .
+   67     | expr . DIV expr
+   68     | expr . MOD expr
 
     $default  reduce using rule 66 (expr)
 
 
-State 117
+State 116
 
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
-   67     | expr MOD expr .
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   67     | expr DIV expr .
+   68     | expr . MOD expr
 
     $default  reduce using rule 67 (expr)
+
+
+State 117
+
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
+   68     | expr MOD expr .
+
+    $default  reduce using rule 68 (expr)
 
 
 State 118
@@ -1857,8 +1852,8 @@ State 118
     ADD         shift, and go to state 33
     SUB         shift, and go to state 34
 
-    exprs  go to state 130
-    expr   go to state 131
+    exprs  go to state 131
+    expr   go to state 132
 
 
 State 119
@@ -1870,77 +1865,84 @@ State 119
 
 State 120
 
-   27 scanf: SCANF LPAREN STRING COMMA . address_idlist RPAREN
+   27 printf: PRINTF LPAREN idlist RPAREN .
 
-    GET_ADDRESS  shift, and go to state 132
-
-    address_idlist  go to state 133
-    get_address_id  go to state 134
+    $default  reduce using rule 27 (printf)
 
 
 State 121
+
+   28 scanf: SCANF LPAREN STRING COMMA . address_idlist RPAREN
+
+    GET_ADDRESS  shift, and go to state 133
+
+    address_idlist  go to state 134
+    get_address_id  go to state 135
+
+
+State 122
 
    20 function_use: IDENTIFIER LPAREN idlist RPAREN .
 
     $default  reduce using rule 20 (function_use)
 
 
-State 122
+State 123
 
    17 function_decl: T IDENTIFIER LPAREN RPAREN .
 
     $default  reduce using rule 17 (function_decl)
 
 
-State 123
+State 124
 
    18 function_decl: T IDENTIFIER LPAREN params . RPAREN
    19 function_def: T IDENTIFIER LPAREN params . RPAREN LBRACE statements RBRACE
    22 params: params . COMMA param
 
-    COMMA   shift, and go to state 135
-    RPAREN  shift, and go to state 136
+    COMMA   shift, and go to state 136
+    RPAREN  shift, and go to state 137
 
 
-State 124
+State 125
 
    23 params: param .
 
     $default  reduce using rule 23 (params)
 
 
-State 125
+State 126
 
    24 param: T . IDENTIFIER
 
-    IDENTIFIER  shift, and go to state 137
-
-
-State 126
-
-   50 assign: IDENTIFIER . LOP_ASSIGN expr
-
-    LOP_ASSIGN  shift, and go to state 44
+    IDENTIFIER  shift, and go to state 138
 
 
 State 127
 
-   48 assigns: assigns COMMA assign .
+   51 assign: IDENTIFIER . LOP_ASSIGN expr
 
-    $default  reduce using rule 48 (assigns)
+    LOP_ASSIGN  shift, and go to state 44
 
 
 State 128
 
-   56 idlist: idlist COMMA IDENTIFIER .
+   49 assigns: assigns COMMA assign .
 
-    $default  reduce using rule 56 (idlist)
+    $default  reduce using rule 49 (assigns)
 
 
 State 129
 
+   57 idlist: idlist COMMA IDENTIFIER .
+
+    $default  reduce using rule 57 (idlist)
+
+
+State 130
+
     3 statements: statements . statement
-   32 if_else: IF bool_statements statements ELSE statements .
+   33 if_else: IF bool_statements statements ELSE statements .
 
     IF              shift, and go to state 1
     WHILE           shift, and go to state 2
@@ -1955,19 +1957,19 @@ State 129
     SEMICOLON       shift, and go to state 11
     IDENTIFIER      shift, and go to state 13
 
-    IF              [reduce using rule 32 (if_else)]
-    WHILE           [reduce using rule 32 (if_else)]
-    T_CHAR          [reduce using rule 32 (if_else)]
-    T_INT           [reduce using rule 32 (if_else)]
-    T_STRING        [reduce using rule 32 (if_else)]
-    T_BOOL          [reduce using rule 32 (if_else)]
-    T_INT_POINTER   [reduce using rule 32 (if_else)]
-    T_CHAR_POINTER  [reduce using rule 32 (if_else)]
-    PRINTF          [reduce using rule 32 (if_else)]
-    SCANF           [reduce using rule 32 (if_else)]
-    SEMICOLON       [reduce using rule 32 (if_else)]
-    IDENTIFIER      [reduce using rule 32 (if_else)]
-    $default        reduce using rule 32 (if_else)
+    IF              [reduce using rule 33 (if_else)]
+    WHILE           [reduce using rule 33 (if_else)]
+    T_CHAR          [reduce using rule 33 (if_else)]
+    T_INT           [reduce using rule 33 (if_else)]
+    T_STRING        [reduce using rule 33 (if_else)]
+    T_BOOL          [reduce using rule 33 (if_else)]
+    T_INT_POINTER   [reduce using rule 33 (if_else)]
+    T_CHAR_POINTER  [reduce using rule 33 (if_else)]
+    PRINTF          [reduce using rule 33 (if_else)]
+    SCANF           [reduce using rule 33 (if_else)]
+    SEMICOLON       [reduce using rule 33 (if_else)]
+    IDENTIFIER      [reduce using rule 33 (if_else)]
+    $default        reduce using rule 33 (if_else)
 
     statement      go to state 52
     function_decl  go to state 17
@@ -1983,57 +1985,57 @@ State 129
     T              go to state 27
 
 
-State 130
-
-   26 printf: PRINTF LPAREN STRING COMMA exprs . RPAREN
-   58 exprs: exprs . COMMA expr
-
-    COMMA   shift, and go to state 138
-    RPAREN  shift, and go to state 139
-
-
 State 131
 
-   59 exprs: expr .
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
+   26 printf: PRINTF LPAREN STRING COMMA exprs . RPAREN
+   59 exprs: exprs . COMMA expr
 
-    ADD  shift, and go to state 80
-    SUB  shift, and go to state 81
-    MUL  shift, and go to state 82
-    DIV  shift, and go to state 83
-    MOD  shift, and go to state 84
-
-    $default  reduce using rule 59 (exprs)
+    COMMA   shift, and go to state 139
+    RPAREN  shift, and go to state 140
 
 
 State 132
 
-   30 get_address_id: GET_ADDRESS . IDENTIFIER
+   60 exprs: expr .
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
 
-    IDENTIFIER  shift, and go to state 140
+    ADD  shift, and go to state 79
+    SUB  shift, and go to state 80
+    MUL  shift, and go to state 81
+    DIV  shift, and go to state 82
+    MOD  shift, and go to state 83
+
+    $default  reduce using rule 60 (exprs)
 
 
 State 133
 
-   27 scanf: SCANF LPAREN STRING COMMA address_idlist . RPAREN
-   28 address_idlist: address_idlist . COMMA get_address_id
+   31 get_address_id: GET_ADDRESS . IDENTIFIER
 
-    COMMA   shift, and go to state 141
-    RPAREN  shift, and go to state 142
+    IDENTIFIER  shift, and go to state 141
 
 
 State 134
 
-   29 address_idlist: get_address_id .
+   28 scanf: SCANF LPAREN STRING COMMA address_idlist . RPAREN
+   29 address_idlist: address_idlist . COMMA get_address_id
 
-    $default  reduce using rule 29 (address_idlist)
+    COMMA   shift, and go to state 142
+    RPAREN  shift, and go to state 143
 
 
 State 135
+
+   30 address_idlist: get_address_id .
+
+    $default  reduce using rule 30 (address_idlist)
+
+
+State 136
 
    22 params: params COMMA . param
 
@@ -2044,30 +2046,30 @@ State 135
     T_INT_POINTER   shift, and go to state 7
     T_CHAR_POINTER  shift, and go to state 8
 
-    param  go to state 143
-    T      go to state 125
+    param  go to state 144
+    T      go to state 126
 
 
-State 136
+State 137
 
    18 function_decl: T IDENTIFIER LPAREN params RPAREN .
    19 function_def: T IDENTIFIER LPAREN params RPAREN . LBRACE statements RBRACE
 
-    LBRACE  shift, and go to state 144
+    LBRACE  shift, and go to state 145
 
     $default  reduce using rule 18 (function_decl)
 
 
-State 137
+State 138
 
    24 param: T IDENTIFIER .
 
     $default  reduce using rule 24 (param)
 
 
-State 138
+State 139
 
-   58 exprs: exprs COMMA . expr
+   59 exprs: exprs COMMA . expr
 
     LPAREN      shift, and go to state 66
     IDENTIFIER  shift, and go to state 29
@@ -2077,47 +2079,47 @@ State 138
     ADD         shift, and go to state 33
     SUB         shift, and go to state 34
 
-    expr  go to state 145
+    expr  go to state 146
 
 
-State 139
+State 140
 
    26 printf: PRINTF LPAREN STRING COMMA exprs RPAREN .
 
     $default  reduce using rule 26 (printf)
 
 
-State 140
-
-   30 get_address_id: GET_ADDRESS IDENTIFIER .
-
-    $default  reduce using rule 30 (get_address_id)
-
-
 State 141
 
-   28 address_idlist: address_idlist COMMA . get_address_id
+   31 get_address_id: GET_ADDRESS IDENTIFIER .
 
-    GET_ADDRESS  shift, and go to state 132
-
-    get_address_id  go to state 146
+    $default  reduce using rule 31 (get_address_id)
 
 
 State 142
 
-   27 scanf: SCANF LPAREN STRING COMMA address_idlist RPAREN .
+   29 address_idlist: address_idlist COMMA . get_address_id
 
-    $default  reduce using rule 27 (scanf)
+    GET_ADDRESS  shift, and go to state 133
+
+    get_address_id  go to state 147
 
 
 State 143
+
+   28 scanf: SCANF LPAREN STRING COMMA address_idlist RPAREN .
+
+    $default  reduce using rule 28 (scanf)
+
+
+State 144
 
    22 params: params COMMA param .
 
     $default  reduce using rule 22 (params)
 
 
-State 144
+State 145
 
    19 function_def: T IDENTIFIER LPAREN params RPAREN LBRACE . statements RBRACE
 
@@ -2135,7 +2137,7 @@ State 144
     LBRACE          shift, and go to state 12
     IDENTIFIER      shift, and go to state 13
 
-    statements     go to state 147
+    statements     go to state 148
     statement      go to state 16
     function_decl  go to state 17
     function_def   go to state 18
@@ -2150,32 +2152,32 @@ State 144
     T              go to state 27
 
 
-State 145
-
-   58 exprs: exprs COMMA expr .
-   61 expr: expr . ADD expr
-   62     | expr . SUB expr
-   65     | expr . MUL expr
-   66     | expr . DIV expr
-   67     | expr . MOD expr
-
-    ADD  shift, and go to state 80
-    SUB  shift, and go to state 81
-    MUL  shift, and go to state 82
-    DIV  shift, and go to state 83
-    MOD  shift, and go to state 84
-
-    $default  reduce using rule 58 (exprs)
-
-
 State 146
 
-   28 address_idlist: address_idlist COMMA get_address_id .
+   59 exprs: exprs COMMA expr .
+   62 expr: expr . ADD expr
+   63     | expr . SUB expr
+   66     | expr . MUL expr
+   67     | expr . DIV expr
+   68     | expr . MOD expr
 
-    $default  reduce using rule 28 (address_idlist)
+    ADD  shift, and go to state 79
+    SUB  shift, and go to state 80
+    MUL  shift, and go to state 81
+    DIV  shift, and go to state 82
+    MOD  shift, and go to state 83
+
+    $default  reduce using rule 59 (exprs)
 
 
 State 147
+
+   29 address_idlist: address_idlist COMMA get_address_id .
+
+    $default  reduce using rule 29 (address_idlist)
+
+
+State 148
 
     3 statements: statements . statement
    19 function_def: T IDENTIFIER LPAREN params RPAREN LBRACE statements . RBRACE
@@ -2191,7 +2193,7 @@ State 147
     PRINTF          shift, and go to state 9
     SCANF           shift, and go to state 10
     SEMICOLON       shift, and go to state 11
-    RBRACE          shift, and go to state 148
+    RBRACE          shift, and go to state 149
     IDENTIFIER      shift, and go to state 13
 
     statement      go to state 52
@@ -2208,7 +2210,7 @@ State 147
     T              go to state 27
 
 
-State 148
+State 149
 
    19 function_def: T IDENTIFIER LPAREN params RPAREN LBRACE statements RBRACE .
 

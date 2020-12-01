@@ -141,6 +141,11 @@ printf
     $$->addChild($3);
     $$->addChild($5);
 }
+| PRINTF LPAREN idlist RPAREN{
+    $$=new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_PRT;
+    $$->addChild($3);
+}
 ;
 
 scanf
@@ -190,7 +195,7 @@ if_else
     node->addChild($5);//else后执行的语句
     $$=node;
     }
-| IF bool_statements statement {
+| IF bool_statements statements {
     TreeNode *node=new TreeNode(lineno,NODE_STMT);
     node->stype=STMT_IF;
     node->addChild($2);//bool表达式
@@ -267,7 +272,7 @@ bool_statement
 
 declaration
 : T assigns{  // declare and init
-    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
+    TreeNode* node = new TreeNode(lineno, NODE_STMT);
     node->stype = STMT_DEFINE;
     node->addChild($1);
     node->addChild($2);
