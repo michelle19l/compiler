@@ -35,7 +35,7 @@
 %%
 
 program
-: statements {root = new TreeNode(0, NODE_PROG); root->addChild($1);};
+: statements {root = new TreeNode(0, NODE_PROG); cout<<"root";root->addChild($1);};
 
 statements
 :  statement {$$=$1;}
@@ -58,7 +58,55 @@ statement
 | while {$$=$1;}
 | printf SEMICOLON{$$=$1;}
 | scanf SEMICOLON{$$=$1;}
+| function_decl SEMICOLON {$$=$1;}
+| function_def{$$=$1;}
+| function_use SEMICOLON{$$=$1;}
 ;
+
+function_decl
+: T IDENTIFIER LPAREN  RPAREN{
+    //函数声明
+    $$=new TreeNode ($1->lineno,NODE_STMT);
+    $$->stype=STMT_FUNC_DECL;
+    $$->addChild($1);
+    $$->addChild($2);
+}
+|T IDENTIFIER LPAREN params RPAREN{
+    //函数声明
+    $$=new TreeNode ($1->lineno,NODE_STMT);
+    $$->stype=STMT_FUNC_DECL;
+    $$->addChild($1);
+    $$->addChild($2);
+    cout<<"params";$$->addChild($4);
+}
+;
+function_def
+: T IDENTIFIER LPAREN params RPAREN LBRACE statements RBRACE{}
+;
+function_use
+: IDENTIFIER LPAREN idlist RPAREN{}
+;
+
+params
+: params COMMA param{
+    $$=$1;
+    $$->addSibling($3);
+}
+| param {
+    $$=$1;
+}
+;
+
+param
+: T IDENTIFIER{
+    $$ =new TreeNode (lineno,NODE_PARAM);
+    $$->addChild($1);
+    $$->addChild($2);
+   
+}
+;
+
+
 
 printf
 : PRINTF LPAREN STRING RPAREN{//print("123");

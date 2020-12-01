@@ -1,1 +1,1 @@
-scanf("%d",&ch);
+int a(int t);
