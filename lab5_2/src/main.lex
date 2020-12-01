@@ -36,6 +36,9 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "/=" return DIV_ASSIGN;
 "%=" return MOD_ASSIGN;
 
+"++" return SELF_INC;
+"--" return SELF_DEC;
+
 "if" return IF;
 "else" return ELSE;
 "while" return WHILE;

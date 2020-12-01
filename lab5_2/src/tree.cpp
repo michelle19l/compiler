@@ -129,6 +129,14 @@ string TreeNode::sType2String() {
             return "stmt: /=";
         case STMT_MOD_ASSIGN:
             return "stmt: %=";
+        case STMT_SELF_INC_R:
+            return "stmt: ++ R";
+        case STMT_SELF_INC_L:
+            return "stmt: ++ L";
+        case STMT_SELF_DEC_R:
+            return "stmt: -- R";
+        case STMT_SELF_DEC_L:
+            return "stmt: -- L";
         default:
             return "unknown stmt";
     }

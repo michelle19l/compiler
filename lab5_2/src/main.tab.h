@@ -94,8 +94,14 @@ extern int yydebug;
     NOT = 304,
     NEG = 305,
     POS = 306,
-    GET_ADDRESS = 307,
-    GET_VALUE = 308
+    SELF_INC = 307,
+    SELF_DEC = 308,
+    SELF_INC_R = 309,
+    SELF_DEC_R = 310,
+    SELF_INC_L = 311,
+    SELF_DEC_L = 312,
+    GET_ADDRESS = 313,
+    GET_VALUE = 314
   };
 #endif
 

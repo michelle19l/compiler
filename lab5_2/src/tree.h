@@ -68,6 +68,12 @@ enum StmtType {
     STMT_MUL_ASSIGN,
     STMT_DIV_ASSIGN,
     STMT_MOD_ASSIGN,
+
+    STMT_SELF_INC_R,
+    STMT_SELF_INC_L,
+    STMT_SELF_DEC_R,
+    STMT_SELF_DEC_L,
+    
 };
 
 struct TreeNode {

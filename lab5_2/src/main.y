@@ -30,6 +30,10 @@
 %right NOT
 %right NEG POS
 
+%token SELF_INC SELF_DEC
+%right SELF_INC_R SELF_DEC_R
+%left SELF_INC_L SELF_DEC_L
+
 %right GET_ADDRESS GET_VALUE
 
 %%
@@ -384,6 +388,26 @@ IDENTIFIER MOD_ASSIGN expr{
     $$->stype=STMT_MOD_ASSIGN;
     $$->addChild($1);
     $$->addChild($3);
+}
+| SELF_DEC %prec SELF_DEC_L IDENTIFIER {
+    $$ = new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_SELF_DEC_L;
+    $$->addChild($2);
+}
+| SELF_INC IDENTIFIER %prec SELF_INC_L{;
+    $$ = new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_SELF_INC_L;
+    $$->addChild($2);
+}
+| IDENTIFIER SELF_INC %prec SELF_INC_R{
+    $$ = new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_SELF_INC_R;
+    $$->addChild($2);
+}
+|IDENTIFIER SELF_DEC %prec SELF_DEC_R{
+    $$ = new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_SELF_DEC_R;
+    $$->addChild($2);
 }
 ;
 
