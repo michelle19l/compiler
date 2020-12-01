@@ -72,7 +72,7 @@ void TreeNode::printSpecialInfo() {
             {cout<<opType2String();break;}
         case NODE_STMT:
             {cout<<sType2String();break;}
-        case NODE_TYPE:
+        case NODE_TYPE://类型
            { 
                 cout<<tType2String(); 
                 break;
@@ -105,6 +105,23 @@ string TreeNode::sType2String() {
              return "stmt: printf";
         case STMT_SCF:
             return "stmt: scanf";
+
+        case STMT_FUNC_DECL:
+            return "stmt: func decalaration";
+        case STMT_FUNC_DEF:
+            return "stmt: func define";
+        case STMT_FUNC_USE:
+            return "stmt: func using";
+        case STMT_ADD_ASSIGN:
+            return "stmt: +=";
+        case STMT_SUB_ASSIGN:
+            return "stmt: -=";
+        case STMT_MUL_ASSIGN:
+            return "stmt: *=";
+        case STMT_DIV_ASSIGN:
+            return "stmt: /=";
+        case STMT_MOD_ASSIGN:
+            return "stmt: %=";
         default:
             return "unknown stmt";
     }
@@ -127,6 +144,8 @@ string TreeNode::nodeType2String (){
                 return "statement";
         case  NODE_PROG://程序
                 return "program";
+        case  NODE_PARAM:
+                return "parameter";
         
         default:
                 return "unknown nodetype";

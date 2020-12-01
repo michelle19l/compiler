@@ -30,6 +30,11 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "char*" return T_CHAR_POINTER;
 
 "="  return LOP_ASSIGN;
+"-=" return SUB_ASSIGN;
+"+=" return ADD_ASSIGN;
+"*=" return MUL_ASSIGN;
+"/=" return DIV_ASSIGN;
+"%=" return MOD_ASSIGN;
 
 "if" return IF;
 "else" return ELSE;

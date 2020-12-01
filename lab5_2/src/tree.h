@@ -11,9 +11,9 @@ enum NodeType
     NODE_EXPR,//表达式
     NODE_TYPE,//类型
 
-    NODE_PARAM,//参数
     NODE_STMT,//语句
     NODE_PROG,//程序
+    NODE_PARAM,//参数
 };
 
 enum ConstType//常量
@@ -61,7 +61,13 @@ enum StmtType {
 
     STMT_FUNC_DECL,
     STMT_FUNC_DEF,
-    STMT_FUNC_USE
+    STMT_FUNC_USE,
+
+    STMT_ADD_ASSIGN,
+    STMT_SUB_ASSIGN,
+    STMT_MUL_ASSIGN,
+    STMT_DIV_ASSIGN,
+    STMT_MOD_ASSIGN,
 };
 
 struct TreeNode {

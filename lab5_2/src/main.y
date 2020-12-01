@@ -11,7 +11,7 @@
 %token T_CHAR T_INT T_STRING T_BOOL T_INT_POINTER T_CHAR_POINTER
 %token PRINTF SCANF
 
-%token LOP_ASSIGN 
+%token LOP_ASSIGN ADD_ASSIGN SUB_ASSIGN MOD_ASSIGN DIV_ASSIGN MUL_ASSIGN
 
 %token SEMICOLON COMMA POINT
 
@@ -61,6 +61,9 @@ statement
 | function_decl SEMICOLON {$$=$1;}
 | function_def{$$=$1;}
 | function_use SEMICOLON{$$=$1;}
+| opassign SEMICOLON {
+    //$$=$1;
+}
 ;
 
 function_decl
@@ -276,6 +279,7 @@ declaration
     $$->addChild($1);
     $$->addChild($2);
 }
+
 ;
 
 assigns
@@ -290,6 +294,43 @@ assign
 : IDENTIFIER LOP_ASSIGN expr{
     $$ = new TreeNode($1->lineno,NODE_STMT);
     $$->stype=STMT_ASSIGN;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+;
+
+opassign
+: IDENTIFIER ADD_ASSIGN expr{
+    $$ = new TreeNode($1->lineno,NODE_STMT);
+    $$->stype=STMT_ADD_ASSIGN;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+|
+IDENTIFIER SUB_ASSIGN expr{
+    $$ = new TreeNode($1->lineno,NODE_STMT);
+    $$->stype=STMT_SUB_ASSIGN;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+|
+IDENTIFIER MUL_ASSIGN expr{
+    $$ = new TreeNode($1->lineno,NODE_STMT);
+    $$->stype=STMT_MUL_ASSIGN;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+|
+IDENTIFIER DIV_ASSIGN expr{
+    $$ = new TreeNode($1->lineno,NODE_STMT);
+    $$->stype=STMT_DIV_ASSIGN;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+|
+IDENTIFIER MOD_ASSIGN expr{
+    $$ = new TreeNode($1->lineno,NODE_STMT);
+    $$->stype=STMT_MOD_ASSIGN;
     $$->addChild($1);
     $$->addChild($3);
 }

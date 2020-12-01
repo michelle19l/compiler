@@ -69,25 +69,6 @@ int lookupID(char* yytext);//在当前作用域查找是否存在该ID
 void insert_keyword(const char*);//插入关键字
 bool lookupKW(char*);//查找声明ID是否与keyword重名
 void initialize();//初始化
-//bool is_keyword(char* yytext);//判断是否是关键字
-
-
-//int main()
-//{
-//	initialize();
-//	char a[] = { "while" };
-//	char b[] = "hhhh";
-//	int i = lookupKW(a);
-//	int j = lookupKW(b);
-//	int k = lookupID(b);
-//	insertID(b);
-//	int z = lookupID(b);
-//	cout << i << endl;
-//	cout << j << endl;
-//	cout << k << endl;
-//	cout << z << endl;
-//}
-
 
 
 
