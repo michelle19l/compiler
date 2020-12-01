@@ -53,7 +53,7 @@ statements
 statement
 : SEMICOLON  {$$ = new TreeNode(lineno, NODE_STMT); $$->stype = STMT_SKIP;}
 | declaration SEMICOLON {$$ = $1;}
-| assign SEMICOLON {$$=$1;}
+| eq_assign SEMICOLON {$$=$1;}
 | if_else {$$=$1;}
 | while {$$=$1;}
 | printf SEMICOLON{$$=$1;}
@@ -61,10 +61,35 @@ statement
 | function_decl SEMICOLON {$$=$1;}
 | function_def{$$=$1;}
 | function_use SEMICOLON{$$=$1;}
+| for {$$=$1;}
 | opassign SEMICOLON {
     //$$=$1;
 }
 ;
+
+for
+: FOR LPAREN declarations SEMICOLON bool_statements SEMICOLON assigns RPAREN statements{
+    $$=new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_FOR;
+    $$->addChild($3);
+    $$->addChild($5);
+    $$->addChild($7);
+    $$->addChild($9);
+}
+| FOR LPAREN SEMICOLON bool_statements SEMICOLON assigns RPAREN statements{
+    $$=new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_FOR;
+    TreeNode* temp= new TreeNode(lineno,NODE_STMT);
+    temp->stype=STMT_SKIP;
+    $$->addChild(temp);
+    $$->addChild($4);
+    $$->addChild($6);
+    $$->addChild($8);
+}
+;
+
+
+
 
 function_decl
 : T IDENTIFIER LPAREN  RPAREN{
@@ -269,9 +294,16 @@ bool_statement
 
 ;
 
+declarations
+: declarations COMMA declaration{
+    $$=$1; $$->addSibling($3);
+}
+| declaration{$$=$1;}
+;
+
 
 declaration
-: T assigns{  // declare and init
+: T eq_assigns{  // declare and init
     TreeNode* node = new TreeNode(lineno, NODE_STMT);
     node->stype = STMT_DEFINE;
     node->addChild($1);
@@ -288,14 +320,27 @@ declaration
 ;
 
 assigns
-: assigns COMMA assign{
+: assigns COMMA eq_assign{
     $$=$1;
     $$->addSibling($3);
 }
-| assign{$$=$1;}
+| assigns COMMA opassign{
+    $$=$1;
+    $$->addSibling($3);
+}
+| eq_assign{$$=$1;}
+|opassign{$$=$1;}
 ;
 
-assign
+eq_assigns
+: eq_assigns COMMA eq_assign{
+    $$=$1;
+    $$->addSibling($3);
+}
+| eq_assign{$$=$1;}
+;
+
+eq_assign
 : IDENTIFIER LOP_ASSIGN expr{
     $$ = new TreeNode($1->lineno,NODE_STMT);
     $$->stype=STMT_ASSIGN;
@@ -303,6 +348,7 @@ assign
     $$->addChild($3);
 }
 ;
+
 
 opassign
 : IDENTIFIER ADD_ASSIGN expr{

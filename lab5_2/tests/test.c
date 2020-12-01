@@ -1,3 +1,1 @@
-int a;
-int b;
-int c;
+for(;u!=0;s+=1);
