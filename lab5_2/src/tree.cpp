@@ -2,7 +2,6 @@
 
 int TreeNode::current_node_id=0;
 void TreeNode::addChild(TreeNode* child) {
-     cout<<"i  "<<child->nodeType<<endl;
     if(this->child==nullptr)
         this->child=child;
     else

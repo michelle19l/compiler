@@ -35,7 +35,7 @@
 %%
 
 program
-: statements {root = new TreeNode(0, NODE_PROG); cout<<"root";root->addChild($1);};
+: statements {root = new TreeNode(0, NODE_PROG); root->addChild($1);};
 
 statements
 :  statement {$$=$1;}
@@ -72,7 +72,6 @@ function_decl
     $$->addChild($2);
 }
 |T IDENTIFIER LPAREN params RPAREN{
-    //函数声明
     $$=new TreeNode ($1->lineno,NODE_STMT);
     $$->stype=STMT_FUNC_DECL;
     $$->addChild($1);
@@ -81,10 +80,27 @@ function_decl
 }
 ;
 function_def
-: T IDENTIFIER LPAREN params RPAREN LBRACE statements RBRACE{}
+: T IDENTIFIER LPAREN params RPAREN LBRACE statements RBRACE{
+    $$=new TreeNode ($1->lineno,NODE_STMT);
+    $$->stype=STMT_FUNC_DEF;
+    $$->addChild($1);
+    $$->addChild($2);
+    $$->addChild($4);
+    $$->addChild($7);
+}
 ;
 function_use
-: IDENTIFIER LPAREN idlist RPAREN{}
+: IDENTIFIER LPAREN idlist RPAREN{
+    $$=new TreeNode ($1->lineno,NODE_STMT);
+    $$->stype=STMT_FUNC_USE;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+|IDENTIFIER LPAREN  RPAREN{
+    $$=new TreeNode ($1->lineno,NODE_STMT);
+    $$->stype=STMT_FUNC_USE;
+    $$->addChild($1);
+}
 ;
 
 params
