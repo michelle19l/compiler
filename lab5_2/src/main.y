@@ -7,7 +7,7 @@
     int yyerror( char const * );
 %}
 
-%token IF ELSE
+%token IF ELSE WHILE FOR RETURN
 %token T_CHAR T_INT T_STRING T_BOOL 
 
 %token LOP_ASSIGN 
@@ -17,13 +17,17 @@
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
 
 %token IDENTIFIER INTEGER CHAR BOOL STRING
-%token ADD SUB
-%token MUL DIV MOD
-%token OR
-%token AND 
-%token NOT
-%token NEG
-%left LOP_EQ
+%left LOP_EQ GREAT LESS GREAT_EQ LESS_EQ NOT_EQ
+
+
+
+%left ADD SUB
+%left MUL DIV MOD
+%left OR
+%left AND 
+%right NOT
+%right NEG
+
 
 %%
 
@@ -37,16 +41,35 @@ statements
     $$=$2;
     //作用域
 }
+| LBRACE  RBRACE{
+    $$=new TreeNode (lineno,NODE_STMT);
+    $$->stype=STMT_SKIP;
+}
 ;
 
 statement
 : SEMICOLON  {$$ = new TreeNode(lineno, NODE_STMT); $$->stype = STMT_SKIP;}
 | declaration SEMICOLON {$$ = $1;}
+| assign SEMICOLON {$$=$1;}
 | if_else {$$=$1;}
+| while {$$=$1;}
+;
+
+
+
+
+while
+: WHILE bool_statements statements {
+    TreeNode *node=new TreeNode(lineno,NODE_STMT);
+    node->stype=STMT_WHILE;
+    node->addChild($2);
+    node->addChild($3);
+    $$=node;
+}
 ;
 
 if_else
-: IF bool_statements statement ELSE statement {//if(..) {} else{}
+: IF bool_statements statements ELSE statements {//if(..) {} else{}
     TreeNode *node=new TreeNode(lineno,NODE_STMT);
     node->stype=STMT_IF;
     node->addChild($2);//bool表达式
@@ -73,18 +96,69 @@ bool_statements
     $$->addChild($3);
 }
 | bool_statements OR bool_statement{
-
+    $$=new TreeNode ($1->lineno,NODE_EXPR);
+    $$->optype=OP_OR;
+    $$->addChild($1);
+    $$->addChild($3);
 }
 | NOT bool_statements{
-
+    $$ =new TreeNode($2->lineno,NODE_EXPR);
+    $$->optype=OP_NOT;
+    $$->addChild($2);
 }
 | bool_statement{$$=$1;}
 ;
 
 bool_statement
 : expr{$$=$1;}
+| bool_statement GREAT expr{
+    $$=new TreeNode($1->lineno,NODE_EXPR);
+    $$->optype=OP_GREAT;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+| bool_statement LESS expr{
+    $$=new TreeNode($1->lineno,NODE_EXPR);
+    $$->optype=OP_LESS;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+| bool_statement GREAT_EQ expr{
+    $$=new TreeNode($1->lineno,NODE_EXPR);
+    $$->optype=OP_GREAT_EQ;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+| bool_statement LESS_EQ expr{
+    $$=new TreeNode($1->lineno,NODE_EXPR);
+    $$->optype=OP_LESS_EQ;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+| bool_statement LOP_EQ expr{
+    $$=new TreeNode($1->lineno,NODE_EXPR);
+    $$->optype=OP_EQUAL;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+| bool_statement NOT_EQ expr{
+    $$=new TreeNode($1->lineno,NODE_EXPR);
+    $$->optype=OP_NOT_EQ;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+
+
 ;
 
+assign
+: IDENTIFIER LOP_ASSIGN expr{
+    $$ = new TreeNode($1->lineno,NODE_STMT);
+    $$->stype=STMT_ASSIGN;
+    $$->addChild($1);
+    $$->addChild($3);
+}
+;
 
 declaration
 : T IDENTIFIER LOP_ASSIGN expr{  // declare and init
@@ -106,11 +180,10 @@ declaration
 
 expr
 : expr ADD expr{
-    TreeNode* node = new TreeNode($1->lineno, NODE_EXPR);
-    node->optype=OP_ADD;
-    node->addChild($1);
-    node->addChild($3);
-    node=$$;
+    $$=new TreeNode($1->lineno,NODE_EXPR);
+    $$->optype=OP_ADD;
+    $$->addChild($1);
+    $$->addChild($3);
 }
 | expr SUB expr{
     $$=new TreeNode($1->lineno,NODE_EXPR);

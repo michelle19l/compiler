@@ -30,6 +30,18 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 
 "if" return IF;
 "else" return ELSE;
+"while" return WHILE;
+"for" return FOR;
+"return" return RETURN;
+
+
+">" return GREAT;
+"<" return LESS;
+">=" return GREAT_EQ;
+"<=" return LESS_EQ;
+"==" return LOP_EQ;
+"!=" return  NOT_EQ;
+
 
 
 

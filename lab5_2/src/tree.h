@@ -25,6 +25,12 @@ enum OperatorType
 {
     //OP_ASIGN=1,  // =
     OP_EQUAL,//==
+    OP_GREAT,
+    OP_LESS,
+    OP_GREAT_EQ,
+    OP_LESS_EQ,
+    OP_NOT_EQ,
+
     OP_ADD,//+
     OP_SUB,
     OP_MUL,
@@ -39,8 +45,12 @@ enum OperatorType
 enum StmtType {
     STMT_SKIP=1,//空语句
     STMT_DEFINE,//定义语句
+    STMT_ASSIGN,
     STMT_DECL,//声明
     STMT_IF,//if语句
+    STMT_WHILE,
+    STMT_FOR,
+    STMT_RET,
 };
 
 struct TreeNode {
