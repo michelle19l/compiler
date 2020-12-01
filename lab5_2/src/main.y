@@ -172,6 +172,31 @@ bool_statement
 
 ;
 
+
+declaration
+: T assigns{  // declare and init
+    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
+    node->stype = STMT_DEFINE;
+    node->addChild($1);
+    node->addChild($2);
+    $$ = node;   
+} 
+| T idlist {
+    $$= new TreeNode(lineno, NODE_STMT);
+    $$->stype = STMT_DECL;
+    $$->addChild($1);
+    $$->addChild($2);
+}
+;
+
+assigns
+: assigns COMMA assign{
+    $$=$1;
+    $$->addSibling($3);
+}
+| assign{$$=$1;}
+;
+
 assign
 : IDENTIFIER LOP_ASSIGN expr{
     $$ = new TreeNode($1->lineno,NODE_STMT);
@@ -181,21 +206,13 @@ assign
 }
 ;
 
-declaration
-: T IDENTIFIER LOP_ASSIGN expr{  // declare and init
-    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
-    node->stype = STMT_DEFINE;
-    node->addChild($1);
-    node->addChild($2);
-    node->addChild($4);
-    $$ = node;   
-} 
-| T IDENTIFIER {
-    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
-    node->stype = STMT_DECL;
-    node->addChild($1);
-    node->addChild($2);
-    $$ = node;   
+idlist
+: idlist COMMA IDENTIFIER{
+    $$=$1;
+    $$->addSibling($3);
+}
+|  IDENTIFIER{
+    $$=$1;
 }
 ;
 

@@ -85,12 +85,14 @@ void TreeNode::printSpecialInfo() {
 string TreeNode::sType2String() {
     switch(this->stype)
     {
-        case STMT_DECL://变量的声明或者定义
-            return "stmt: declaration";
-        case STMT_DEFINE:
-            return "stmt: define";
         case STMT_SKIP:
             return "stmt: empty";
+        case STMT_DEFINE:
+            return "stmt: define";
+        case STMT_ASSIGN:
+            return "stmt: assign";
+        case STMT_DECL://变量的声明或者定义
+            return "stmt: declaration";
         case STMT_IF:
             return "stmt: if_else";
         case STMT_WHILE:
