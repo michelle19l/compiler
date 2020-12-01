@@ -41,6 +41,9 @@ enum OperatorType
     OP_AND,
     OP_OR,
     OP_NOT,
+
+    OP_ADDR,//&
+    OP_VAL,//*
 };
 
 enum StmtType {

@@ -77,7 +77,7 @@ printf
 ;
 
 scanf
-:SCANF LPAREN STRING COMMA idlist RPAREN{
+:SCANF LPAREN STRING COMMA address_idlist RPAREN{
     //直接打印字符串
     $$=new TreeNode(lineno,NODE_STMT);
     $$->stype=STMT_SCF;
@@ -86,6 +86,23 @@ scanf
 }
 ;
 
+address_idlist
+: address_idlist COMMA get_address_id{
+    $$=$1;
+    $$->addSibling($3);
+}
+| get_address_id{
+    $$=$1;
+}
+;
+
+get_address_id
+: GET_ADDRESS IDENTIFIER{
+    $$=new TreeNode(lineno,NODE_EXPR);
+    $$->optype=OP_ADDR;
+    $$->addChild($2);
+}
+;
 
 while
 : WHILE bool_statements statements {
