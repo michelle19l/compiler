@@ -26,6 +26,9 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "char" return T_CHAR;
 "string" return T_STRING;
 
+"int*" return T_INT_POINTER;
+"char*" return T_CHAR_POINTER;
+
 "="  return LOP_ASSIGN;
 
 "if" return IF;
@@ -45,7 +48,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "==" return LOP_EQ;
 "!=" return  NOT_EQ;
 
-
+"&" return GET_ADDRESS;
 
 
 

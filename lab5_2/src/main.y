@@ -8,7 +8,7 @@
 %}
 
 %token IF ELSE WHILE FOR RETURN
-%token T_CHAR T_INT T_STRING T_BOOL 
+%token T_CHAR T_INT T_STRING T_BOOL T_INT_POINTER T_CHAR_POINTER
 %token PRINTF SCANF
 
 %token LOP_ASSIGN 
@@ -30,6 +30,7 @@
 %right NOT
 %right NEG POS
 
+%right GET_ADDRESS GET_VALUE
 
 %%
 
@@ -294,6 +295,8 @@ T: T_INT {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_INT;}
 | T_CHAR {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_CHAR;}
 | T_BOOL {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_BOOL;}
 | T_STRING {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_STRING;}
+| T_INT_POINTER {$$=new TreeNode(lineno,NODE_TYPE);$$->type=TYPE_INT_POINTER;}
+| T_CHAR_POINTER{$$=new TreeNode(lineno,NODE_TYPE);$$->type=TYPE_CHAR_POINTER;}
 ;
 
 %%
