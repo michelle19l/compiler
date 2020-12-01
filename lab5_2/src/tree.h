@@ -52,6 +52,8 @@ enum StmtType {
     STMT_WHILE,
     STMT_FOR,
     STMT_RET,
+    STMT_PRT,//printf
+    STMT_SCF,//scanf
 };
 
 struct TreeNode {

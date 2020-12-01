@@ -34,6 +34,9 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "for" return FOR;
 "return" return RETURN;
 
+"printf" return PRINTF;
+"scanf" return SCANF;
+
 
 ">" return GREAT;
 "<" return LESS;
@@ -41,6 +44,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "<=" return LESS_EQ;
 "==" return LOP_EQ;
 "!=" return  NOT_EQ;
+
 
 
 
@@ -63,7 +67,8 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "{" return LBRACE;
 "}" return RBRACE;
 
-
+"." return POINT;
+"," return COMMA;
 ";" return  SEMICOLON;
 
 {INTEGER} {

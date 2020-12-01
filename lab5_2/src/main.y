@@ -9,12 +9,14 @@
 
 %token IF ELSE WHILE FOR RETURN
 %token T_CHAR T_INT T_STRING T_BOOL 
+%token PRINTF SCANF
 
 %token LOP_ASSIGN 
 
-%token SEMICOLON
+%token SEMICOLON COMMA POINT
 
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
+
 
 %token IDENTIFIER INTEGER CHAR BOOL STRING
 %left LOP_EQ GREAT LESS GREAT_EQ LESS_EQ NOT_EQ
@@ -53,9 +55,28 @@ statement
 | assign SEMICOLON {$$=$1;}
 | if_else {$$=$1;}
 | while {$$=$1;}
+| printf SEMICOLON{$$=$1;}
+| scanf SEMICOLON{$$=$1;}
 ;
 
+printf
+: PRINTF LPAREN STRING RPAREN{
+    //直接打印字符串
+    //cout<<"打印字符串"<<endl;
+    $$=new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_PRT;
+    $$->addChild($3);
+}
+;
 
+scanf
+:SCANF LPAREN STRING RPAREN{
+    //直接打印字符串
+    $$=new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_PRT;
+    $$->addChild($3);
+}
+;
 
 
 while
@@ -179,7 +200,10 @@ declaration
 ;
 
 expr
-: expr ADD expr{
+: LPAREN expr RPAREN{
+    $$= $2;
+}
+| expr ADD expr{
     $$=new TreeNode($1->lineno,NODE_EXPR);
     $$->optype=OP_ADD;
     $$->addChild($1);
@@ -220,8 +244,6 @@ expr
     $$->addChild($1);
     $$->addChild($3);
 }
-
-
 |IDENTIFIER {
     $$ = $1;
 }
