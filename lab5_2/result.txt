@@ -1,15 +1,22 @@
-0	@0	program	children: @1	
-2	@1	statement	children: @2 @7 @10 @12 @13	stmt: for
-1	@2	statement	children: @3 @4	stmt: define
-1	@3	type	children:	type: int
-1	@4	statement	children: @5 @6	stmt: assign
-1	@5	variable	children:	var_name: i
-1	@6	const	children:	const: int 0
-1	@7	expression	children: @8 @9	op: <
-1	@8	variable	children:	var_name: i
-1	@9	const	children:	const: int 4
-1	@10	statement	children: @11	stmt: ++ R
-1	@11	variable	children:	var_name: i
-1	@12	statement	children:	stmt: empty
-2	@13	statement	children: @14	stmt: -- R
-2	@14	variable	children:	var_name: k
+0	@0	program	children: @1 @3 @16 @19	
+4	@1	statement	children: @2	stmt: if_else
+4	@2	statement	children:	stmt: empty
+5	@3	statement	children: @4 @9 @12 @15	stmt: for
+5	@4	statement	children: @5 @6	stmt: define
+5	@5	type	children:	type: int
+5	@6	statement	children: @7 @8	stmt: assign
+5	@7	variable	children:	var_name: j
+5	@8	const	children:	const: int 0
+5	@9	expression	children: @10 @11	op: <
+5	@10	variable	children:	var_name: j
+5	@11	const	children:	const: int 3
+5	@12	statement	children: @17 @18	stmt: ++ R
+5	@17	variable	children:	var_name: j
+8	@18	statement	children:	stmt: empty
+5	@15	statement	children:	stmt: empty
+8	@16	statement	children: @17 @18	stmt: while
+5	@17	variable	children:	var_name: j
+8	@18	statement	children:	stmt: empty
+9	@19	statement	children: @20 @21	stmt: declaration
+9	@20	type	children:	type: int
+9	@21	variable	children:	var_name: j
