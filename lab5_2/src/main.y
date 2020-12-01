@@ -60,21 +60,28 @@ statement
 ;
 
 printf
-: PRINTF LPAREN STRING RPAREN{
+: PRINTF LPAREN STRING RPAREN{//print("123");
     //直接打印字符串
     //cout<<"打印字符串"<<endl;
     $$=new TreeNode(lineno,NODE_STMT);
     $$->stype=STMT_PRT;
     $$->addChild($3);
 }
-;
-
-scanf
-:SCANF LPAREN STRING RPAREN{
-    //直接打印字符串
+| PRINTF LPAREN STRING COMMA exprs RPAREN{
     $$=new TreeNode(lineno,NODE_STMT);
     $$->stype=STMT_PRT;
     $$->addChild($3);
+    $$->addChild($5);
+}
+;
+
+scanf
+:SCANF LPAREN STRING COMMA idlist RPAREN{
+    //直接打印字符串
+    $$=new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_SCF;
+    $$->addChild($3);
+    $$->addChild($5);
 }
 ;
 
@@ -214,6 +221,14 @@ idlist
 |  IDENTIFIER{
     $$=$1;
 }
+;
+
+exprs
+: exprs COMMA expr{
+    $$=$1;
+    $$->addSibling($3);
+}
+| expr{$$=$1;}
 ;
 
 expr

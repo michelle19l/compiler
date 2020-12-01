@@ -101,6 +101,10 @@ string TreeNode::sType2String() {
             return "stmt: for";
         case STMT_RET:
             return "stmt: return";
+        case STMT_PRT:
+             return "stmt: printf";
+        case STMT_SCF:
+            return "stmt: scanf";
         default:
             return "unknown stmt";
     }

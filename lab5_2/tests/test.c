@@ -1,1 +1,2 @@
-int a=1,b=2;
+printf("123",a);
+scanf("123",b);

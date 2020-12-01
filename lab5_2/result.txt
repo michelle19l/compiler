@@ -1,9 +1,7 @@
-0	@0	program	children: @1	
-1	@1	statement	children: @2 @3 @6	stmt: define
-1	@2	type	children:	type: int
-1	@3	statement	children: @4 @5	stmt: assign
-1	@4	variable	children:	var_name: a
-1	@5	const	children:	const: int 1
-1	@6	statement	children: @7 @8	stmt: assign
-1	@7	variable	children:	var_name: b
-1	@8	const	children:	const: int 2
+0	@0	program	children: @1 @4	
+1	@1	statement	children: @2 @3	stmt: printf
+1	@2	const	children:	const: string "123"
+1	@3	variable	children:	var_name: a
+2	@4	statement	children: @5 @6	stmt: scanf
+2	@5	const	children:	const: string "123"
+2	@6	variable	children:	var_name: b
