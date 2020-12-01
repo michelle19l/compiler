@@ -93,6 +93,12 @@ string TreeNode::sType2String() {
             return "stmt: empty";
         case STMT_IF:
             return "stmt: if_else";
+        case STMT_WHILE:
+            return "stmt: while";
+        case STMT_FOR:
+            return "stmt: for";
+        case STMT_RET:
+            return "stmt: return";
         default:
             return "unknown stmt";
     }
@@ -139,7 +145,7 @@ string TreeNode::cType2String()
     string a="const: ";
     switch(this->contype){
         case CON_INT:
-            return a+"int";
+            return a+"int "+this->int_val_;
         case CON_CHAR:
             {
                 return a+"char '"+this->ch_val+"'";
@@ -159,6 +165,16 @@ string TreeNode:: opType2String()
     {
         case OP_EQUAL:
             return a+"==";
+        case OP_GREAT:
+            return a+">";
+        case OP_LESS:
+            return a+"<";
+        case OP_GREAT_EQ:
+            return a+">=";
+        case OP_LESS_EQ:
+            return a+"<=";
+        case OP_NOT_EQ:
+            return a+"!=";
         case OP_ADD:
             return a+"+";
         case OP_SUB:
@@ -170,7 +186,9 @@ string TreeNode:: opType2String()
         case OP_MOD:
             return a+"%";
         case OP_NEG:
-            return a+"%";
+            return a+"- (负号)";
+        case OP_POS:
+            return a+"+ (正号)";
         case OP_AND:
             return a+"&&";
         case OP_OR:
@@ -186,3 +204,4 @@ string TreeNode::varName2String()
     string a="var_name: ";
     return a+this->var_name;
 }
+

@@ -26,7 +26,7 @@
 %left OR
 %left AND 
 %right NOT
-%right NEG
+%right NEG POS
 
 
 %%
@@ -89,13 +89,13 @@ if_else
 
 bool_statements
 :  LPAREN bool_statements RPAREN{ $$=$2;}
-| bool_statements AND bool_statement{
+| bool_statements AND bool_statements{
     $$=new TreeNode(lineno,NODE_EXPR);
     $$->optype=OP_AND;
     $$->addChild($1);
     $$->addChild($3);
 }
-| bool_statements OR bool_statement{
+| bool_statements OR bool_statements{
     $$=new TreeNode ($1->lineno,NODE_EXPR);
     $$->optype=OP_OR;
     $$->addChild($1);
@@ -111,37 +111,37 @@ bool_statements
 
 bool_statement
 : expr{$$=$1;}
-| bool_statement GREAT expr{
+| bool_statement GREAT bool_statement{
     $$=new TreeNode($1->lineno,NODE_EXPR);
     $$->optype=OP_GREAT;
     $$->addChild($1);
     $$->addChild($3);
 }
-| bool_statement LESS expr{
+| bool_statement LESS bool_statement{
     $$=new TreeNode($1->lineno,NODE_EXPR);
     $$->optype=OP_LESS;
     $$->addChild($1);
     $$->addChild($3);
 }
-| bool_statement GREAT_EQ expr{
+| bool_statement GREAT_EQ bool_statement{
     $$=new TreeNode($1->lineno,NODE_EXPR);
     $$->optype=OP_GREAT_EQ;
     $$->addChild($1);
     $$->addChild($3);
 }
-| bool_statement LESS_EQ expr{
+| bool_statement LESS_EQ bool_statement{
     $$=new TreeNode($1->lineno,NODE_EXPR);
     $$->optype=OP_LESS_EQ;
     $$->addChild($1);
     $$->addChild($3);
 }
-| bool_statement LOP_EQ expr{
+| bool_statement LOP_EQ bool_statement{
     $$=new TreeNode($1->lineno,NODE_EXPR);
     $$->optype=OP_EQUAL;
     $$->addChild($1);
     $$->addChild($3);
 }
-| bool_statement NOT_EQ expr{
+| bool_statement NOT_EQ bool_statement{
     $$=new TreeNode($1->lineno,NODE_EXPR);
     $$->optype=OP_NOT_EQ;
     $$->addChild($1);
@@ -191,9 +191,15 @@ expr
     $$->addChild($1);
     $$->addChild($3);
 }
-| NEG expr{
+| SUB expr %prec NEG{
+    cout<<"负数"<<endl;
     $$=new TreeNode($1->lineno,NODE_EXPR);
     $$->optype=OP_NEG;
+    $$->addChild($2);
+}
+| ADD expr %prec POS{
+    $$=new TreeNode($1->lineno,NODE_EXPR);
+    $$->optype=OP_POS;
     $$->addChild($2);
 }
 | expr MUL expr{
@@ -214,6 +220,8 @@ expr
     $$->addChild($1);
     $$->addChild($3);
 }
+
+
 |IDENTIFIER {
     $$ = $1;
 }

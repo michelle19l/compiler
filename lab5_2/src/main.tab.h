@@ -81,7 +81,8 @@ extern int yydebug;
     OR = 291,
     AND = 292,
     NOT = 293,
-    NEG = 294
+    NEG = 294,
+    POS = 295
   };
 #endif
 

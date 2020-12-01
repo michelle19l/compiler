@@ -37,6 +37,7 @@ enum OperatorType
     OP_DIV,
     OP_MOD,
     OP_NEG,//负号
+    OP_POS,//正号
     OP_AND,
     OP_OR,
     OP_NOT,
@@ -80,6 +81,7 @@ public:
     Type* type;  // 变量、类型、表达式结点，有类型。
     StmtType stype;
     int int_val;//整型
+    string int_val_;//整型的字符串
     char ch_val;//字符
     bool b_val;//布尔
     string str_val;

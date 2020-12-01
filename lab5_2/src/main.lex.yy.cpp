@@ -958,13 +958,15 @@ YY_RULE_SETUP
     TreeNode* node = new TreeNode(lineno, NODE_CONST);
     node->type = TYPE_INT;
     node->int_val = atoi(yytext);
+    node->int_val_=yytext;
+    node->contype=CON_INT;
     yylval = node;
     return INTEGER;
 }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 77 "src/main.lex"
+#line 79 "src/main.lex"
 {
     TreeNode* node = new TreeNode(lineno, NODE_CONST);
     node->type = TYPE_CHAR;
@@ -978,7 +980,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 88 "src/main.lex"
+#line 90 "src/main.lex"
 {
     TreeNode* node = new TreeNode(lineno, NODE_CONST);
     node->type = TYPE_STRING;
@@ -993,7 +995,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 100 "src/main.lex"
+#line 102 "src/main.lex"
 {
     TreeNode* node = new TreeNode(lineno, NODE_VAR);
     node->var_name = string(yytext);
@@ -1003,28 +1005,28 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 111 "src/main.lex"
+#line 113 "src/main.lex"
 /* do nothing */
 	YY_BREAK
 case 39:
 /* rule 39 can match eol */
 YY_RULE_SETUP
-#line 113 "src/main.lex"
+#line 115 "src/main.lex"
 lineno++;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 115 "src/main.lex"
+#line 117 "src/main.lex"
 {
     cerr << "[line "<< lineno <<" ] unknown character:" << yytext << endl;
 }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 118 "src/main.lex"
+#line 120 "src/main.lex"
 ECHO;
 	YY_BREAK
-#line 1028 "src/main.lex.yy.cpp"
+#line 1030 "src/main.lex.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1992,5 +1994,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 118 "src/main.lex"
+#line 120 "src/main.lex"
 

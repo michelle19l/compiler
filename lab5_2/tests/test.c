@@ -1,4 +1,4 @@
-while(i<5)
+while(a&&!b||c)
 {
-	
+	int a=+1;
 }

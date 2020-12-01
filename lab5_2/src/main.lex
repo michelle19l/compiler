@@ -70,6 +70,8 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
     TreeNode* node = new TreeNode(lineno, NODE_CONST);
     node->type = TYPE_INT;
     node->int_val = atoi(yytext);
+    node->int_val_=yytext;
+    node->contype=CON_INT;
     yylval = node;
     return INTEGER;
 }
