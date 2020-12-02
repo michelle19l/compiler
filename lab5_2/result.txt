@@ -1,3 +1,4 @@
+s
 0	@0	program	children: @1	
 2	@1	statement	children: @2 @3 @4	stmt: func define
 2	@2	type	children:	type: void
@@ -18,7 +19,7 @@
 6	@17	variable	children:	var_name: ch 0_1_1
 7	@18	statement	children: @19 @20	stmt: scanf
 7	@19	const	children:	const: string "%d"
-7	@20	expression	children: @21	unknown op
+7	@20	expression	children: @21	op: &
 7	@21	variable	children:	var_name: ch 
 21	@22	statement	children: @23 @41	stmt: while
 8	@23	expression	children: @24 @31	op: ||
@@ -72,7 +73,7 @@
 17	@71	statement	children: @72 @73	stmt: define
 17	@72	type	children:	type: int
 17	@73	statement	children: @74 @75	stmt: assign
-17	@74	variable	children:	var_name: i 
+17	@74	variable	children:	var_name: i 0_1_1_1_1_1
 17	@75	const	children:	const: int 0
 17	@76	expression	children: @77 @78	op: <
 17	@77	variable	children:	var_name: i 

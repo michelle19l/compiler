@@ -255,6 +255,10 @@ string TreeNode:: opType2String()
             return a+"||";
         case OP_NOT:
             return a+"!";
+        case OP_ADDR:
+            return a+"&";
+        case OP_VAL:
+            return a+"*";
         default:
             return "unknown op";
     }

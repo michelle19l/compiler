@@ -37,12 +37,23 @@ void getField(TreeNode* root,table* scope)
 		{
 			//cout<<"var"<<endl;
 			//if(root->nodeType==NODE_PARAM){cout<<"sdf"<<endl;}
-			if(root->stype==STMT_DEFINE||root->stype==STMT_DECL||root->nodeType==NODE_PARAM)
+			if(root->stype==STMT_DECL||root->nodeType==NODE_PARAM)
 			{
 				t->workfield=scope->attribute;
 				table::insertID(t,scope);
 			}
 			
+		}
+		else if(root->stype==STMT_DEFINE)
+		{
+			
+			while(t!=nullptr&&t->stype==STMT_ASSIGN)
+			{
+				cout<<"s"<<endl;
+				t->child->workfield=scope->attribute;
+				table::insertID(t->child,scope);
+				t=t->sibling;
+			}
 		}
 		else 
 		{
@@ -50,6 +61,7 @@ void getField(TreeNode* root,table* scope)
 		}
 		//else cout<<"else"<<endl;
 		//cout<<t->nodeType<<endl;
+		if(t==nullptr)break;
 		t=t->sibling;
 	}
 }
