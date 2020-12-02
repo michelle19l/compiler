@@ -76,6 +76,8 @@ enum StmtType {
     STMT_IF_ELSE,//if语句
     STMT_IF,
     STMT_ELSE,
+
+    STMT_BLOCK,//语句块
     
 };
 

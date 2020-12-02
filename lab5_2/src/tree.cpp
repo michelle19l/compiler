@@ -141,6 +141,8 @@ string TreeNode::sType2String() {
             return "stmt: if";
         case STMT_ELSE:
             return "stmt: else";
+        case STMT_BLOCK:
+            return "stmt: block";
         default:
             return "unknown stmt";
     }

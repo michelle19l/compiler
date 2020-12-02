@@ -81,8 +81,9 @@ return
 ;
 
 
+
 for
-: FOR LPAREN declarations SEMICOLON bool_statements SEMICOLON assigns RPAREN block{
+: FOR LPAREN declaration SEMICOLON bool_statements SEMICOLON assigns RPAREN block{
     $$=new TreeNode(lineno,NODE_STMT);
     $$->stype=STMT_FOR;
     $$->addChild($3);
@@ -122,13 +123,13 @@ function_decl
 }
 ;
 function_def
-: T IDENTIFIER LPAREN params RPAREN LBRACE statements RBRACE{
+: T IDENTIFIER LPAREN params RPAREN block{
     $$=new TreeNode ($1->lineno,NODE_STMT);
     $$->stype=STMT_FUNC_DEF;
     $$->addChild($1);
     $$->addChild($2);
     $$->addChild($4);
-    $$->addChild($7);
+    $$->addChild($6);
 }
 ;
 function_use
@@ -227,11 +228,16 @@ while
 
 block
 : LBRACE statements RBRACE{
-    $$=$2;
+    $$=new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_BLOCK;
+    $$->addChild($2);
 }
 | LBRACE RBRACE{
-    $$=new TreeNode (lineno,NODE_STMT);
-    $$->stype=STMT_SKIP;
+    $$=new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_BLOCK;
+    TreeNode* temp=new TreeNode (lineno,NODE_STMT);
+    temp->stype=STMT_SKIP;
+    $$->addChild(temp);
 }
 ;
 
@@ -329,12 +335,7 @@ bool_statement
 
 ;
 
-declarations
-: declarations COMMA declaration{
-    $$=$1; $$->addSibling($3);
-}
-| declaration{$$=$1;}
-;
+
 
 
 declaration
@@ -355,17 +356,17 @@ declaration
 ;
 
 assigns
-: assigns COMMA eq_assign{
+: assigns COMMA assign{
     $$=$1;
     $$->addSibling($3);
 }
-| assigns COMMA opassign{
-    $$=$1;
-    $$->addSibling($3);
-}
-| eq_assign{$$=$1;}
-|opassign{$$=$1;}
+| assign{$$=$1;}
 ;
+
+assign
+: opassign{$$=$1;}
+| eq_assign{$$=$1;}
+
 
 eq_assigns
 : eq_assigns COMMA eq_assign{
