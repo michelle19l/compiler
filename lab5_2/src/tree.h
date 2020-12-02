@@ -52,7 +52,6 @@ enum StmtType {
     STMT_DEFINE,//定义语句
     STMT_ASSIGN,
     STMT_DECL,//声明
-    STMT_IF,//if语句
     STMT_WHILE,
     STMT_FOR,
     STMT_RET,
@@ -73,6 +72,10 @@ enum StmtType {
     STMT_SELF_INC_L,
     STMT_SELF_DEC_R,
     STMT_SELF_DEC_L,
+
+    STMT_IF_ELSE,//if语句
+    STMT_IF,
+    STMT_ELSE,
     
 };
 

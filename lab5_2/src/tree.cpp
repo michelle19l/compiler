@@ -100,8 +100,6 @@ string TreeNode::sType2String() {
             return "stmt: assign";
         case STMT_DECL://变量的声明或者定义
             return "stmt: declaration";
-        case STMT_IF:
-            return "stmt: if_else";
         case STMT_WHILE:
             return "stmt: while";
         case STMT_FOR:
@@ -137,6 +135,12 @@ string TreeNode::sType2String() {
             return "stmt: -- R";
         case STMT_SELF_DEC_L:
             return "stmt: -- L";
+        case STMT_IF_ELSE:
+            return "stmt: if_else";
+        case STMT_IF:
+            return "stmt: if";
+        case STMT_ELSE:
+            return "stmt: else";
         default:
             return "unknown stmt";
     }

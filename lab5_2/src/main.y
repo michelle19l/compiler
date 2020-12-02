@@ -48,10 +48,7 @@ statements
     $$=$2;
     //作用域
 }
-| LBRACE  RBRACE{
-    $$=new TreeNode (lineno,NODE_STMT);
-    $$->stype=STMT_SKIP;
-}
+| block {$$=$1;}
 ;
 
 statement
@@ -85,67 +82,23 @@ return
 
 
 for
-: FOR LPAREN declarations SEMICOLON bool_statements SEMICOLON assigns RPAREN LBRACE statements RBRACE{
+: FOR LPAREN declarations SEMICOLON bool_statements SEMICOLON assigns RPAREN block{
     $$=new TreeNode(lineno,NODE_STMT);
     $$->stype=STMT_FOR;
     $$->addChild($3);
     $$->addChild($5);
     $$->addChild($7);
-    $$->addChild($10);
-}
-| FOR LPAREN declarations SEMICOLON bool_statements SEMICOLON assigns RPAREN LBRACE  RBRACE{
-    $$=new TreeNode(lineno,NODE_STMT);
-    $$->stype=STMT_FOR;
-    $$->addChild($3);
-    $$->addChild($5);
-    $$->addChild($7);
-    TreeNode* temp=new TreeNode(lineno,NODE_STMT);
-    temp->stype=STMT_SKIP;
-    $$->addChild(temp);
-}
-|FOR LPAREN declarations SEMICOLON bool_statements SEMICOLON assigns RPAREN SEMICOLON{
-    $$=new TreeNode(lineno,NODE_STMT);
-    $$->stype=STMT_FOR;
-    $$->addChild($3);
-    $$->addChild($5);
-    $$->addChild($7);
-    TreeNode* temp=new TreeNode(lineno,NODE_STMT);
-    temp->stype=STMT_SKIP;
-    $$->addChild(temp);
-}
-| FOR LPAREN SEMICOLON bool_statements SEMICOLON assigns RPAREN LBRACE  RBRACE{
-    $$=new TreeNode(lineno,NODE_STMT);
-    $$->stype=STMT_FOR;
-    TreeNode* temp= new TreeNode(lineno,NODE_STMT);
-    temp->stype=STMT_SKIP;
-    $$->addChild(temp);
-    $$->addChild($4);
-    $$->addChild($6);
-    TreeNode* temp_=new TreeNode(lineno,NODE_STMT);
-    temp_->stype=STMT_SKIP;
-    $$->addChild(temp_);
-}
-|FOR LPAREN SEMICOLON bool_statements SEMICOLON assigns RPAREN SEMICOLON{
-    $$=new TreeNode(lineno,NODE_STMT);
-    $$->stype=STMT_FOR;
-    TreeNode* temp= new TreeNode(lineno,NODE_STMT);
-    temp->stype=STMT_SKIP;
-    $$->addChild(temp);
-    $$->addChild($4);
-    $$->addChild($6);
-    TreeNode* temp_=new TreeNode(lineno,NODE_STMT);
-    temp_->stype=STMT_SKIP;
-    $$->addChild(temp_);
-}
-|FOR LPAREN SEMICOLON bool_statements SEMICOLON assigns RPAREN LBRACE statements RBRACE{
-    $$=new TreeNode(lineno,NODE_STMT);
-    $$->stype=STMT_FOR;
-    TreeNode* temp= new TreeNode(lineno,NODE_STMT);
-    temp->stype=STMT_SKIP;
-    $$->addChild(temp);
-    $$->addChild($4);
-    $$->addChild($6);
     $$->addChild($9);
+}
+|FOR LPAREN SEMICOLON bool_statements SEMICOLON assigns RPAREN block{
+    $$=new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_FOR;
+    TreeNode* temp= new TreeNode(lineno,NODE_STMT);
+    temp->stype=STMT_SKIP;
+    $$->addChild(temp);
+    $$->addChild($4);
+    $$->addChild($6);
+    $$->addChild($8);
 }
 ;
 
@@ -263,55 +216,48 @@ get_address_id
 ;
 
 while
-: WHILE LPAREN bool_statements RPAREN LBRACE statements RBRACE{
+: WHILE LPAREN bool_statements RPAREN block{
     TreeNode *node=new TreeNode(lineno,NODE_STMT);
     node->stype=STMT_WHILE;
-    node->addChild($2);
     node->addChild($3);
-    $$=node;
-}
-|WHILE LPAREN bool_statements RPAREN LBRACE  RBRACE{
-    TreeNode *node=new TreeNode(lineno,NODE_STMT);
-    node->stype=STMT_WHILE;
-    node->addChild($2);
-
-    TreeNode * temp=new TreeNode(lineno,NODE_STMT);
-    temp->stype=STMT_SKIP;
-    node->addChild(temp);
+    node->addChild($5);
     $$=node;
 }
 ;
 
-if_else
-: IF LPAREN bool_statements RPAREN LBRACE statements RBRACE ELSE LBRACE statements RBRACE {//if(..) {} else{}
-    TreeNode *node=new TreeNode(lineno,NODE_STMT);
-    node->stype=STMT_IF;
-    node->addChild($2);//bool表达式
-    node->addChild($3);//if后执行的语句
-    node->addChild($5);//else后执行的语句
-    $$=node;
-    }
-|IF LPAREN bool_statements RPAREN LBRACE statements RBRACE ELSE LBRACE  RBRACE {//if(..) {} else{}
-    TreeNode *node=new TreeNode(lineno,NODE_STMT);
-    node->stype=STMT_IF;
-    node->addChild($2);//bool表达式
-    node->addChild($3);//if后执行的语句
-    node->addChild($5);//else后执行的语句
-    $$=node;
-    }
-| IF LPAREN bool_statements RPAREN LBRACE statements RBRACE {
-    TreeNode *node=new TreeNode(lineno,NODE_STMT);
-    node->stype=STMT_IF;
-    node->addChild($2);//bool表达式
-    TreeNode* temp=new TreeNode(lineno,NODE_STMT);
-    temp->stype=STMT_SKIP;
-    node->addChild(temp);//if后执行的语句
-    $$=node;
+block
+: LBRACE statements RBRACE{
+    $$=$2;
 }
-| IF LPAREN bool_statements RPAREN LBRACE  RBRACE {
+| LBRACE RBRACE{
+    $$=new TreeNode (lineno,NODE_STMT);
+    $$->stype=STMT_SKIP;
+}
+;
+
+
+if_else
+: IF LPAREN bool_statements RPAREN  block  ELSE block {//if(..) {..} else{..}
+    $$=new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_IF_ELSE;
+    $$->addChild($3);//bool表达式
+    
+    TreeNode * temp=new TreeNode($5->lineno,NODE_STMT); //if后执行的语句
+    temp->stype=STMT_IF;
+    temp->addChild($5);
+    
+    TreeNode * t=new TreeNode ($7->lineno,NODE_STMT);//else后执行的语句
+    t->stype=STMT_ELSE;
+    t->addChild($7);//else后执行的语句
+    
+    $$->addChild(t);
+    $$->addChild(temp);
+    }
+| IF LPAREN bool_statements RPAREN block {
+    //if (..) {..}
     TreeNode *node=new TreeNode(lineno,NODE_STMT);
     node->stype=STMT_IF;
-    node->addChild($2);//bool表达式
+    node->addChild($3);//bool表达式
     TreeNode* temp=new TreeNode(lineno,NODE_STMT);
     temp->stype=STMT_SKIP;
     node->addChild(temp);//if后执行的语句
