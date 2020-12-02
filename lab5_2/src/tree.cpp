@@ -74,7 +74,13 @@ void TreeNode::printSpecialInfo() {
         case NODE_CONST:
             {cout<<cType2String();break;}
         case NODE_VAR:
-            {cout<<varName2String();break;}
+            {
+
+                cout<<varName2String();
+                //cout<<"xxx"<<endl;
+                cout<<" "<<getfield();
+                break;
+            }
         case NODE_EXPR:
             {cout<<opType2String();break;}
         case NODE_STMT:
@@ -87,6 +93,14 @@ void TreeNode::printSpecialInfo() {
         default:
             break;
     }
+}
+
+
+string TreeNode::getfield(){
+    //return "field";
+    //cout<<"+++"<<this->workfield<<endl;
+    string a="field: ";
+    return this->workfield;
 }
 
 string TreeNode::sType2String() {

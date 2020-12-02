@@ -8,7 +8,7 @@ enum ValueType
     VALUE_BOOL=1,
     VALUE_INT,
     VALUE_CHAR,
-    
+    VALUE_VOID,
     VALUE_STRING,
 
     VALUE_INT_POINTER,
@@ -41,6 +41,7 @@ public:
 static Type* TYPE_INT = new Type(VALUE_INT);
 static Type* TYPE_CHAR = new Type(VALUE_CHAR);
 static Type* TYPE_BOOL = new Type(VALUE_BOOL);
+static Type* TYPE_VOID = new Type(VALUE_VOID);
 static Type* TYPE_STRING = new Type(VALUE_STRING);
 static Type* TYPE_INT_POINTER = new Type(VALUE_INT_POINTER);
 static Type* TYPE_CHAR_POINTER = new Type(VALUE_CHAR_POINTER);

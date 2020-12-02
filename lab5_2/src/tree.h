@@ -113,6 +113,8 @@ public:
     bool b_val;//布尔
     string str_val;
     string var_name;
+    int lex;//符号表结点指针
+    string workfield;//变量作用域
 
     static int current_node_id;
 public:
@@ -123,10 +125,11 @@ public:
     string cType2String();//常量
     string opType2String();//表达式
     string varName2String();//变量名
+    string getfield();//作用域
 
 public:
     TreeNode(int lineno, NodeType type);
-    TreeNode(){}
+    //TreeNode(){}
 };
 
 #endif

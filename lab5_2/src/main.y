@@ -8,7 +8,7 @@
 %}
 
 %token IF ELSE WHILE FOR RETURN
-%token T_CHAR T_INT T_STRING T_BOOL T_INT_POINTER T_CHAR_POINTER
+%token T_CHAR T_INT T_STRING T_BOOL T_INT_POINTER T_CHAR_POINTER T_VOID
 %token PRINTF SCANF
 
 %token LOP_ASSIGN ADD_ASSIGN SUB_ASSIGN MOD_ASSIGN DIV_ASSIGN MUL_ASSIGN
@@ -116,7 +116,7 @@ function_decl
     $$->stype=STMT_FUNC_DECL;
     $$->addChild($1);
     $$->addChild($2);
-    cout<<"params";$$->addChild($4);
+    $$->addChild($4);
 }
 ;
 function_def
@@ -128,6 +128,14 @@ function_def
     $$->addChild($4);
     $$->addChild($6);
 }
+|  T IDENTIFIER LPAREN  RPAREN block{
+    $$=new TreeNode ($1->lineno,NODE_STMT);
+    $$->stype=STMT_FUNC_DEF;
+    $$->addChild($1);
+    $$->addChild($2);
+    $$->addChild($5);
+}
+
 ;
 function_use
 : IDENTIFIER LPAREN idlist RPAREN{
@@ -167,7 +175,6 @@ param
 printf
 : PRINTF LPAREN STRING RPAREN{//print("123");
     //直接打印字符串
-    //cout<<"打印字符串"<<endl;
     $$=new TreeNode(lineno,NODE_STMT);
     $$->stype=STMT_PRT;
     $$->addChild($3);
@@ -261,9 +268,7 @@ if_else
     TreeNode *node=new TreeNode(lineno,NODE_STMT);
     node->stype=STMT_IF;
     node->addChild($3);//bool表达式
-    TreeNode* temp=new TreeNode(lineno,NODE_STMT);
-    temp->stype=STMT_SKIP;
-    node->addChild(temp);//if后执行的语句
+    node->addChild($5);
     $$=node;
 }
 ;
@@ -475,7 +480,7 @@ expr
     $$->addChild($3);
 }
 | SUB expr %prec NEG{
-    cout<<"负数"<<endl;
+    
     $$=new TreeNode($1->lineno,NODE_EXPR);
     $$->optype=OP_NEG;
     $$->addChild($2);
@@ -520,6 +525,7 @@ expr
 T: T_INT {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_INT;} 
 | T_CHAR {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_CHAR;}
 | T_BOOL {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_BOOL;}
+| T_VOID {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_VOID;}
 | T_STRING {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_STRING;}
 | T_INT_POINTER {$$=new TreeNode(lineno,NODE_TYPE);$$->type=TYPE_INT_POINTER;}
 | T_CHAR_POINTER{$$=new TreeNode(lineno,NODE_TYPE);$$->type=TYPE_CHAR_POINTER;}

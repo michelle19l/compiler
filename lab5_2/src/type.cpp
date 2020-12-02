@@ -12,6 +12,8 @@ string Type::getTypeInfo() {
             return "int";
         case VALUE_CHAR:
             return "char";
+        case VALUE_VOID:
+            return "void";
         case VALUE_STRING:
             return "string";
         case VALUE_INT_POINTER:
