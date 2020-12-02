@@ -1,6 +1,7 @@
 #include "common.h"
 #include <fstream>
 
+
 extern TreeNode *root;
 extern FILE *yyin;
 extern int yyparse();
@@ -21,10 +22,14 @@ int main(int argc, char *argv[])
         }
     }
     yyparse();
+
+
+    table* scope=new table;
     if(root != NULL) {
-
-
         root->genNodeId();
+
+        getField(root,scope);
+
         root->printAST();
     }
     return 0;

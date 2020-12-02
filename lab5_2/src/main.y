@@ -44,11 +44,7 @@ program
 statements
 :  statement {$$=$1;}
 |  statements statement {$$=$1; $$->addSibling($2);}
-| LBRACE statements RBRACE {
-    $$=$2;
-    //作用域
-}
-| block {$$=$1;}
+
 ;
 
 statement
@@ -65,6 +61,7 @@ statement
 | for {$$=$1;}
 | opassign SEMICOLON {$$=$1;}
 | return SEMICOLON{$$=$1;}
+| block {$$=$1;}
 ;
 
 return

@@ -126,6 +126,7 @@ public:
 
 public:
     TreeNode(int lineno, NodeType type);
+    TreeNode(){}
 };
 
 #endif
