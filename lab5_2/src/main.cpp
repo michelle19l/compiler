@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
         root->genNodeId();
 
         getField(root,scope);
+        //cout<<table::lexms<<endl;
 
         root->printAST();
     }

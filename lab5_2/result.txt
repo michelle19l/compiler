@@ -1,90 +1,85 @@
-scope 0_1
-scope->father 0
 0	@0	program	children: @1	
-2	@1	statement	children: @2 @3 @4 @7	stmt: func define
+2	@1	statement	children: @2 @3 @4	stmt: func define
 2	@2	type	children:	type: void
 2	@3	variable	children:	var_name: main 0
-2	@4	parameter	children: @5 @6	
-2	@5	type	children:	type: int
-2	@6	variable	children:	var_name: i 
-22	@7	statement	children: @8 @12 @15 @18 @21 @25	stmt: block
-3	@8	statement	children: @9 @10 @11	stmt: declaration
-3	@9	type	children:	type: int
-3	@10	variable	children:	var_name: a 0_1_1
-3	@11	variable	children:	var_name: s 
-4	@12	statement	children: @13 @14	stmt: assign
-4	@13	variable	children:	var_name: a 
-4	@14	const	children:	const: int 10
-5	@15	statement	children: @16 @17	stmt: assign
-5	@16	variable	children:	var_name: s 
-5	@17	const	children:	const: int 0
-6	@18	statement	children: @19 @20	stmt: declaration
-6	@19	type	children:	type: char
-6	@20	variable	children:	var_name: ch 0_1_1
-7	@21	statement	children: @22 @23	stmt: scanf
-7	@22	const	children:	const: string "%d"
-7	@23	expression	children: @24	unknown op
-7	@24	variable	children:	var_name: ch 
-21	@25	statement	children: @26 @44	stmt: while
-8	@26	expression	children: @27 @34	op: ||
-8	@27	expression	children: @28 @31	op: &&
-8	@28	expression	children: @29 @30	op: >
+22	@4	statement	children: @5 @9 @12 @15 @18 @22	stmt: block
+3	@5	statement	children: @6 @7 @8	stmt: declaration
+3	@6	type	children:	type: int
+3	@7	variable	children:	var_name: a 0_1_1
+3	@8	variable	children:	var_name: s 0_1_1
+4	@9	statement	children: @10 @11	stmt: assign
+4	@10	variable	children:	var_name: a 
+4	@11	const	children:	const: int 10
+5	@12	statement	children: @13 @14	stmt: assign
+5	@13	variable	children:	var_name: s 
+5	@14	const	children:	const: int 0
+6	@15	statement	children: @16 @17	stmt: declaration
+6	@16	type	children:	type: char
+6	@17	variable	children:	var_name: ch 0_1_1
+7	@18	statement	children: @19 @20	stmt: scanf
+7	@19	const	children:	const: string "%d"
+7	@20	expression	children: @21	unknown op
+7	@21	variable	children:	var_name: ch 
+21	@22	statement	children: @23 @41	stmt: while
+8	@23	expression	children: @24 @31	op: ||
+8	@24	expression	children: @25 @28	op: &&
+8	@25	expression	children: @26 @27	op: >
+8	@26	variable	children:	var_name: a 
+8	@27	const	children:	const: int 0
+8	@28	expression	children: @29 @30	op: <=
 8	@29	variable	children:	var_name: a 
-8	@30	const	children:	const: int 0
-8	@31	expression	children: @32 @33	op: <=
-8	@32	variable	children:	var_name: a 
-8	@33	const	children:	const: int 10
-8	@34	expression	children: @35 @40	op: &&
-8	@35	expression	children: @36 @39	op: ==
-8	@36	expression	children: @37 @38	op: %
-8	@37	variable	children:	var_name: a 
-8	@38	const	children:	const: int 100
-8	@39	const	children:	const: int 10
-8	@40	expression	children: @41	op: !
-8	@41	expression	children: @42 @43	op: ==
-8	@42	variable	children:	var_name: a 
-8	@43	const	children:	const: int 10
-21	@44	statement	children: @45 @48 @51 @54 @57	stmt: block
-9	@45	statement	children: @46 @47	stmt: -=
-9	@46	variable	children:	var_name: a 
-9	@47	const	children:	const: int 1
-10	@48	statement	children: @49 @50	stmt: declaration
-10	@49	type	children:	type: int
-10	@50	variable	children:	var_name: a 0_1_1_1
-11	@51	statement	children: @52 @53	stmt: assign
-11	@52	variable	children:	var_name: a 
-11	@53	const	children:	const: int 10
-12	@54	statement	children: @55 @56	stmt: +=
-12	@55	variable	children:	var_name: s 
-12	@56	variable	children:	var_name: a 
-21	@57	statement	children: @58 @63	stmt: if
-12	@58	expression	children: @59 @61	op: <
-12	@59	expression	children: @60	op: - (负号)
-13	@60	variable	children:	var_name: s 
-13	@61	expression	children: @62	op: - (负号)
-13	@62	const	children:	const: int 10
-20	@63	statement	children: @64 @67 @70 @73	stmt: block
-14	@64	statement	children: @65 @66	stmt: printf
-14	@65	const	children:	const: string "result is: %d\n"
-14	@66	variable	children:	var_name: s 
-15	@67	statement	children: @68 @69	stmt: declaration
-15	@68	type	children:	type: int
-15	@69	variable	children:	var_name: b 0_1_1_1_1
-16	@70	statement	children: @71 @72	stmt: assign
-16	@71	variable	children:	var_name: b 
-16	@72	const	children:	const: int 10
-19	@73	statement	children: @74 @79 @82 @84	stmt: for
-17	@74	statement	children: @75 @76	stmt: define
-17	@75	type	children:	type: int
-17	@76	statement	children: @77 @78	stmt: assign
-17	@77	variable	children:	var_name: i 0_1_1_1_1_1
-17	@78	const	children:	const: int 0
-17	@79	expression	children: @80 @81	op: <
+8	@30	const	children:	const: int 10
+8	@31	expression	children: @32 @37	op: &&
+8	@32	expression	children: @33 @36	op: ==
+8	@33	expression	children: @34 @35	op: %
+8	@34	variable	children:	var_name: a 
+8	@35	const	children:	const: int 100
+8	@36	const	children:	const: int 10
+8	@37	expression	children: @38	op: !
+8	@38	expression	children: @39 @40	op: ==
+8	@39	variable	children:	var_name: a 
+8	@40	const	children:	const: int 10
+21	@41	statement	children: @42 @45 @48 @51 @54	stmt: block
+9	@42	statement	children: @43 @44	stmt: -=
+9	@43	variable	children:	var_name: a 
+9	@44	const	children:	const: int 1
+10	@45	statement	children: @46 @47	stmt: declaration
+10	@46	type	children:	type: int
+10	@47	variable	children:	var_name: a 0_1_1_1
+11	@48	statement	children: @49 @50	stmt: assign
+11	@49	variable	children:	var_name: a 
+11	@50	const	children:	const: int 10
+12	@51	statement	children: @52 @53	stmt: +=
+12	@52	variable	children:	var_name: s 
+12	@53	variable	children:	var_name: a 
+21	@54	statement	children: @55 @60	stmt: if
+12	@55	expression	children: @56 @58	op: <
+12	@56	expression	children: @57	op: - (负号)
+13	@57	variable	children:	var_name: s 
+13	@58	expression	children: @59	op: - (负号)
+13	@59	const	children:	const: int 10
+20	@60	statement	children: @61 @64 @67 @70	stmt: block
+14	@61	statement	children: @62 @63	stmt: printf
+14	@62	const	children:	const: string "result is: %d\n"
+14	@63	variable	children:	var_name: s 
+15	@64	statement	children: @65 @66	stmt: declaration
+15	@65	type	children:	type: int
+15	@66	variable	children:	var_name: b 0_1_1_1_1
+16	@67	statement	children: @68 @69	stmt: assign
+16	@68	variable	children:	var_name: b 
+16	@69	const	children:	const: int 10
+19	@70	statement	children: @71 @76 @79 @81	stmt: for
+17	@71	statement	children: @72 @73	stmt: define
+17	@72	type	children:	type: int
+17	@73	statement	children: @74 @75	stmt: assign
+17	@74	variable	children:	var_name: i 
+17	@75	const	children:	const: int 0
+17	@76	expression	children: @77 @78	op: <
+17	@77	variable	children:	var_name: i 
+17	@78	variable	children:	var_name: b 
+17	@79	statement	children: @80	stmt: ++ R
 17	@80	variable	children:	var_name: i 
-17	@81	variable	children:	var_name: b 
-17	@82	statement	children: @83	stmt: ++ R
-17	@83	variable	children:	var_name: i 
-19	@84	statement	children: @85	stmt: block
-18	@85	statement	children: @86 @87	stmt: printf
-18	@86	const	children:	const: string "Have fun: %d\n"
-18	@87	variable	children:	var_name: i 
+19	@81	statement	children: @82	stmt: block
+18	@82	statement	children: @83 @84	stmt: printf
+18	@83	const	children:	const: string "Have fun: %d\n"
+18	@84	variable	children:	var_name: i 

@@ -9,53 +9,47 @@ void getField(TreeNode* root,table* scope)
 {
 
 	//如果有孩子，则开始对该结点进行遍历添加
-	if(root->child==nullptr)return;
+	//if(root->child==nullptr)return;
 	TreeNode*t=root->child;
 	while(t!=nullptr)
 	{
-		if(t->nodeType==NODE_STMT)
-		{
-			if(t->stype==STMT_BLOCK||t->stype==STMT_FOR||t->stype==STMT_FUNC_DEF)
+		// cout<<"child"<<endl;
+		if((root->stype==STMT_FUNC_DECL||root->stype==STMT_FUNC_DEF)&&t==root->child->sibling)
 			{
+				//cout<<"check"<<endl;
+				t->workfield=scope->father->attribute;
+				table::insertID(t,scope);
+				//cout<<"scope "<<scope->father->attribute<<endl;
+				//cout<<"scope->father "<<scope->father->attribute<<endl;
 				
-				//cout<<"get a block"<<endl;
-				table* newscope=new table(scope);
-				//cout<<"ddd "<<newscope->attribute<<endl;
-				getField(t,newscope);
-				//cout<<"xx"<<endl;
 			}
-			else
-			{
-				getField(t,scope);
-			}
+
+		else if(t->stype==STMT_BLOCK||t->stype==STMT_FOR||t->stype==STMT_FUNC_DEF)
+		{
+			
+			//cout<<"get a block"<<endl;
+			table* newscope=new table(scope);
+			//cout<<"ddd "<<newscope->attribute<<endl;
+			getField(t,newscope);
+			//cout<<"xx"<<endl;
 		}
-		else if(t->nodeType==NODE_TYPE)
+		else if(t->nodeType==NODE_VAR)
 		{
-			TreeNode* temp=t->sibling;//sibling是要插入符号表的内容
-			if(root->stype==STMT_FUNC_DECL||root->stype==STMT_FUNC_DEF)
+			//cout<<"var"<<endl;
+			//if(root->nodeType==NODE_PARAM){cout<<"sdf"<<endl;}
+			if(root->stype==STMT_DEFINE||root->stype==STMT_DECL||root->nodeType==NODE_PARAM)
 			{
-				temp->workfield=scope->father->attribute;
-				table::insertID(temp,scope->father);
-				cout<<"scope "<<scope->attribute<<endl;
-				cout<<"scope->father "<<scope->father->attribute<<endl;
-				
+				t->workfield=scope->attribute;
+				table::insertID(t,scope);
 			}
 			
-			else {
-				if(temp->stype==STMT_ASSIGN)
-				temp=temp->child;
-			//temp->printSpecialInfo();
-			//cout<<"scope "<<scope->attribute<<endl;
-			//cout<<"before"<<temp->workfield<<endl;
-			// while(temp!=nullptr)
-			// 	{
-					temp->workfield=scope->attribute;
-					table::insertID(temp,scope);
-				// }
-			//cout<<"after"<<temp->workfield<<endl;
-			//temp->printSpecialInfo();
-			}
 		}
+		else 
+		{
+			getField(t,scope);
+		}
+		//else cout<<"else"<<endl;
+		//cout<<t->nodeType<<endl;
 		t=t->sibling;
 	}
 }

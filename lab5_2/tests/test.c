@@ -1,7 +1,7 @@
 /*
 I'm level 1 test.
 */
-void main(int i) {
+void main() {
     int a, s;
     a = 10;
     s = 0;
