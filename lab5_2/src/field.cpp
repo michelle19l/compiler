@@ -72,7 +72,7 @@ void getField(TreeNode* root,table* scope)
 table* table::scoperoot = new table;//生成根，用于存储全局变量和静态变量（静态变量待实现）
 table* table::keyword = new table;//存储关键字
 table* table::scope = table::scoperoot;
-string table::lexms="0";//存储id名
+string table::lexms="";//存储id名
 int table::lexmspointer=0;
 
 
@@ -90,31 +90,59 @@ int table::lexmspointer=0;
 // }
 
 
-// int table::lookupID(char* yytext)//在当前作用域查找是否存在该ID,如果有，则返回索引，如果没有则返回0
-// {
-// 	// if ( table::scope->size)
-// 	// 	for (int i = 1; i <=  table::scope->size; i++)
-// 	// 	{
-// 	// 		char a[100];
-// 	// 		int j;
-// 	// 		for (j = 0; lexms[j]!=0;j++)
-// 	// 		{
-// 	// 			a[j] = *(lexms +  table::scope->item[i].lex+j);
-// 	// 		}
-// 	// 		a[j] = 0;
-// 	// 		if (!(strcmp(yytext, a)))
-// 	// 			return i;
-// 	// 	}
-// 	// return 0;
-// }
-
-void table::insertID(TreeNode* &node,table* scope)//向当前作用域插入ID,
+int table::checkID(string yytext,table*scope)
 {
-	
+	// if ( table::scope->size)
+	// 	for (int i = 1; i <=  table::scope->size; i++)
+	// 	{
+	// 		char a[100];
+	// 		int j;
+	// 		for (j = 0; lexms[j]!=0;j++)
+	// 		{
+	// 			a[j] = *(lexms +  table::scope->item[i].lex+j);
+	// 		}
+	// 		a[j] = 0;
+	// 		if (!(strcmp(yytext, a)))
+	// 			return i;
+	// 	}
+	// return 0;
+	int flag=1;
+	//cout<<scope->size<<endl;
+	for(int i=1;i<=scope->size;i++)
+	{
+		
+		int index=1;
+		int j=0;
+		//cout<<lexms[scope->item[i]+j];
+		for(;lexms[scope->item[i]+j]!='#';j++)
+		{
+			
+			if(yytext[j]!=lexms[scope->item[i]+j])
+				{
+					index=0;
+				}
+		}
+		if(yytext[j]!=0)
+		{
+			index=0;
+		}
+		if (index==1)//找到相同的
+			flag=0;//则该变量不可以声明
+	}
+	return flag;//0表示该变量名已经被占用
+}
+
+void table::insertID(TreeNode* node,table* scope)//向当前作用域插入ID,
+{
+	//cout<<lexms<<endl;
+	if(checkID(node->var_name,scope)==0)
+		{cout<<"第"<<node->lineno<<"行变量"<<node->var_name<<"已声明"<<endl;}
 	lexms+=node->var_name;
+	lexms+="#";
 	scope->item[++ table::scope->size] = lexmspointer;//添加指针
 	//cout<<"+++++"<<scope->attribute<<endl;
-
+	lexmspointer=lexms.length();
+	scope->size++;
 	//node->workfield=scope->attribute;
 	//cout<<"----"<<node->workfield<<endl;
 }

@@ -44,8 +44,8 @@ public:
 	//全局变量，初值为0
 	static string lexms;//ID词素存储
 	static int lexmspointer;//词素数组下一位的索引（长度）
-	static void insertID(TreeNode* &root,table* scope);//向当前作用域插入IDint
-	//static int lookupID(char* yytext);//在当前作用域查找是否存在该ID
+	static void insertID(TreeNode* root,table* scope);//向当前作用域插入IDint
+	static int checkID(string yytext,table*scope);//在当前作用域查找是否存在该ID
 };
 
 
