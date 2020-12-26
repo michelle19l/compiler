@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include "type.h"
+#include "field.h"
 
 enum NodeType
 {
@@ -115,6 +116,8 @@ public:
     string var_name;
     int lex;//符号表结点指针
     string workfield;//变量作用域
+    table* scope;//所属作用域
+
 
     static int current_node_id;
 public:
@@ -131,5 +134,9 @@ public:
     TreeNode(int lineno, NodeType type);
     //TreeNode(){}
 };
-
 #endif
+
+void insertID(TreeNode* root,table* scope);//向当前作用域插入IDint
+//static int checkID(string yytext,table*scope);//在当前作用域查找是否存在该ID
+void getBlock(TreeNode* root,table* scope);//根据ast得到作用域树
+void getVarField(TreeNode* root,table*scope);//为变量分配作用域

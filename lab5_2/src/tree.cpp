@@ -26,6 +26,8 @@ TreeNode::TreeNode(int lineno, NodeType type) {
     this->lineno=lineno;
     this->nodeType=type;
     //sibling\child
+    workfield="";
+    scope=nullptr;
 }
 
 void TreeNode::genNodeId() {//自顶向下生成id
@@ -100,7 +102,7 @@ string TreeNode::getfield(){
     //return "field";
     //cout<<"+++"<<this->workfield<<endl;
     string a="field: ";
-    return this->workfield;
+    return a+this->scope->attribute;
 }
 
 string TreeNode::sType2String() {
@@ -269,3 +271,115 @@ string TreeNode::varName2String()
     return a+this->var_name;
 }
 
+void insertID(TreeNode* node,table* scope)//向当前作用域插入ID,
+{
+	//cout<<lexms<<endl;
+    node->scope=scope;
+    node->workfield=scope->attribute;
+
+	if(checkID(node->var_name,scope)==0)
+		{cout<<"第"<<node->lineno<<"行变量"<<node->var_name<<"已占用"<<endl;return;}
+	scope->lexms+=node->var_name;
+	scope->lexms+="#";
+	scope->item[++scope->size] = scope->lexmspointer;//添加指针
+	//cout<<"+++++"<<scope->attribute<<endl;
+	scope->lexmspointer=scope->lexms.length();
+	scope->size++;
+	//node->workfield=scope->attribute;
+	//cout<<"----"<<node->workfield<<endl;
+}
+
+void getBlock(TreeNode* root,table* scope)
+{
+	if (root==nullptr)return;
+	TreeNode* t=root->child;
+	while(t!=nullptr)
+	{
+		if(t->stype==STMT_BLOCK||t->stype==STMT_FOR||t->stype==STMT_FUNC_DEF||t->stype==STMT_FUNC_DECL)
+		{
+            //cout<<"block"<<endl;
+			//cout<<"get a block"<<endl;
+			table* newscope=new table(scope);
+			t->workfield=newscope->attribute;
+            //cout<<newscope->attribute<<endl;
+			t->scope=newscope;
+			//cout<<scope->attribute<<endl;
+			getBlock(t,newscope);
+			//cout<<"xx"<<endl;
+		}
+        else {
+            getBlock(t,scope);
+        }
+		t=t->sibling;
+	}
+}
+
+void getVarField(TreeNode* root,table*scope)
+{
+	if(root==nullptr)return;
+	TreeNode* t=root->child;
+	if(root->scope!=nullptr)
+    {
+        //cout<<"原"<<scope->attribute<<endl;
+        scope=root->scope;
+        //cout<<root->nodeID<<endl;
+        //cout<<"现"<<scope->attribute<<endl;
+    }
+	while(t!=nullptr)
+	{
+		if(t->scope==nullptr)
+		{
+			if(t->nodeType==NODE_VAR)
+			{
+				if(root->nodeType==NODE_PARAM||root->stype==STMT_DECL)
+				{//变量定义或者函数形参
+					//直接加入作用域
+                    //if(checkID(t->var_name,scope))
+					    insertID(t,scope);
+				}
+                else if(root->stype==STMT_FUNC_DECL)
+                {
+					    insertID(t,scope->father);
+                }
+                else if(root->stype==STMT_FUNC_DEF)
+                {
+                    if(checkID(t->var_name,scope->father))
+					    insertID(t,scope->father);
+                }
+				else{
+					//查找
+                   
+                    table* wfield=search(t->var_name,scope);
+                    if(wfield==nullptr)
+                    {
+                        cout<<"第"<<t->lineno<<"行"<<"变量"<<t->var_name<<"未声明"<<endl;
+                    }
+                    else{
+                        t->scope=wfield;
+                        t->workfield=scope->attribute;
+                        //  cout<<"开始查找"<<endl;
+                        //  cout<<t->workfield<<endl;
+                    }
+				}
+			}
+			else if(t->stype== STMT_ASSIGN&&root->stype==STMT_DEFINE)
+			{//变量定义
+				TreeNode* m=t->child;
+				for(;m!=nullptr;m=m->sibling)
+				{
+					if(m->nodeType==NODE_VAR)
+					{
+						//加入作用域
+                        if(checkID(m->var_name,scope))
+                            insertID(m,scope);
+                        else{
+                            cout<<"第"<<m->lineno<<"行"<<"该变量名"<<m->var_name<<"已经占用"<<endl;
+					}
+				}
+			}
+		}
+        }
+        getVarField(t,scope);
+        t=t->sibling;
+    }	
+}

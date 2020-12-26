@@ -25,10 +25,15 @@ int main(int argc, char *argv[])
 
 
     table* scope=new table;
+    table* scoperoot=scope;
     if(root != NULL) {
         root->genNodeId();
 
-        getField(root,scope);
+        getBlock(root,scope);
+       
+        getVarField(root,scope);
+
+        table::print(scoperoot);
         //cout<<table::lexms<<endl;
 
         root->printAST();
