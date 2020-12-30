@@ -144,6 +144,7 @@ public:
     void printSpecialInfo();
 
     void genNodeId();
+    int typechecking();
 
 
 public:
@@ -184,7 +185,7 @@ public:
     TreeNode(int lineno, NodeType type);
     //TreeNode(){}
     bool type_check();
-    void type_set_check();//类型检查结点类型设置和检查
+    //int type_set_check();//类型检查结点类型设置和检查,正确返回1，错误0
 
 
 

@@ -39,7 +39,7 @@
 %%
 
 program
-: statements {root = new TreeNode(0, NODE_PROG); root->addChild($1);root->type_set_check();}
+: statements {root = new TreeNode(0, NODE_PROG); root->addChild($1);}
 
 statements
 :  statement {$$=$1;}
@@ -372,7 +372,11 @@ declaration
     $$->addChild($2);
     
     $2->var_func=0;
-    $2->checktype=$1->checktype;
+    for(TreeNode* t=$2;t!=nullptr;t=t->sibling)
+    {
+        t->checktype=$1->checktype;
+    }
+    //$2->checktype=$1->checktype;
 }
 
 ;

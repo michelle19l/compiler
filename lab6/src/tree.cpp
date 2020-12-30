@@ -376,10 +376,13 @@ void getVarField(TreeNode* root,table*scope)
                         cout<<"第"<<t->lineno<<"行"<<"变量"<<t->var_name<<"未声明"<<endl;
                         t->scope=nullptr;
                         t->workfield="";
+                        t->checktype=Notype;
                     }
                     else{
                         t->scope=wfield;
                         t->workfield=scope->attribute;
+                        t->var_func=0;
+                        t->checktype=scope->item[checkID(t->var_name,wfield)].type;
                     }
 				 }
 			}
@@ -415,7 +418,6 @@ bool TreeNode::type_check()
     if(this->child==nullptr)return true;
     if(this->nodeType==NODE_EXPR)
     {
-        cout<<"1------"<<endl;
         switch(this->optype)
         {
             case OP_AND:
@@ -456,6 +458,7 @@ bool TreeNode::type_check()
                 if((t->checktype==Integer||t->checktype==Char)&&(t->sibling->checktype==Integer||t->sibling->checktype==Char))
                 {
                     this->checktype=Integer;
+                    //this->printNodeInfo() ;
                     return true;
                 }
                 return false;
@@ -491,7 +494,6 @@ bool TreeNode::type_check()
     //if for while bool表达式
     else if(this->nodeType==NODE_STMT)
     {    
-        cout<<"2------"<<endl;
         switch(this->stype)
         {
             case STMT_WHILE:
@@ -509,6 +511,7 @@ bool TreeNode::type_check()
                 }
                 return false;
             }
+            case STMT_ASSIGN: 
             case STMT_ADD_ASSIGN:
             case STMT_SUB_ASSIGN:
             case STMT_MUL_ASSIGN:
@@ -541,76 +544,40 @@ bool TreeNode::type_check()
     return true;
 }
 
-void TreeNode::type_set_check()
+
+// int TreeNode::typechecking()
+// {
+//     //遍历语法树
+//     bool tempthis=this->type_chekc();
+//     TreeNode* t=this->child;
+//     while(t!=nullptr)
+//     {
+//         if(t->type_set_check()==0)
+//             return 0;
+//         t=t->sibling;
+//     }
+//     return 1;
+// }f
+
+
+int TreeNode::typechecking()
 {
-    //this->checktype=Notype;
-    //直接设立类型的结点有 常量、变量的声明和定义（包含函数参数）
-    if(this->nodeType== NODE_CONST)
+    TreeNode* t=this->child;
+    while(t!=nullptr)
     {
-        
-        switch(this->contype)
+        if(t->typechecking()==0)//失败
         {
-            case CON_INT:
-            {
-                this->checktype=Integer;
-                break;
-            }
-            case CON_CHAR:
-            {
-                this->checktype=Char;
-                break;
-            }
-            case CON_STRING:
-            {
-                this->checktype=String;
-                break;
-            }
-            // case CON_BOOL:
-            // {
-            //     this->checktype=Boolean;
-            //     break;
-            // }
-            default:
-            {break;}
+            //t->printNodeInfo();
+            cout<<"第"<<t->lineno<<"行结点"<<this->nodeID<<"类型检查失败"<<endl;
+            return 0;
         }
+        t=t->sibling;
     }
-    else if(this->nodeType==NODE_TYPE)
+    if(this->type_check()==0)
     {
-        TreeNode* m;
-        if(this->sibling->stype==STMT_ASSIGN)//=
-        {
-            m=this->sibling->child;
-        }
-        else m=this->sibling;
-        switch(this->type->type)
-        {
-            case VALUE_BOOL:
-            {
-                m->checktype=Boolean;
-                break;
-            }
-            case VALUE_INT:
-            {
-                m->checktype=Integer;
-                break;
-            }
-            case VALUE_CHAR:
-            {
-                m->checktype=Char;
-                break;
-            }
-            case VALUE_STRING:
-            
-            {
-                m->checktype=String;
-                break;
-            }
-            default:
-                break;
-        }
+        //this->printNodeInfo();
+        cout<<"第"<<this->lineno<<"行结点"<<this->nodeID<<"类型检查失败"<<endl;
+            return 0;
     }
-    if(type_check()==0)
-    {
-        cout<<lineno<<" "<<this->nodeID<<"类型检查错误"<<endl;
-    }
+    return 1;
 }
