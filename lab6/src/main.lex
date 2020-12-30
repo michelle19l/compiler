@@ -90,6 +90,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
     node->int_val_=yytext;
     node->contype=CON_INT;
     yylval = node;
+    node->checktype=Integer;
     return INTEGER;
 }
 
@@ -101,6 +102,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
     //cout<<"char        "<<node->ch_val;
     node->contype=CON_CHAR;
     yylval = node;
+    node->checktype=Char;
     return CHAR;
 }
 
@@ -113,6 +115,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
     node->str_val[i]='\0';
     node->contype=CON_STRING;
     yylval = node;
+    node->checktype=String;
     return STRING;
 }
 

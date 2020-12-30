@@ -110,6 +110,8 @@ function_decl
     $$->stype=STMT_FUNC_DECL;
     $$->addChild($1);
     $$->addChild($2);
+    $2->var_func=1;
+    $2->checktype=$1->checktype;
 }
 |T IDENTIFIER LPAREN params RPAREN{
     $$=new TreeNode ($1->lineno,NODE_STMT);
@@ -117,6 +119,8 @@ function_decl
     $$->addChild($1);
     $$->addChild($2);
     $$->addChild($4);
+    $2->var_func=1;
+    $2->checktype=$1->checktype;
 }
 ;
 function_def
@@ -127,6 +131,8 @@ function_def
     $$->addChild($2);
     $$->addChild($4);
     $$->addChild($6);
+    $2->var_func=1;
+    $2->checktype=$1->checktype;
 }
 |  T IDENTIFIER LPAREN  RPAREN block{
     $$=new TreeNode ($1->lineno,NODE_STMT);
@@ -134,6 +140,8 @@ function_def
     $$->addChild($1);
     $$->addChild($2);
     $$->addChild($5);
+    $2->var_func=1;
+    $2->checktype=$1->checktype;
 }
 
 ;
@@ -347,12 +355,24 @@ declaration
     node->addChild($1);
     node->addChild($2);
     $$ = node;   
+    for(TreeNode* t=$2->child;t!=nullptr;t=t->sibling)
+    {
+        if(t->nodeType==NODE_VAR)
+        {
+            t->checktype=$1->checktype;
+            t->var_func=0;
+        }
+    }
+
 } 
 | T idlist {
     $$= new TreeNode(lineno, NODE_STMT);
     $$->stype = STMT_DECL;
     $$->addChild($1);
     $$->addChild($2);
+    
+    $2->var_func=0;
+    $2->checktype=$1->checktype;
 }
 
 ;
@@ -522,11 +542,11 @@ expr
 }
 ;
 
-T: T_INT {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_INT;} 
-| T_CHAR {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_CHAR;}
-| T_BOOL {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_BOOL;}
-| T_VOID {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_VOID;}
-| T_STRING {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_STRING;}
+T: T_INT {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_INT;$$->checktype=Integer;} 
+| T_CHAR {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_CHAR;$$->checktype=Char;}
+| T_BOOL {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_BOOL;$$->checktype=Boolean;}
+| T_VOID {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_VOID;$$->checktype=Void;}
+| T_STRING {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_STRING;$$->checktype=String;}
 | T_INT_POINTER {$$=new TreeNode(lineno,NODE_TYPE);$$->type=TYPE_INT_POINTER;}
 | T_CHAR_POINTER{$$=new TreeNode(lineno,NODE_TYPE);$$->type=TYPE_CHAR_POINTER;}
 ;

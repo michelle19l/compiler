@@ -18,7 +18,7 @@ enum CHECKTYPE
 	Boolean,
     Char,
     String,
-
+	Void,
 };
 
 class fielditem
@@ -26,6 +26,8 @@ class fielditem
 public:
 	string name;
 	CHECKTYPE type;
+	int var_func;//0代表变量，1代表函数,1代表未设置
+	fielditem();
 };
 
 class table {

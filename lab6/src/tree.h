@@ -157,6 +157,9 @@ public:
     bool b_val;//布尔
     string str_val;
     string var_name;
+    int var_func;//0代表变量，1代表函数,-1代表未设置
+
+
     int lex;//符号表结点指针
     string workfield;//变量作用域
     table* scope;//所属作用域

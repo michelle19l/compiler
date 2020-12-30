@@ -28,6 +28,8 @@ TreeNode::TreeNode(int lineno, NodeType type) {
     //sibling\child
     workfield="";
     scope=nullptr;
+    this->checktype=Notype;
+    var_name=-1;
 }
 
 void TreeNode::genNodeId() {//自顶向下生成id
@@ -225,7 +227,7 @@ string TreeNode::cType2String()
 
 string TreeNode ::checktype2string()
 {
-    string a="结点类型：";
+    string a="类型：";
     switch(this->checktype)
     {
         case Integer:
@@ -237,7 +239,7 @@ string TreeNode ::checktype2string()
         case String:
             return a+"String";
         default:
-            return "";
+            return a+"";
     }
 }
 
@@ -301,8 +303,9 @@ void insertID(TreeNode* node,table* scope)//向当前作用域插入ID,
 	if(checkID(node->var_name,scope)!=-1)
 		{cout<<"第"<<node->lineno<<"行变量"<<node->var_name<<"已占用"<<endl;return;}
 	scope->item[scope->size].name=node->var_name;
-    //node->type_set_check();
     scope->item[scope->size].type=node->checktype;
+    scope->item[scope->size].var_func=node->var_func;
+
 	scope->size++;
 	//node->workfield=scope->attribute;
 	//cout<<"----"<<node->workfield<<endl;
@@ -409,134 +412,142 @@ bool TreeNode::type_check()
 {
     //表达式+ - * / 关系表达式 assign，左右类型相同或者为char和int
     TreeNode * t=this->child;
-    if(t->child==nullptr)return true;
-    
-    switch(this->optype)
+    if(this->child==nullptr)return true;
+    if(this->nodeType==NODE_EXPR)
     {
-        case OP_AND:
-        case OP_OR:
+        cout<<"1------"<<endl;
+        switch(this->optype)
         {
-            if(t->checktype==Boolean&&t->sibling->checktype==Boolean)
+            case OP_AND:
+            case OP_OR:
             {
-                this->checktype=Boolean;
-                return true;
+                if(t->checktype==Boolean&&t->sibling->checktype==Boolean)
+                {
+                    this->checktype=Boolean;
+                    return true;
+                }
+                return false;
             }
-            return false;
-        }
-        case OP_NOT:
-        {
-            if(t->checktype==Boolean)
+            case OP_NOT:
             {
-                this->checktype=Boolean;
-                return true;
+                if(t->checktype==Boolean)
+                {
+                    this->checktype=Boolean;
+                    return true;
+                }
+                return false;
             }
-            return false;
-        }
-        case OP_NEG:
-        case OP_POS:
-        {
-            if(t->checktype==Integer)
+            case OP_NEG:
+            case OP_POS:
             {
-                this->checktype=Integer;
-                return true;
+                if(t->checktype==Integer)
+                {
+                    this->checktype=Integer;
+                    return true;
+                }
+                return false;
             }
-            return false;
-        }
-        case OP_ADD:
-        case OP_SUB:
-        case OP_MUL:
-        case OP_DIV:
-        case OP_MOD:
-        {
-            if((t->checktype==Integer||t->checktype==Char)&&(t->sibling->checktype==Integer||t->sibling->checktype==Char))
+            case OP_ADD:
+            case OP_SUB:
+            case OP_MUL:
+            case OP_DIV:
+            case OP_MOD:
             {
-                this->checktype=Integer;
-                return true;
+                if((t->checktype==Integer||t->checktype==Char)&&(t->sibling->checktype==Integer||t->sibling->checktype==Char))
+                {
+                    this->checktype=Integer;
+                    return true;
+                }
+                return false;
             }
-            return false;
-        }
-        
-        case OP_GREAT:
-        case OP_LESS:
-        case OP_GREAT_EQ:
-        case OP_LESS_EQ:
-        {
-            if((t->checktype==Integer||t->checktype==Char)&&(t->sibling->checktype==Integer||t->sibling->checktype==Char))
+            
+            case OP_GREAT:
+            case OP_LESS:
+            case OP_GREAT_EQ:
+            case OP_LESS_EQ:
             {
-                this->checktype=Boolean;
-                return true;
+                if((t->checktype==Integer||t->checktype==Char)&&(t->sibling->checktype==Integer||t->sibling->checktype==Char))
+                {
+                    this->checktype=Boolean;
+                    return true;
+                }
+                return false;
             }
-            return false;
-        }
-        case OP_EQUAL://==
-        case OP_NOT_EQ:
-        {
-            if((t->checktype==Integer||t->checktype==Char||t->checktype==Boolean)&&(t->sibling->checktype==Integer||t->sibling->checktype==Char||t->sibling->checktype==Boolean))
+            case OP_EQUAL://==
+            case OP_NOT_EQ:
             {
-                this->checktype=Boolean;
-                return true;
+                if((t->checktype==Integer||t->checktype==Char||t->checktype==Boolean)&&(t->sibling->checktype==Integer||t->sibling->checktype==Char||t->sibling->checktype==Boolean))
+                {
+                    this->checktype=Boolean;
+                    return true;
+                }
+                return false;
             }
-            return false;
+            default:
+                return true;
+            
         }
-        default:
-            return true;
-        
     }
     //if for while bool表达式
-    switch(this->stype)
-    {
-        case STMT_WHILE:
-        case STMT_IF:
+    else if(this->nodeType==NODE_STMT)
+    {    
+        cout<<"2------"<<endl;
+        switch(this->stype)
         {
-            if(t->checktype==Integer||t->checktype==Boolean||t->checktype==Char){
-                return true;
-            }
-            return false;
-        }
-        case STMT_FOR:
-        {
-            if(t->sibling->checktype==Integer||t->sibling->checktype==Boolean||t->sibling->checktype==Char){
-                return true;
-            }
-            return false;
-        }
-        case STMT_ADD_ASSIGN:
-        case STMT_SUB_ASSIGN:
-        case STMT_MUL_ASSIGN:
-        case STMT_DIV_ASSIGN:
-        case STMT_MOD_ASSIGN:
-        {
-            if((t->checktype==Integer||t->checktype==Char)&&(t->sibling->checktype==Integer||t->sibling->checktype==Char))
+            case STMT_WHILE:
+            case STMT_IF:
             {
-                this->checktype=Integer;
-                return true;
+                if(t->checktype==Integer||t->checktype==Boolean||t->checktype==Char){
+                    return true;
+                }
+                return false;
             }
-            return false;
-        }
-        case STMT_SELF_INC_R:
-        case STMT_SELF_INC_L:
-        case STMT_SELF_DEC_R:
-        case STMT_SELF_DEC_L:
-        {
-            if(t->checktype==Integer||t->checktype==Char)
+            case STMT_FOR:
             {
-                this->checktype=t->checktype;
-                return true;
+                if(t->sibling->checktype==Integer||t->sibling->checktype==Boolean||t->sibling->checktype==Char){
+                    return true;
+                }
+                return false;
             }
-            return false;
+            case STMT_ADD_ASSIGN:
+            case STMT_SUB_ASSIGN:
+            case STMT_MUL_ASSIGN:
+            case STMT_DIV_ASSIGN:
+            case STMT_MOD_ASSIGN:
+            {
+                if((t->checktype==Integer||t->checktype==Char)&&(t->sibling->checktype==Integer||t->sibling->checktype==Char))
+                {
+                    this->checktype=Integer;
+                    return true;
+                }
+                return false;
+            }
+            case STMT_SELF_INC_R:
+            case STMT_SELF_INC_L:
+            case STMT_SELF_DEC_R:
+            case STMT_SELF_DEC_L:
+            {
+                if(t->checktype==Integer||t->checktype==Char)
+                {
+                    this->checktype=t->checktype;
+                    return true;
+                }
+                return false;
+            }
+            default:
+                return true;
         }
-        default:
-            return true;
     }
-
+    return true;
 }
 
 void TreeNode::type_set_check()
 {
-    this->checktype=Notype;
+    //this->checktype=Notype;
     //直接设立类型的结点有 常量、变量的声明和定义（包含函数参数）
     if(this->nodeType== NODE_CONST)
     {
+        
         switch(this->contype)
         {
             case CON_INT:

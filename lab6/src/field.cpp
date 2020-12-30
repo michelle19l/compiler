@@ -15,11 +15,14 @@ table* table::scope = table::scoperoot;
 //int table::lexmspointer=0;
 
 
-
+fielditem::fielditem()
+{
+	type=Notype;
+	var_func=-1;
+}
 
 int checkID(string yytext,table*scope)
 {
-	//
 	for(int i=0;i<scope->size;i++)
 	{
 		if(yytext==scope->item[i].name)
@@ -48,7 +51,11 @@ void table::print(table* root)
 	
 	for(int i=0;i<root->size;i++)
 	{
-		cout<<root->item[i].name<<"#";
+		cout<<root->item[i].name<<" ";
+		if(root->item[i].var_func==0)
+			cout<<"变量#";
+		else if(root->item[i].var_func==1)
+			cout<<"函数#";
 	}
 	cout<<endl;
 	table* t=root->child;
