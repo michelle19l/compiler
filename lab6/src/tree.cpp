@@ -298,13 +298,11 @@ void insertID(TreeNode* node,table* scope)//向当前作用域插入ID,
     node->scope=scope;
     node->workfield=scope->attribute;
 
-	if(checkID(node->var_name,scope)==0)
+	if(checkID(node->var_name,scope)!=-1)
 		{cout<<"第"<<node->lineno<<"行变量"<<node->var_name<<"已占用"<<endl;return;}
-	scope->lexms+=node->var_name;
-	scope->lexms+="#";
-	scope->item[++scope->size] = scope->lexmspointer;//添加指针
-	//cout<<"+++++"<<scope->attribute<<endl;
-	scope->lexmspointer=scope->lexms.length();
+	scope->item[scope->size].name=node->var_name;
+    //node->type_set_check();
+    scope->item[scope->size].type=node->checktype;
 	scope->size++;
 	//node->workfield=scope->attribute;
 	//cout<<"----"<<node->workfield<<endl;
@@ -341,10 +339,7 @@ void getVarField(TreeNode* root,table*scope)
 	TreeNode* t=root->child;
 	if(root->scope!=nullptr)
     {
-        //cout<<"原"<<scope->attribute<<endl;
         scope=root->scope;
-        //cout<<root->nodeID<<endl;
-        //cout<<"现"<<scope->attribute<<endl;
     }
 	while(t!=nullptr)
 	{
@@ -355,7 +350,6 @@ void getVarField(TreeNode* root,table*scope)
 				if(root->nodeType==NODE_PARAM||root->stype==STMT_DECL)
 				{//变量定义或者函数形参
 					//直接加入作用域
-                    //if(checkID(t->var_name,scope))
 					    insertID(t,scope);
 				}
                 else if(root->stype==STMT_FUNC_DECL)
@@ -364,8 +358,10 @@ void getVarField(TreeNode* root,table*scope)
                 }
                 else if(root->stype==STMT_FUNC_DEF)
                 {
-                    if(checkID(t->var_name,scope->father))
-					    insertID(t,scope->father);
+                    if(checkID(t->var_name,scope->father)==-1)
+					{
+                        insertID(t,scope->father);
+                    }
                 }
 				else{
 					//查找
@@ -392,7 +388,7 @@ void getVarField(TreeNode* root,table*scope)
 					if(m->nodeType==NODE_VAR)
 					{
 						//加入作用域
-                        if(checkID(m->var_name,scope))
+                        if(checkID(m->var_name,scope)==-1)
                             insertID(m,scope);
                         else{
                             cout<<"第"<<m->lineno<<"行"<<"该变量名"<<m->var_name<<"已经占用"<<endl;
@@ -541,9 +537,9 @@ void TreeNode::type_set_check()
     //直接设立类型的结点有 常量、变量的声明和定义（包含函数参数）
     if(this->nodeType== NODE_CONST)
     {
-        switch(this->contyppe)
+        switch(this->contype)
         {
-            case CON_INT=1:
+            case CON_INT:
             {
                 this->checktype=Integer;
                 break;
@@ -558,12 +554,13 @@ void TreeNode::type_set_check()
                 this->checktype=String;
                 break;
             }
-            case CON_BOOL:
-            {
-                this->checktype=Boolean;
-                break;
-            }
+            // case CON_BOOL:
+            // {
+            //     this->checktype=Boolean;
+            //     break;
+            // }
             default:
+            {break;}
         }
     }
     else if(this->nodeType==NODE_TYPE)
@@ -573,31 +570,35 @@ void TreeNode::type_set_check()
         {
             m=this->sibling->child;
         }
-        else m=t->sibling;
-        switch(this->type)
+        else m=this->sibling;
+        switch(this->type->type)
         {
             case VALUE_BOOL:
             {
                 m->checktype=Boolean;
+                break;
             }
             case VALUE_INT:
             {
                 m->checktype=Integer;
+                break;
             }
             case VALUE_CHAR:
             {
                 m->checktype=Char;
+                break;
             }
             case VALUE_STRING:
             
             {
                 m->checktype=String;
+                break;
             }
             default:
                 break;
         }
     }
-    if(checktype()==0)
+    if(type_check()==0)
     {
         cout<<lineno<<" "<<this->nodeID<<"类型检查错误"<<endl;
     }

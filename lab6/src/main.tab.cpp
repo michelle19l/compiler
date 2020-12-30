@@ -1411,7 +1411,7 @@ yyreduce:
     {
         case 2:
 #line 42 "src/main.y" /* yacc.c:1646  */
-    {root = new TreeNode(0, NODE_PROG); root->addChild((yyvsp[0]));}
+    {root = new TreeNode(0, NODE_PROG); root->addChild((yyvsp[0]));root->type_set_check();}
 #line 1416 "src/main.tab.cpp" /* yacc.c:1646  */
     break;
 

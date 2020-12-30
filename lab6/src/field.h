@@ -21,19 +21,26 @@ enum CHECKTYPE
 
 };
 
+class fielditem
+{
+public:
+	string name;
+	CHECKTYPE type;
+};
+
 class table {
 public:
 	table* father;//指向父作用域
 	table* child,*sibling;
-	int item[MAX_ITEM_NUM];//该作用域下，每个变量对应一个item元素，注意从1开始存储
+	fielditem item[MAX_ITEM_NUM];//该作用域下，每个变量对应一个item元素，注意从1开始存储
  
 	int index;//该表相对于父表的索引数,从0开始标号
 	int num;//该表有几个子表
 	int size;//当前已经存储了几个item
 	string attribute;
 	//全局变量，初值为0
-	string lexms;//ID词素存储
-	int lexmspointer;//词素数组下一位的索引（长度）
+	// string lexms;//ID词素存储
+	// int lexmspointer;//词素数组下一位的索引（长度）
 	table()//用于根的生成
 	{
 		father = NULL;
@@ -44,8 +51,6 @@ public:
 		size = 0;
 		//scope = this;
 		attribute="0";
-		lexms="";
-		lexmspointer=0;
 	}
 	table(table* f) {
 		//对表f生成子表
@@ -68,8 +73,7 @@ public:
 			for(;t->sibling!=nullptr;t=t->sibling);
 			t->sibling=this;
 		}
-		lexms="";
-		lexmspointer=0;
+
 		//scope = this;//作用域切换
 	}
 	static table* scoperoot ;//生成根，用于存储全局变量和静态变量（静态变量待实现）

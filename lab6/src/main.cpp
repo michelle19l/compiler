@@ -28,15 +28,14 @@ int main(int argc, char *argv[])
     table* scoperoot=scope;
     if(root != NULL) {
         root->genNodeId();
-
-        getBlock(root,scope);
+        
+       getBlock(root,scope);
        
         getVarField(root,scope);
-
-        table::print(scoperoot);
-        //cout<<table::lexms<<endl;
-
         root->printAST();
+        table::print(scoperoot);
+
+       
     }
     return 0;
 }

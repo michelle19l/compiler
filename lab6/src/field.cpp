@@ -17,35 +17,15 @@ table* table::scope = table::scoperoot;
 
 
 
-int checkID(string yytext,table*scope)//若当前作用域不能声明则返回0，否则返回1
+int checkID(string yytext,table*scope)
 {
-	//int flag=1;
-	//cout<<scope->size<<endl;
-	//table* t=scope;
-	for(int i=1;i<=scope->size;i++)
+	//
+	for(int i=0;i<scope->size;i++)
 	{
-		int index=1;
-		int j=0;
-		//cout<<lexms[scope->item[i]+j];
-		for(;scope->lexms[scope->item[i]+j]!='#';j++)
-		{	
-			if(yytext[j]!=scope->lexms[scope->item[i]+j])
-				{
-					index=0;
-					break;
-				}
-			}
-		if(yytext[j]!=0)
-		{
-			index=0;
-		}
-		if (index==1)//找到相同的
-		{
-			//flag=0;//则该变量不可以声明
-			return 0;
-		}
+		if(yytext==scope->item[i].name)
+			return i;
 	}
-	return 1;//0表示该变量名已经被占用
+	return -1;//如果找到对应表项返回索引，没有找到返回-1
 }
 
 table* search(string yytext,table*scope)
@@ -53,7 +33,7 @@ table* search(string yytext,table*scope)
 	table* t=scope;
 	while(t!=nullptr)
 	{
-		if(!checkID(yytext,t))
+		if(checkID(yytext,t)!=-1)
 		{
 			//当前作用域中有
 			return t;
@@ -65,7 +45,12 @@ table* search(string yytext,table*scope)
 void table::print(table* root)
 {
 	cout<<root->attribute<<" ";
-	cout<<root->lexms<<endl;
+	
+	for(int i=0;i<root->size;i++)
+	{
+		cout<<root->item[i].name<<"#";
+	}
+	cout<<endl;
 	table* t=root->child;
 	while(t!=nullptr)
 	{
