@@ -1,22 +1,5 @@
-2	@9	statement	children: @10 @11	stmt: assign	类型：
-4	@15	statement	children: @16 @17	stmt: assign	类型：
-0	@0	program	children: @1 @7 @12 @15		类型：
-1	@1	statement	children: @2 @3 @4	stmt: func decalaration	类型：
-1	@2	type	children:	type: int	类型：Integer
-1	@3	variable	children:	var_name: main field: 0	类型：Integer
-1	@4	parameter	children: @5 @6		类型：
-1	@5	type	children:	type: int	类型：Integer
-1	@6	variable	children:	var_name: h field: 0_1	类型：Integer
-2	@7	statement	children: @8 @9	stmt: define	类型：
-2	@8	type	children:	type: int	类型：Integer
-2	@9	statement	children: @10 @11	stmt: assign	类型：Integer
-2	@10	variable	children:	var_name: s field: 0	类型：Integer
-2	@11	const	children:	const: int 1	类型：Integer
-3	@12	statement	children: @13 @14	stmt: declaration	类型：
-3	@13	type	children:	type: int	类型：Integer
-3	@14	variable	children:	var_name: h field: 0	类型：Integer
-4	@15	statement	children: @16 @17	stmt: assign	类型：Integer
-4	@16	variable	children:	var_name: h field: 0	类型：Integer
-4	@17	statement	children: @18 @19	stmt: func using	类型：Integer
-4	@18	variable	children:	var_name: main field: 0	类型：Integer
-4	@19	variable	children:	var_name: s field: 0	类型：Integer
+0	@0	program	children: @1		类型：
+1	@1	statement	children: @2	stmt: printf	类型：
+1	@2	const	children:	const: string "123"	类型：String
+0 
+0 123 常量

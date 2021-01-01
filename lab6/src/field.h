@@ -33,7 +33,9 @@ class fielditem
 public:
 	string name;
 	CHECKTYPE type;
+	string label;//标签
 	int var_func;//0代表变量，1代表函数,1代表未设置
+	string str_val;//常量字符串存储
 	checktypelink* head;//参数列表
 	fielditem();
 };
@@ -91,6 +93,11 @@ public:
 	static table* scope ;
 	static void print(table* root);//打印符号表
 	//static void insertID(TreeNode* root,table* scope);//向当前作用域插入IDint
+
+
+
+	static table* conststringtable;
+	static table* functable;
 };
 #endif
 

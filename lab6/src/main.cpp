@@ -7,6 +7,7 @@ extern FILE *yyin;
 extern int yyparse();
 
 using namespace std;
+ofstream asmout("asmout.s");
 int main(int argc, char *argv[])
 {
     if (argc == 2)
@@ -35,8 +36,10 @@ int main(int argc, char *argv[])
 
         root->typechecking();//类型检查
         root->printAST();//打印语法树
-        //table::print(scoperoot);//打印符号表
-        
+        table::print(scoperoot);//打印符号表
+        table::print(table::conststringtable);
+        table::print(table::functable);
+        root->asmout(asmout);
 
        
     }

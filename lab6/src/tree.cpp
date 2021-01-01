@@ -32,9 +32,12 @@ TreeNode::TreeNode(int lineno, NodeType type) {
     var_name=-1;
 }
 
+
+
 void TreeNode::genNodeId() {//自顶向下生成id
     this->nodeID=current_node_id;
-
+    char tmp[20];sprintf(tmp,"L_%d",this->nodeID);
+    this->label=tmp;
     if(this->child!=nullptr)
      {;
         current_node_id++;
@@ -297,17 +300,34 @@ string TreeNode::varName2String()
 int insertID(TreeNode* node,table* scope)//向当前作用域插入ID,
 {
 	//cout<<lexms<<endl;
+
+    // table* temp=scope;
+    // if(node->var_func==1)//函数
+    // {
+    //     scope=table::functable;
+    // }
+
+
+
     node->scope=scope;
     node->workfield=scope->attribute;
 
+    if(node->var_name!="")
 	if(checkID(node->var_name,scope)!=-1)
 		{cout<<"第"<<node->lineno<<"行变量"<<node->var_name<<"已占用"<<endl;return -1;}
-	scope->item[scope->size].name=node->var_name;
+    if(node->var_func!=2)
+	    scope->item[scope->size].name=node->var_name;
+    else 
+        scope->item[scope->size].str_val=node->str_val;
+    scope->item[scope->size].label=node->label;
     scope->item[scope->size].type=node->checktype;
     scope->item[scope->size].var_func=node->var_func;
     //scope->item[scope->size].head=node->head;//参数列表
 	scope->size++;
-    return scope->size-1;
+    int t=scope->size-1;
+
+    //scope=temp;
+    return t;
 	//node->workfield=scope->attribute;
 	//cout<<"----"<<node->workfield<<endl;
 }
@@ -441,6 +461,16 @@ void getVarField(TreeNode* root,table*scope)
 				}
 			}
 		}
+        }
+        if (t->contype)
+        {
+            if(t->contype==CON_STRING)
+            {
+                //添加至全局常量表
+                t->var_func=2;
+                insertID(t,table::conststringtable);
+                insertID(t,scope);
+            }
         }
         getVarField(t,scope);
         t=t->sibling;
@@ -626,4 +656,80 @@ int TreeNode::typechecking()
             return 0;
     }
     return 1;
+}
+
+
+
+
+
+
+void TreeNode::asmout(ofstream& asmout)
+{
+    asmconst(asmout);
+    TreeNode* t=this->child;
+    for(;t!=nullptr;t=t->sibling)
+    { if(this->stype==STMT_FUNC_DEF)
+        cout<<"s";
+        t->asmfunc();
+    }
+}
+
+
+void TreeNode:: asmfunc()
+{
+    cout<<"\t.text\n\t.globl\t"<<this->child->sibling->var_name<<"\n\t.type\t"<<this->child->sibling->var_name<<",@function\n"<<this->child->sibling->var_name<<":\n";
+
+
+    if(this->child->sibling->var_name=="main")//主函数
+    {
+        cout<<"\tleal\t4(%esp), %ecx\n\tandl\t$-16, %esp\n\tpushl\t-4(%ecx)\n\tpushl\t%ebp\n\tmovl\t%esp, %ebp\n\tpushl\t%ecx\n\tsubl\t$"<<(scope->size+1)*4<<", %esp\n";  
+    this->child->sibling->sibling->asmstmt();
+        cout<<"\tmovl\t-4(%ebp), %ecx\n\tleave\n\tleal\t-4(%ecx), %esp\n\tret\n\t.section\t.note.GNU-stack,"",@progbits\n";
+    
+    }
+
+    
+}
+
+void TreeNode:: asmstmt()
+{
+    switch(this->stype)
+    {
+        case STMT_PRT:
+        {
+            this->asmprintf();
+            break;
+        }
+        default:
+            break;
+    }
+    TreeNode*t=this->child;
+    while(t!=nullptr)
+    {
+        t->asmstmt();
+        t=t->sibling;
+    }
+}
+
+void TreeNode::asmconst(ofstream& asmout)
+{
+    cout<<"	.section	.rodata\n";//
+    for(int i=0;i<table::conststringtable->size;i++)
+    {
+        cout<<table::conststringtable->item[i].label<<":\n";
+        cout<<"\t.string \""<<table::conststringtable->item[i].str_val<<"\"\n";
+    }
+}
+
+
+
+void TreeNode::asmvar(ofstream& asmout)//全局变量
+{
+
+}
+void TreeNode::asmprintf()
+{
+    cout<<"\tsubl\t$12, %esp\n";
+    cout<<"\tpushl\t$"<<this->child->label<<"\n";
+    cout<<"\tcall\tprintf\n\taddl\t$16, %esp\n";
 }

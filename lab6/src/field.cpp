@@ -11,6 +11,8 @@
 table* table::scoperoot = new table;//生成根，用于存储全局变量和静态变量（静态变量待实现）
 table* table::keyword = new table;//存储关键字
 table* table::scope = table::scoperoot;
+table* table::conststringtable=new table;
+table* table::functable=new table;
 //string table::lexms="";//存储id名
 //int table::lexmspointer=0;
 
@@ -49,13 +51,16 @@ void table::print(table* root)
 {
 	cout<<root->attribute<<" ";
 	
+	
 	for(int i=0;i<root->size;i++)
 	{
-		cout<<root->item[i].name<<" ";
+		
 		if(root->item[i].var_func==0)
-			cout<<"变量#";
+			{cout<<root->item[i].name<<" ";cout<<"变量#";}
 		else if(root->item[i].var_func==1)
-			cout<<"函数#";
+			{cout<<root->item[i].name<<" ";cout<<"函数#";}
+		else if(root->item[i].var_func==2)
+		{cout<<root->item[i].str_val<<" ";cout<<"常量";}
 	}
 	cout<<endl;
 	table* t=root->child;

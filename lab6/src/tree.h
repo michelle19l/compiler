@@ -5,6 +5,9 @@
 #include "type.h"
 #include "field.h"
 
+
+
+
 enum NodeType
 {
     NODE_CONST=1, //常量
@@ -98,12 +101,12 @@ enum StmtType {
 // 	NodeAttr(char c) { valc = c; }
 // };
 
-// struct Label {
-// 	string true_label;
-// 	string false_label;
-// 	string begin_label;
-// 	string next_label;
-// };
+struct Label {
+	string true_label;
+	string false_label;
+	string begin_label;
+	string next_label;
+};
 
 // struct Node
 // {
@@ -159,13 +162,14 @@ public:
     string str_val;
     string var_name;
     int var_func;//0代表变量，1代表函数,-1代表未设置
-
+    string label;
 
     int lex;//符号表结点指针
     string workfield;//变量作用域
     table* scope;//所属作用域
 
     CHECKTYPE checktype;//用于进行类型检查
+    Label control;//用于跳转
 
     static int current_node_id;
 public:
@@ -187,9 +191,18 @@ public:
     bool type_check();
     //int type_set_check();//类型检查结点类型设置和检查,正确返回1，错误0
 
+    //void genlabel();
 
 
+public:
+    void asmout(ofstream& asmout);//输出汇编代码
+    void asmfile(ofstream& asmout);
 
+    void asmfunc();
+    void asmvar(ofstream& asmout);//输出局部变量
+    void asmconst(ofstream& asmout);//输出常量
+    void asmprintf();
+    void asmstmt();//输出语句的汇编
 };
 #endif
 
