@@ -159,6 +159,8 @@ function_use
 }
 ;
 
+
+
 params
 : params COMMA param{
     $$=$1;
@@ -172,9 +174,11 @@ params
 param
 : T IDENTIFIER{
     $$ =new TreeNode (lineno,NODE_PARAM);
+    $2->checktype=$1->checktype;
+
     $$->addChild($1);
     $$->addChild($2);
-   
+    
 }
 ;
 
@@ -488,7 +492,10 @@ exprs
 ;
 
 expr
-: LPAREN expr RPAREN{
+: function_use{
+    $$=$1;
+}
+| LPAREN expr RPAREN{
     $$= $2;
 }
 | expr ADD expr{

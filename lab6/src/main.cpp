@@ -31,11 +31,11 @@ int main(int argc, char *argv[])
         
        getBlock(root,scope);//获得作用域树
        
-        getVarField(root,scope);//将变量加入作用域
+       getVarField(root,scope);//将变量加入作用域
 
         root->typechecking();//类型检查
         root->printAST();//打印语法树
-        table::print(scoperoot);//打印符号表
+        //table::print(scoperoot);//打印符号表
         
 
        

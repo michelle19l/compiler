@@ -294,19 +294,20 @@ string TreeNode::varName2String()
     return a+this->var_name;
 }
 
-void insertID(TreeNode* node,table* scope)//向当前作用域插入ID,
+int insertID(TreeNode* node,table* scope)//向当前作用域插入ID,
 {
 	//cout<<lexms<<endl;
     node->scope=scope;
     node->workfield=scope->attribute;
 
 	if(checkID(node->var_name,scope)!=-1)
-		{cout<<"第"<<node->lineno<<"行变量"<<node->var_name<<"已占用"<<endl;return;}
+		{cout<<"第"<<node->lineno<<"行变量"<<node->var_name<<"已占用"<<endl;return -1;}
 	scope->item[scope->size].name=node->var_name;
     scope->item[scope->size].type=node->checktype;
     scope->item[scope->size].var_func=node->var_func;
-
+    //scope->item[scope->size].head=node->head;//参数列表
 	scope->size++;
+    return scope->size-1;
 	//node->workfield=scope->attribute;
 	//cout<<"----"<<node->workfield<<endl;
 }
@@ -357,13 +358,50 @@ void getVarField(TreeNode* root,table*scope)
 				}
                 else if(root->stype==STMT_FUNC_DECL)
                 {
-					    insertID(t,scope->father);
+                    if(checkID(t->var_name,scope->father)==-1)
+					{
+                        int index=insertID(t,scope->father);
+                        if(t->sibling!=nullptr)
+                        {
+                        TreeNode*m=t->sibling->child;
+                        if(m!=nullptr)
+                        {
+                            scope->father->item[index].head=new checktypelink;
+                            checktypelink* link=scope->father->item[index].head;
+                            for(;m!=nullptr;m=m->sibling)
+                            {
+                                if(m->nodeType==NODE_TYPE)
+                                {
+                                    link->param=m->checktype;
+                                    link->next=new checktypelink;
+                                }
+                            }
+                        }
+                        }
+                    }
                 }
                 else if(root->stype==STMT_FUNC_DEF)
                 {
                     if(checkID(t->var_name,scope->father)==-1)
 					{
-                        insertID(t,scope->father);
+                        int index=insertID(t,scope->father);
+                        if(t->sibling!=nullptr)
+                        {
+                        TreeNode*m=t->sibling->child;
+                        if(m!=nullptr)
+                        {
+                            scope->father->item[index].head=new checktypelink;
+                            checktypelink* link=scope->father->item[index].head;
+                            for(;m!=nullptr;m=m->sibling)
+                            {
+                                if(m->nodeType==NODE_TYPE)
+                                {
+                                    link->param=m->checktype;
+                                    link->next=new checktypelink;
+                                }
+                            }
+                        }
+                        }
                     }
                 }
 				else{
@@ -382,7 +420,8 @@ void getVarField(TreeNode* root,table*scope)
                         t->scope=wfield;
                         t->workfield=scope->attribute;
                         t->var_func=0;
-                        t->checktype=scope->item[checkID(t->var_name,wfield)].type;
+                        t->checktype=wfield->item[checkID(t->var_name,wfield)].type;
+                        
                     }
 				 }
 			}
@@ -455,7 +494,7 @@ bool TreeNode::type_check()
             case OP_DIV:
             case OP_MOD:
             {
-                if((t->checktype==Integer||t->checktype==Char)&&(t->sibling->checktype==Integer||t->sibling->checktype==Char))
+                if(t->checktype==Integer&&t->sibling->checktype==Integer)
                 {
                     this->checktype=Integer;
                     //this->printNodeInfo() ;
@@ -479,7 +518,7 @@ bool TreeNode::type_check()
             case OP_EQUAL://==
             case OP_NOT_EQ:
             {
-                if((t->checktype==Integer||t->checktype==Char||t->checktype==Boolean)&&(t->sibling->checktype==Integer||t->sibling->checktype==Char||t->sibling->checktype==Boolean))
+                if(t->checktype==t->sibling->checktype)
                 {
                     this->checktype=Boolean;
                     return true;
@@ -491,22 +530,28 @@ bool TreeNode::type_check()
             
         }
     }
+
     //if for while bool表达式
     else if(this->nodeType==NODE_STMT)
     {    
         switch(this->stype)
         {
+            case STMT_FUNC_USE:
+            {
+                this->checktype=t->checktype;
+                return true;
+            }
             case STMT_WHILE:
             case STMT_IF:
             {
-                if(t->checktype==Integer||t->checktype==Boolean||t->checktype==Char){
+                if(t->checktype==Integer||t->checktype==Boolean){
                     return true;
                 }
                 return false;
             }
             case STMT_FOR:
             {
-                if(t->sibling->checktype==Integer||t->sibling->checktype==Boolean||t->sibling->checktype==Char){
+                if(t->sibling->checktype==Integer||t->sibling->checktype==Boolean||t->sibling->checktype==Integer){
                     return true;
                 }
                 return false;
@@ -518,9 +563,10 @@ bool TreeNode::type_check()
             case STMT_DIV_ASSIGN:
             case STMT_MOD_ASSIGN:
             {
-                if((t->checktype==Integer||t->checktype==Char)&&(t->sibling->checktype==Integer||t->sibling->checktype==Char))
+                this->printNodeInfo();
+                if(t->checktype==t->sibling->checktype)
                 {
-                    this->checktype=Integer;
+                    this->checktype=t->checktype;
                     return true;
                 }
                 return false;

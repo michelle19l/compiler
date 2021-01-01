@@ -21,12 +21,20 @@ enum CHECKTYPE
 	Void,
 };
 
+struct checktypelink
+{
+	CHECKTYPE param;
+	checktypelink* next;	
+};
+
+
 class fielditem
 {
 public:
 	string name;
 	CHECKTYPE type;
 	int var_func;//0代表变量，1代表函数,1代表未设置
+	checktypelink* head;//参数列表
 	fielditem();
 };
 
