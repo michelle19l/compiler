@@ -1,9 +1,7 @@
-int s()
-{
-
-}
+int s;
 int main()
 {
-    int j=2,k=2;
-    int n=s();
+    int h,p;
+    int s=2,k=3+7;
+    return 1;
 }

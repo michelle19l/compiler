@@ -1,6 +1,7 @@
 #include "tree.h"
 
 int TreeNode::current_node_id=0;
+int TreeNode::current_offset=0;
 void TreeNode::addChild(TreeNode* child) {
     
     if(this->child==nullptr)
@@ -58,6 +59,8 @@ void TreeNode::printNodeInfo() {
     cout<<'\t';
     printSpecialInfo();
     cout<<'\t'<<checktype2string();
+    if(this->nodeType==NODE_VAR||this->nodeType==NODE_EXPR)
+        cout<<'\t'<<offset;
     cout<<endl;
 }
 
@@ -80,7 +83,7 @@ void TreeNode::printAST() {
 void TreeNode::printSpecialInfo() {
     switch(this->nodeType){
         case NODE_CONST:
-            {cout<<cType2String();break;}
+            {cout<<"const: "+cType2String();break;}
         case NODE_VAR:
             {
 
@@ -359,7 +362,7 @@ void getBlock(TreeNode* root,table* scope)
 
 void getVarField(TreeNode* root,table*scope)
 {
-    table* ssss=scope;
+    root->genoffset();
 	if(root==nullptr)return;
 	TreeNode* t=root->child;
 	if(root->scope!=nullptr)
@@ -699,7 +702,7 @@ void TreeNode:: asmfunc()
         this->child->sibling->sibling->asmstmt();
         
         
-        cout<<"\tmovl\t$0, %eax"<<endl;
+        //cout<<"\tmovl\t$0, %eax"<<endl;
         cout<<"\tleave"<<endl;
         cout<<"\tret"<<endl;
         cout<<"\t.section\t.note.GNU-stack,\"\",@progbits"<<endl;
@@ -717,6 +720,10 @@ void TreeNode:: asmstmt()
         {
             this->asmprintf();
             break;
+        }
+        case STMT_RET:
+        {
+            this->asmret();
         }
         default:
             break;
@@ -749,5 +756,98 @@ void TreeNode::asmprintf()
 {
     cout<<"\tsubl\t$12, %esp"<<endl;;
     cout<<"\tpushl\t$"<<this->child->label<<""<<endl;;
-    cout<<"\tcall\tprintf\n\taddl\t$16, %esp"<<endl;;
+    cout<<"\tcall\tprintf\n\taddl\t$16, %esp"<<endl;
+}
+
+ string TreeNode::asmnode()
+ {
+    string a="";
+    char tmp[20];sprintf(tmp,"L_%d",this->nodeID);
+    a=tmp;
+    a+="(%ebp)";
+    return a;
+ }
+
+
+
+void TreeNode::asmret()
+{
+    cout<<"\tmovl\t";
+    if(this->child->nodeType==NODE_CONST)
+    {
+        switch(this->child->contype)
+        {
+            case CON_INT:
+            {
+                cout<<this->int_val;
+                break;
+            }
+            case CON_CHAR:
+            {
+                cout<<this->ch_val;
+                break;
+            }
+            case CON_STRING:
+            {
+                cout<<this->str_val;
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+    else 
+    {
+        cout<<this->child->offset<<"(%ebp)";
+    }
+    cout<<", %eax"<<endl;
+}
+
+
+
+
+
+
+
+
+
+
+void TreeNode:: genoffset()
+{
+    if(this->nodeType==NODE_EXPR)
+    {
+        current_offset-=4;
+        this->offset=current_offset;
+    }
+    else if(this->nodeType==NODE_STMT)
+    {
+        if(this->stype==STMT_DEFINE)
+        {
+            TreeNode* t=this->child;
+            for(;t!=nullptr;t=t->sibling)
+            {
+                if(t->child!=nullptr)
+                {
+                    current_offset-=4;
+                    t->child->offset=current_offset;
+                }
+            }
+        }
+        else if(this->stype==STMT_DECL)
+        {
+            TreeNode* t=this->child->sibling;
+            for(;t!=nullptr;t=t->sibling)
+            {
+                current_offset-=4;
+                t->offset=current_offset;
+            }
+        }
+        else if(this->stype==STMT_FUNC_DEF)
+        {
+            current_offset=0;
+        }
+    }
+    
 }
