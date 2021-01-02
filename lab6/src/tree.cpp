@@ -139,8 +139,6 @@ string TreeNode::sType2String() {
             return "stmt: func decalaration";
         case STMT_FUNC_DEF:
             return "stmt: func define";
-        case STMT_FUNC_USE:
-            return "stmt: func using";
         case STMT_ADD_ASSIGN:
             return "stmt: +=";
         case STMT_SUB_ASSIGN:
@@ -251,6 +249,8 @@ string TreeNode:: opType2String()
     string a="op: ";
     switch(this->optype)
     {
+        case OP_FUNC_USE:
+            return a+"function";
         case OP_EQUAL:
             return a+"==";
         case OP_GREAT:
@@ -359,6 +359,7 @@ void getBlock(TreeNode* root,table* scope)
 
 void getVarField(TreeNode* root,table*scope)
 {
+    table* ssss=scope;
 	if(root==nullptr)return;
 	TreeNode* t=root->child;
 	if(root->scope!=nullptr)
@@ -447,18 +448,26 @@ void getVarField(TreeNode* root,table*scope)
 			}
 			else if(t->stype== STMT_ASSIGN&&root->stype==STMT_DEFINE)
 			{//变量定义
-				TreeNode* m=t->child;
-				for(;m!=nullptr;m=m->sibling)
-				{
-					if(m->nodeType==NODE_VAR)
-					{
-						//加入作用域
-                        if(checkID(m->var_name,scope)==-1)
+                TreeNode* m=t->child;
+				if(m->nodeType!=NODE_VAR)
+                    m=m->sibling;
+                if(checkID(m->var_name,scope)==-1)
                             insertID(m,scope);
-                        else{
-                            cout<<"第"<<m->lineno<<"行"<<"该变量名"<<m->var_name<<"已经占用"<<endl;
-					}
-				}
+                else{
+                    cout<<"第"<<m->lineno<<"行"<<"该变量名"<<m->var_name<<"已经占用"<<endl;
+                
+				// for(;t!=nullptr;t=t->sibling)
+				// {
+                //     TreeNode* m=t->child;
+				// 	if(m->nodeType==NODE_VAR)
+				// 	{
+				// 		//加入作用域
+                //         if(checkID(m->var_name,scope)==-1)
+                //             insertID(m,scope);
+                //         else{
+                //             cout<<"第"<<m->lineno<<"行"<<"该变量名"<<m->var_name<<"已经占用"<<endl;
+				// 	}
+				// }
 			}
 		}
         }
@@ -472,6 +481,7 @@ void getVarField(TreeNode* root,table*scope)
                 insertID(t,scope);
             }
         }
+        
         getVarField(t,scope);
         t=t->sibling;
     }	
@@ -527,7 +537,6 @@ bool TreeNode::type_check()
                 if(t->checktype==Integer&&t->sibling->checktype==Integer)
                 {
                     this->checktype=Integer;
-                    //this->printNodeInfo() ;
                     return true;
                 }
                 return false;
@@ -555,6 +564,11 @@ bool TreeNode::type_check()
                 }
                 return false;
             }
+            case OP_FUNC_USE:
+            {
+                this->checktype=t->checktype;
+                return true;
+            }
             default:
                 return true;
             
@@ -566,11 +580,7 @@ bool TreeNode::type_check()
     {    
         switch(this->stype)
         {
-            case STMT_FUNC_USE:
-            {
-                this->checktype=t->checktype;
-                return true;
-            }
+            
             case STMT_WHILE:
             case STMT_IF:
             {
@@ -593,7 +603,6 @@ bool TreeNode::type_check()
             case STMT_DIV_ASSIGN:
             case STMT_MOD_ASSIGN:
             {
-                this->printNodeInfo();
                 if(t->checktype==t->sibling->checktype)
                 {
                     this->checktype=t->checktype;
@@ -643,7 +652,6 @@ int TreeNode::typechecking()
     {
         if(t->typechecking()==0)//失败
         {
-            //t->printNodeInfo();
             cout<<"第"<<t->lineno<<"行结点"<<this->nodeID<<"类型检查失败"<<endl;
             return 0;
         }
@@ -651,7 +659,6 @@ int TreeNode::typechecking()
     }
     if(this->type_check()==0)
     {
-        //this->printNodeInfo();
         cout<<"第"<<this->lineno<<"行结点"<<this->nodeID<<"类型检查失败"<<endl;
             return 0;
     }
@@ -677,15 +684,26 @@ void TreeNode::asmout(ofstream& asmout)
 
 void TreeNode:: asmfunc()
 {
-    cout<<"\t.text\n\t.globl\t"<<this->child->sibling->var_name<<"\n\t.type\t"<<this->child->sibling->var_name<<",@function\n"<<this->child->sibling->var_name<<":\n";
+    cout<<"\t.text"<<endl;cout<<"\t.globl\t"<<this->child->sibling->var_name<<""<<endl;cout<<"\t.type\t"<<this->child->sibling->var_name<<",@function"<<endl;cout<<""<<this->child->sibling->var_name<<":"<<endl;
 
 
     if(this->child->sibling->var_name=="main")//主函数
     {
-        cout<<"\tleal\t4(%esp), %ecx\n\tandl\t$-16, %esp\n\tpushl\t-4(%ecx)\n\tpushl\t%ebp\n\tmovl\t%esp, %ebp\n\tpushl\t%ecx\n\tsubl\t$"<<(scope->size+1)*4<<", %esp\n";  
-    this->child->sibling->sibling->asmstmt();
-        cout<<"\tmovl\t-4(%ebp), %ecx\n\tleave\n\tleal\t-4(%ecx), %esp\n\tret\n\t.section\t.note.GNU-stack,"",@progbits\n";
-    
+    //     cout<<"\tleal\t4(%esp), %ecx"<<endl;cout<<"\tandl\t$-16, %esp"<<endl;cout<<"\tpushl\t-4(%ecx)"<<endl;cout<<"\tpushl\t%ebp"<<endl;cout<<"\tmovl\t%esp, %ebp"<<endl;cout<<"\tpushl\t%ecx"<<endl;cout<<"\tsubl\t$"<<(scope->size+1)*4<<", %esp"<<endl;cout<<"";  
+    // this->child->sibling->sibling->asmstmt();
+    //     cout<<"\tmovl\t$0, %eax"<<endl;
+    //     cout<<"\tmovl\t-4(%ebp), %ecx"<<endl;cout<<"\tleave"<<endl;cout<<"\tleal\t-4(%ecx), %esp"<<endl;cout<<"\tret"<<endl;cout<<"\t.section\t.note.GNU-stack,\"\",@progbits"<<endl;
+        cout<<"\tpushl\t%ebp"<<endl;
+        cout<<"\tmovl\t%esp, %ebp"<<endl;
+        cout<<"\tsubl\t$"<<(scope->size+1)*4<<", %esp"<<endl;
+        this->child->sibling->sibling->asmstmt();
+        
+        
+        cout<<"\tmovl\t$0, %eax"<<endl;
+        cout<<"\tleave"<<endl;
+        cout<<"\tret"<<endl;
+        cout<<"\t.section\t.note.GNU-stack,\"\",@progbits"<<endl;
+        
     }
 
     
@@ -713,11 +731,11 @@ void TreeNode:: asmstmt()
 
 void TreeNode::asmconst(ofstream& asmout)
 {
-    cout<<"	.section	.rodata\n";//
+    cout<<"	.section	.rodata"<<endl;//
     for(int i=0;i<table::conststringtable->size;i++)
     {
-        cout<<table::conststringtable->item[i].label<<":\n";
-        cout<<"\t.string \""<<table::conststringtable->item[i].str_val<<"\"\n";
+        cout<<table::conststringtable->item[i].label<<":"<<endl;;
+        cout<<"\t.string \""<<table::conststringtable->item[i].str_val<<"\""<<endl;;
     }
 }
 
@@ -729,7 +747,7 @@ void TreeNode::asmvar(ofstream& asmout)//全局变量
 }
 void TreeNode::asmprintf()
 {
-    cout<<"\tsubl\t$12, %esp\n";
-    cout<<"\tpushl\t$"<<this->child->label<<"\n";
-    cout<<"\tcall\tprintf\n\taddl\t$16, %esp\n";
+    cout<<"\tsubl\t$12, %esp"<<endl;;
+    cout<<"\tpushl\t$"<<this->child->label<<""<<endl;;
+    cout<<"\tcall\tprintf\n\taddl\t$16, %esp"<<endl;;
 }

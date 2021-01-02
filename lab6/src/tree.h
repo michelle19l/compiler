@@ -49,6 +49,8 @@ enum OperatorType
 
     OP_ADDR,//&
     OP_VAL,//*
+
+    OP_FUNC_USE,//函数调用
 };
 
 enum StmtType {

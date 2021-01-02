@@ -147,14 +147,14 @@ function_def
 ;
 function_use
 : IDENTIFIER LPAREN idlist RPAREN{
-    $$=new TreeNode ($1->lineno,NODE_STMT);
-    $$->stype=STMT_FUNC_USE;
+    $$=new TreeNode ($1->lineno,NODE_EXPR);
+    $$->optype=OP_FUNC_USE;
     $$->addChild($1);
     $$->addChild($3);
 }
 |IDENTIFIER LPAREN  RPAREN{
-    $$=new TreeNode ($1->lineno,NODE_STMT);
-    $$->stype=STMT_FUNC_USE;
+    $$=new TreeNode ($1->lineno,NODE_EXPR);
+    $$->optype=OP_FUNC_USE;
     $$->addChild($1);
 }
 ;
@@ -359,12 +359,12 @@ declaration
     node->addChild($1);
     node->addChild($2);
     $$ = node;   
-    for(TreeNode* t=$2->child;t!=nullptr;t=t->sibling)
+    for(TreeNode* t=$2;t!=nullptr;t=t->sibling)
     {
-        if(t->nodeType==NODE_VAR)
+        if(t->child->nodeType==NODE_VAR)
         {
-            t->checktype=$1->checktype;
-            t->var_func=0;
+            t->child->checktype=$1->checktype;
+            t->child->var_func=0;
         }
     }
 

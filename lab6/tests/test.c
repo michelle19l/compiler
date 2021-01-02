@@ -1,5 +1,9 @@
-void main()
+int s()
 {
-    printf("123");
-    printf("%d");
+
+}
+int main()
+{
+    int j=2,k=2;
+    int n=s();
 }

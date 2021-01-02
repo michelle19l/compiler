@@ -1622,8 +1622,8 @@ yyreduce:
   case 27:
 #line 149 "src/main.y" /* yacc.c:1646  */
     {
-    (yyval)=new TreeNode ((yyvsp[-3])->lineno,NODE_STMT);
-    (yyval)->stype=STMT_FUNC_USE;
+    (yyval)=new TreeNode ((yyvsp[-3])->lineno,NODE_EXPR);
+    (yyval)->optype=OP_FUNC_USE;
     (yyval)->addChild((yyvsp[-3]));
     (yyval)->addChild((yyvsp[-1]));
 }
@@ -1633,8 +1633,8 @@ yyreduce:
   case 28:
 #line 155 "src/main.y" /* yacc.c:1646  */
     {
-    (yyval)=new TreeNode ((yyvsp[-2])->lineno,NODE_STMT);
-    (yyval)->stype=STMT_FUNC_USE;
+    (yyval)=new TreeNode ((yyvsp[-2])->lineno,NODE_EXPR);
+    (yyval)->optype=OP_FUNC_USE;
     (yyval)->addChild((yyvsp[-2]));
 }
 #line 1641 "src/main.tab.cpp" /* yacc.c:1646  */
@@ -1933,12 +1933,12 @@ yyreduce:
     node->addChild((yyvsp[-1]));
     node->addChild((yyvsp[0]));
     (yyval) = node;   
-    for(TreeNode* t=(yyvsp[0])->child;t!=nullptr;t=t->sibling)
+    for(TreeNode* t=(yyvsp[0]);t!=nullptr;t=t->sibling)
     {
-        if(t->nodeType==NODE_VAR)
+        if(t->child->nodeType==NODE_VAR)
         {
-            t->checktype=(yyvsp[-1])->checktype;
-            t->var_func=0;
+            t->child->checktype=(yyvsp[-1])->checktype;
+            t->child->var_func=0;
         }
     }
 
