@@ -738,9 +738,10 @@ void TreeNode:: asmfunc()
 
     if(this->child->sibling->var_name=="main")//主函数
     {
-        cout<<"\tleal\t4(%esp), %ecx"<<endl;cout<<"\tandl\t$-16, %esp"<<endl;cout<<"\tpushl\t-4(%ecx)"<<endl;cout<<"\tpushl\t%ebp"<<endl;cout<<"\tmovl\t%esp, %ebp"<<endl;cout<<"\tpushl\t%ecx"<<endl;cout<<"\tsubl\t$"<<(this->scope->size+1)*4+100<<", %esp"<<endl;cout<<"";  
+        cout<<"\tleal\t4(%esp), %ecx"<<endl;cout<<"\tandl\t$-16, %esp"<<endl;cout<<"\tpushl\t-4(%ecx)"<<endl;cout<<"\tpushl\t%ebp"<<endl;cout<<"\tmovl\t%esp, %ebp"<<endl;cout<<"\tpushl\t%ecx"<<endl;cout<<"\tsubl\t$"<<(this->scope->size+1)*4+100<<", %esp"<<endl;cout<<""<<endl;  
         
         this->child->sibling->sibling->asmstmt();
+        cout<<endl;
         cout<<"\tmovl\t$0, %eax"<<endl;
         cout<<"\tmovl\t-4(%ebp), %ecx"<<endl;cout<<"\tleave"<<endl;cout<<"\tleal\t-4(%ecx), %esp"<<endl;cout<<"\tret"<<endl;cout<<"\t.section\t.note.GNU-stack,\"\",@progbits"<<endl;
 
@@ -817,7 +818,7 @@ void TreeNode:: asmstmt()
         default:
             break;
     }
-    
+    cout<<endl;
 }
 
 void TreeNode::asmconst(ofstream& asmout)
@@ -835,23 +836,25 @@ string TreeNode::setval()
 {
     string a="";
     val=0;
-    if(nodeType==NODE_CONST)
+    if(this->nodeType==NODE_CONST)
     {
+        
         if(int_val)
             {val=int_val;}
         else if(ch_val)
         {
-            {val=(int)ch_val;}
+            val=(int)ch_val;
         }
         else if (b_val)
         {
-            {val=(int)b_val;}
+            val=(int)b_val;
         }
+        
         char tmp[20];
         sprintf(tmp,"$%d",val);
         a=tmp;
     }
-    else if(nodeType==NODE_EXPR)
+    else if(this->nodeType==NODE_EXPR||this->nodeType==NODE_VAR)
     {
         char tmp[20];
         sprintf(tmp,"%d",offset);
@@ -1062,27 +1065,21 @@ void TreeNode::asmsetvalue()
 }
 
 
-
 void TreeNode::leftparam()
 {   
     cout<<"\tmovl\t";
-    if(this->child->nodeType==contype)
-    {
-        cout<<"$"<<this->child->setval();
-    }
-    else cout<<this->asmnode();
+    cout<<this->child->setval();
     cout<<", %eax"<<endl;
+    
 }
 
 void TreeNode::rightparam()
 {   
     cout<<"\tmovl\t";
-    if(this->child->sibling->nodeType==contype)
-    {
-        cout<<"$"<<this->child->sibling->setval();
-    }
-    else cout<<this->asmnode();
+    cout<<this->child->sibling->setval();
+    
     cout<<", %edx"<<endl;
+
 }
 
 void TreeNode:: asmop()
