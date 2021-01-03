@@ -165,6 +165,7 @@ public:
     string var_name;
     int var_func;//0代表变量，1代表函数,-1代表未设置
     string label;
+    Label controllabel;
 
     int lex;//符号表结点指针
     string workfield;//变量作用域
@@ -179,6 +180,7 @@ public:
 
     static int current_offset;
     static int current_node_id;
+    static int current_label;
 public:
     string nodeType2String ();//结点基本类型
     // static string opType2String (OperatorType type);
@@ -198,12 +200,15 @@ public:
     bool type_check();
     //int type_set_check();//类型检查结点类型设置和检查,正确返回1，错误0
 
-    //void genlabel();
+    
 
     void genoffset();//生成偏移
     TreeNode* leftsibling();//参数左兄弟
     int pushparam();//参数从右至左入栈
+    int pushparamchild();
     string setval();
+
+    void genlabel();//打标
 
 public:
     void asmout(ofstream& asmout);//输出汇编代码
@@ -213,10 +218,12 @@ public:
     void asmvar(ofstream& asmout);//输出局部变量
     void asmconst(ofstream& asmout);//输出常量
     void asmprintf();
+    void asmscanf();//scanf
     void asmstmt();//输出语句的汇编
     void asmret();//return
 
     void asmop();//+-*/
+    void asmif();
 
     string asmnode();//打印结点对应栈中的元素
     void asmstatic();//打印全局变量
@@ -226,7 +233,7 @@ public:
     void rightparam();
 };
 #endif
-
+int insertID_(TreeNode* root,table* scope);
 int insertID(TreeNode* root,table* scope);//向当前作用域插入IDint
 //static int checkID(string yytext,table*scope);//在当前作用域查找是否存在该ID
 void getBlock(TreeNode* root,table* scope);//根据ast得到作用域树

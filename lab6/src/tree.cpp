@@ -2,6 +2,7 @@
 
 int TreeNode::current_node_id=0;
 int TreeNode::current_offset=-12;
+int TreeNode::current_label=0;
 void TreeNode::addChild(TreeNode* child) {
     
     if(this->child==nullptr)
@@ -300,7 +301,39 @@ string TreeNode::varName2String()
     string a="var_name: ";
     return a+this->var_name;
 }
+int insertID_(TreeNode* node,table* scope)//向当前作用域插入ID,
+{
+    node->scope=scope;
+    node->workfield=scope->attribute;
 
+    int index_;
+    index_=checkID(node->var_name,scope);
+    if(index_!=-1)
+        return index_;
+        
+    scope->item[scope->size].offset=node->offset;
+    scope->item[scope->size].name=node->var_name;
+    scope->item[scope->size].int_val=node->int_val;
+    //cout<<"-----"<<node->int_val<<endl;
+    scope->item[scope->size].char_val=node->ch_val;
+    //scope->item[scope->size].str_val=node->str_val;
+    scope->item[scope->size].str_val=node->str_val;
+
+
+    
+    scope->item[scope->size].label=node->label;
+    scope->item[scope->size].type=node->checktype;
+    scope->item[scope->size].var_func=node->var_func;
+    scope->item[scope->size].set=node->set;
+    //scope->item[scope->size].head=node->head;//参数列表
+	scope->size++;
+    int t=scope->size-1;
+
+    //scope=temp;
+    return t;
+	//node->workfield=scope->attribute;
+	//cout<<"----"<<node->workfield<<endl;
+}
 int insertID(TreeNode* node,table* scope)//向当前作用域插入ID,
 {
     node->scope=scope;
@@ -308,7 +341,10 @@ int insertID(TreeNode* node,table* scope)//向当前作用域插入ID,
 
     if(node->var_name!="")
 	if(checkID(node->var_name,scope)!=-1)
-		{cout<<"第"<<node->lineno<<"行变量"<<node->var_name<<"已占用"<<endl;return -1;}
+		{cout<<"第"<<node->lineno<<"行变量"<<node->var_name<<"已占用"<<endl;
+        node->printNodeInfo();
+        return -1;
+        }
             scope->item[scope->size].offset=node->offset;
             scope->item[scope->size].name=node->var_name;
             scope->item[scope->size].int_val=node->int_val;
@@ -523,8 +559,8 @@ void getVarField(TreeNode* root,table*scope)
             {
                 //添加至全局常量表
                 t->var_func=2;
-                insertID(t,table::conststringtable);
-                insertID(t,scope);
+                insertID_(t,table::conststringtable);
+                //insertID(t,scope);
             }
         }
         
@@ -676,19 +712,52 @@ bool TreeNode::type_check()
 }
 
 
-// int TreeNode::typechecking()
-// {
-//     //遍历语法树
-//     bool tempthis=this->type_chekc();
-//     TreeNode* t=this->child;
-//     while(t!=nullptr)
-//     {
-//         if(t->type_set_check()==0)
-//             return 0;
-//         t=t->sibling;
-//     }
-//     return 1;
-// }f
+
+void TreeNode:: genlabel()
+{
+    if(this->nodeType==NODE_STMT)
+    {
+        switch(this->stype)
+        {
+            case STMT_WHILE:
+            {
+                break;
+            }
+            case STMT_FOR:
+            {
+                break;
+            }
+
+            case STMT_IF_ELSE:
+            {//都是block的编号
+                this->controllabel.true_label=this->child->child->sibling->label;
+                this->controllabel.false_label=this->child->sibling->child->label;
+            }
+            case STMT_IF:
+            {
+                if(this->sibling->sibling->stype==STMT_ELSE)
+                    break;//已经设置过
+                this->controllabel.true_label=this->child->sibling->label;
+                this->controllabel.false_label=this->sibling->label;
+
+                break;
+            }
+        }
+    }
+    if(this->child!=nullptr)
+    {
+        this->child->genlabel();
+    }
+    if(this->sibling!=nullptr)
+    {
+        this->sibling->genlabel();
+    }
+}
+
+void TreeNode::asmif()
+{
+    
+}
 
 
 int TreeNode::typechecking()
@@ -787,20 +856,28 @@ void TreeNode:: asmstmt()
             this->asmprintf();
             break;
         }
+        case STMT_SCF:
+        {
+            this->asmscanf();
+            break;
+        }
         case STMT_RET:
         {
             this->asmret();
+            break;
         }
         //case STMT_DEFINE:
         case STMT_ASSIGN:
         {
+            cout<<"\tmovl\t"<<this->child->sibling->setval()<<", %eax"<<endl;
             if(this->child->scope->attribute!="0")
             {
                 //非局部变量
                 //this->rightparam();
-                cout<<"\tmovl\t"<<this->child->sibling->setval()<<", %eax"<<endl;
                 this->child->asmsetvalue();
-                
+            }
+            else{
+                cout<<"\tmovl\t%eax, "<<this->child->var_name<<endl;
             }
             break;
         }
@@ -886,13 +963,41 @@ int TreeNode::pushparam()//将参数从右至左压栈
         count=t->pushparam();
     }
     count++;
-    if(this->scope->attribute=="0")//全局
+    if(this->nodeType==NODE_VAR)
+    {
+        if(this->scope->attribute=="0")//全局
+        {
+            cout<<"\tmovl\t"<<this->var_name<<", %eax"<<endl;
+        }
+        else 
+        {
+            cout<<"\tmovl\t"<<asmnode()<<", %eax"<<endl;
+        }
+    }
+    else if(this->nodeType==NODE_CONST)
+    {
+        this->asmsetvalue();
+    }
+    cout<<"\tpushl\t%eax"<<endl;
+    return count;
+}
+
+int TreeNode::pushparamchild()//将参数从右至左压栈
+{   
+    TreeNode* t=this->sibling;
+    int count=0;
+    if(t!=nullptr)
+    {
+        count=t->pushparamchild();
+    }
+    count++;
+    if(this->child->scope->attribute=="0")//全局
     {
         cout<<"\tmovl\t"<<this->var_name<<", %eax"<<endl;
     }
     else 
     {
-        cout<<"\tmovl\t"<<asmnode()<<", %eax"<<endl;
+        cout<<"\tmovl\t"<<this->child->asmnode()<<", %eax"<<endl;
     }
     cout<<"\tpushl\t%eax"<<endl;
     return count;
@@ -900,10 +1005,26 @@ int TreeNode::pushparam()//将参数从右至左压栈
 void TreeNode::asmprintf()
 {
     cout<<"\tsubl\t$12, %esp"<<endl;
-    int count=this->child->sibling->pushparam();
+    int count=0;
+    if(this->child->sibling!=nullptr)
+        int count=this->child->sibling->pushparam();
+    
     count*=4;
 
     cout<<"\tpushl\t$"<<this->child->label<<""<<endl;;
+    cout<<"\tcall\tprintf\n\taddl\t$"<<12+count+4<<", %esp"<<endl;
+}
+
+void TreeNode::asmscanf()
+{
+    cout<<"\tsubl\t$12, %esp"<<endl;
+    int count=0;
+    if(this->child->sibling!=nullptr)
+        int count=this->child->sibling->pushparam();
+    
+    count*=4;
+
+    cout<<"\tpushl\t$"<<this->child->child->label<<""<<endl;;
     cout<<"\tcall\tprintf\n\taddl\t$"<<12+count+4<<", %esp"<<endl;
 }
 
@@ -1009,7 +1130,7 @@ void TreeNode::asmstatic()//打印全局变量
     {
         if(table::scoperoot->item[i].var_func==1)
             continue;
-        if(set==0)
+        if(this->sibling!=nullptr&&this->sibling->nodeType==NODE_EXPR)
         {//定义
             cout<<"\t.globl\t"<<table::scoperoot->item[i].name<<endl;
             switch(table::scoperoot->item[i].type)
@@ -1034,17 +1155,17 @@ void TreeNode::asmstatic()//打印全局变量
         }
         else{
             //声明
-            cout<<"\t.comm"<<table::scoperoot->item[i].name;
+            cout<<"\t.comm\t"<<table::scoperoot->item[i].name;
             switch(table::scoperoot->item[i].type)
             {
                 case Integer:
                 { 
-                    cout<<"4,4"<<endl;
+                    cout<<",4,4"<<endl;
                     break;
                 }
                 case Char:
                 {
-                    cout<<"1,1"<<endl;
+                    cout<<",1,1"<<endl;
                     break;
                 }
                 default:
@@ -1096,6 +1217,7 @@ void TreeNode:: asmop()
             this->rightparam();
             cout<<"\taddl\t%edx, %eax"<<endl;
             cout<<"\tmovl\t%eax, "<<this->asmnode()<<endl;
+            break;
         }
         case OP_SUB:
         {
@@ -1103,6 +1225,7 @@ void TreeNode:: asmop()
             this->rightparam();
             cout<<"\tsubl\t%edx, %eax"<<endl;
             cout<<"\tmovl\t%eax, "<<this->asmnode()<<endl;
+            break;
         }
         case OP_MUL:
         {
@@ -1110,6 +1233,7 @@ void TreeNode:: asmop()
             this->rightparam();
             cout<<"\timull\t%edx, %eax"<<endl;
             cout<<"\tmovl\t%eax, "<<this->asmnode()<<endl;
+            break;
         }
         case OP_DIV:
         {
@@ -1124,6 +1248,7 @@ void TreeNode:: asmop()
                 cout<<"\tidivl\t"<<this->setval()<<endl;
             }
             cout<<"\tmovl\t%eax, "<<this->asmnode()<<endl;
+            break;
         }
     }
 }

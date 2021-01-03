@@ -1,8 +1,13 @@
-
-int main()
+if(1==0)
 {
-    int a=10,o=2;
-    //=2;
-    a=a/3;
-    printf("%d\n",a);
+
 }
+else
+{
+
+}
+if(2==0)
+{
+
+}
+int s=1;

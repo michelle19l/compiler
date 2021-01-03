@@ -262,18 +262,19 @@ if_else
 : IF LPAREN bool_statements RPAREN  block  ELSE block {//if(..) {..} else{..}
     $$=new TreeNode(lineno,NODE_STMT);
     $$->stype=STMT_IF_ELSE;
-    $$->addChild($3);//bool表达式
+    
     
     TreeNode * temp=new TreeNode($5->lineno,NODE_STMT); //if后执行的语句
     temp->stype=STMT_IF;
+    temp->addChild($3);//bool表达式
     temp->addChild($5);
     
     TreeNode * t=new TreeNode ($7->lineno,NODE_STMT);//else后执行的语句
     t->stype=STMT_ELSE;
     t->addChild($7);//else后执行的语句
-    
-    $$->addChild(t);
     $$->addChild(temp);
+    $$->addChild(t);
+    
     }
 | IF LPAREN bool_statements RPAREN block {
     //if (..) {..}
