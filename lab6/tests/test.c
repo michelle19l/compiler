@@ -1,7 +1,7 @@
-int s;
+
 int main()
 {
-    int h,p;
-    int s=2,k=3+7;
-    return 1;
+    int a=0,o=2;
+    //=2;
+    printf("%d",a);
 }

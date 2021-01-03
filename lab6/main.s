@@ -1,45 +1,53 @@
-0	@0	program	children: @1 @4		类型：
-1	@1	statement	children: @2 @3	stmt: declaration	类型：
-1	@2	type	children:	type: int	类型：Integer
-1	@3	variable	children:	var_name: s field: 0	类型：Integer	-4
-2	@4	statement	children: @5 @6 @7	stmt: func define	类型：
-2	@5	type	children:	type: int	类型：Integer
-2	@6	variable	children:	var_name: main field: 0	类型：Integer	0
-7	@7	statement	children: @8 @12 @22	stmt: block	类型：
-4	@8	statement	children: @9 @10 @11	stmt: declaration	类型：
-4	@9	type	children:	type: int	类型：Integer
-4	@10	variable	children:	var_name: h field: 0_1_1	类型：Integer	-4
-4	@11	variable	children:	var_name: p field: 0_1_1	类型：Integer	-8
-5	@12	statement	children: @13 @14 @17	stmt: define	类型：
-5	@13	type	children:	type: int	类型：Integer
-5	@14	statement	children: @15 @16	stmt: assign	类型：Integer
-5	@15	variable	children:	var_name: s field: 0_1_1	类型：Integer	-12
-5	@16	const	children:	const: const: int 2	类型：Integer
-5	@17	statement	children: @18 @19	stmt: assign	类型：Integer
-5	@18	variable	children:	var_name: k field: 0_1_1	类型：Integer	-16
-5	@19	expression	children: @20 @21	op: +	类型：Integer	-20
-5	@20	const	children:	const: const: int 3	类型：Integer
-5	@21	const	children:	const: const: int 7	类型：Integer
-6	@22	statement	children: @23	stmt: return	类型：
-6	@23	const	children:	const: const: int 1	类型：Integer
-0 s 变量#main 函数#
+0	@0	program	children: @1		类型：
+2	@1	statement	children: @2 @3 @4	stmt: func define	类型：
+2	@2	type	children:	type: int	类型：Integer
+2	@3	variable	children:	var_name: main field: 0	类型：Integer	0
+7	@4	statement	children: @5 @13	stmt: block	类型：
+4	@5	statement	children: @6 @7 @10	stmt: define	类型：
+4	@6	type	children:	type: int	类型：Integer
+4	@7	statement	children: @8 @9	stmt: assign	类型：Integer
+4	@8	variable	children:	var_name: a field: 0_1_1	类型：Integer	-16
+4	@9	const	children:	const: const: int 0	类型：Integer
+4	@10	statement	children: @11 @12	stmt: assign	类型：Integer
+4	@11	variable	children:	var_name: o field: 0_1_1	类型：Integer	-20
+4	@12	const	children:	const: const: int 2	类型：Integer
+6	@13	statement	children: @14 @15	stmt: printf	类型：
+6	@14	const	children:	const: const: string "%d"	类型：String
+6	@15	variable	children:	var_name: a field: 0_1_1	类型：Integer	-16
+0 main 函数#
 0_1 
-0_1_1 h 变量#p 变量#s 变量#k 变量#
-0 
+0_1_1 a 变量#o 变量#%d 常量
+0 %d 常量
 0 
 	.section	.rodata
+L_14:
+	.string "%d"
 	.text
-	.globl	s
-	.type	s,@function
-s:
+	.data
 	.text
 	.globl	main
 	.type	main,@function
 main:
+	leal	4(%esp), %ecx
+	andl	$-16, %esp
+	pushl	-4(%ecx)
 	pushl	%ebp
 	movl	%esp, %ebp
-	subl	$4, %esp
-	movl	0, %eax
+	pushl	%ecx
+	subl	$104, %esp
+	movl	$0, %eax
+	movl	%eax, -16(%ebp)
+	movl	$2, %eax
+	movl	%eax, -20(%ebp)
+	subl	$12, %esp
+	movl	-16(%ebp), %eax
+	pushl	%eax
+	pushl	$L_14
+	call	printf
+	addl	$20, %esp
+	movl	$0, %eax
+	movl	-4(%ebp), %ecx
 	leave
+	leal	-4(%ecx), %esp
 	ret
 	.section	.note.GNU-stack,"",@progbits

@@ -36,8 +36,13 @@ public:
 	string label;//标签
 	int var_func;//0代表变量，1代表函数,1代表未设置
 	string str_val;//常量字符串存储
+	int int_val;//全局变量整数存储
+	char char_val;//全局变量char存储
 	checktypelink* head;//参数列表
 	fielditem();
+
+	int offset;
+	int set;//是否有初值
 };
 
 class table {

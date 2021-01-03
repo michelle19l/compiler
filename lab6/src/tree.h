@@ -66,7 +66,7 @@ enum StmtType {
 
     STMT_FUNC_DECL,
     STMT_FUNC_DEF,
-    STMT_FUNC_USE,
+
 
     STMT_ADD_ASSIGN,
     STMT_SUB_ASSIGN,
@@ -172,9 +172,10 @@ public:
 
     CHECKTYPE checktype;//用于进行类型检查
     Label control;//用于跳转
-
+    int val;//结点的值，忽略类型差异，int char bool
 
     int offset;//相对于ebp的偏移
+    int set;//变量是否有初值；
 
     static int current_offset;
     static int current_node_id;
@@ -200,7 +201,9 @@ public:
     //void genlabel();
 
     void genoffset();//生成偏移
-
+    TreeNode* leftsibling();//参数左兄弟
+    int pushparam();//参数从右至左入栈
+    string setval();
 
 public:
     void asmout(ofstream& asmout);//输出汇编代码
@@ -213,7 +216,14 @@ public:
     void asmstmt();//输出语句的汇编
     void asmret();//return
 
+    void asmop();//+-*/
+
     string asmnode();//打印结点对应栈中的元素
+    void asmstatic();//打印全局变量
+    void asmsetvalue();//movl	%eax, -12(%ebp)
+
+    void leftparam();
+    void rightparam();
 };
 #endif
 

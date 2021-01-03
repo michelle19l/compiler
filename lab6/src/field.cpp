@@ -21,6 +21,7 @@ fielditem::fielditem()
 {
 	type=Notype;
 	var_func=-1;
+	set=0;
 }
 
 int checkID(string yytext,table*scope)
