@@ -1,8 +1,8 @@
 
 int main()
 {
-    int a=4,o=2;
+    int a=10,o=2;
     //=2;
-    a=a+o;
-    printf("%d",a);
+    a=a/3;
+    printf("%d\n",a);
 }

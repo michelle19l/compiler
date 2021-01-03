@@ -7,26 +7,26 @@
 4	@6	type	children:	type: int	类型：Integer
 4	@7	statement	children: @8 @9	stmt: assign	类型：Integer
 4	@8	variable	children:	var_name: a field: 0_1_1	类型：Integer	-16
-4	@9	const	children:	const: const: int 4	类型：Integer
+4	@9	const	children:	const: const: int 10	类型：Integer
 4	@10	statement	children: @11 @12	stmt: assign	类型：Integer
 4	@11	variable	children:	var_name: o field: 0_1_1	类型：Integer	-20
 4	@12	const	children:	const: const: int 2	类型：Integer
 6	@13	statement	children: @14 @15	stmt: assign	类型：Integer
 6	@14	variable	children:	var_name: a field: 0_1_1	类型：Integer	-16
-6	@15	expression	children: @16 @17	op: +	类型：Integer	-24
+6	@15	expression	children: @16 @17	op: /	类型：Integer	-24
 6	@16	variable	children:	var_name: a field: 0_1_1	类型：Integer	-16
-6	@17	variable	children:	var_name: o field: 0_1_1	类型：Integer	-20
+6	@17	const	children:	const: const: int 3	类型：Integer
 7	@18	statement	children: @19 @20	stmt: printf	类型：
-7	@19	const	children:	const: const: string "%d"	类型：String
+7	@19	const	children:	const: const: string "%d\n"	类型：String
 7	@20	variable	children:	var_name: a field: 0_1_1	类型：Integer	-16
 0 main 函数#
 0_1 
-0_1_1 a 变量#o 变量#%d 常量
-0 %d 常量
+0_1_1 a 变量#o 变量#%d\n 常量
+0 %d\n 常量
 0 
 	.section	.rodata
 L_19:
-	.string "%d"
+	.string "%d\n"
 	.text
 	.data
 	.text
@@ -44,7 +44,7 @@ main:
 
 
 
-	movl	$4, %eax
+	movl	$10, %eax
 	movl	%eax, -16(%ebp)
 
 
@@ -57,8 +57,9 @@ main:
 
 
 	movl	-16(%ebp), %eax
-	movl	-20(%ebp), %edx
-	addl	%edx, %eax
+	cltd
+	movl	$3, -24(%ebp)
+	idivl	-24(%ebp)
 	movl	%eax, -24(%ebp)
 
 	movl	-24(%ebp), %eax

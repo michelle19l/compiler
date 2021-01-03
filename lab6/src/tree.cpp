@@ -811,6 +811,9 @@ void TreeNode:: asmstmt()
     switch(this->optype)
     {
         case OP_ADD:
+        case OP_SUB:
+        case OP_MUL:
+        case OP_DIV:
         {
             this->asmop();
             break;
@@ -1092,6 +1095,34 @@ void TreeNode:: asmop()
             this->leftparam();
             this->rightparam();
             cout<<"\taddl\t%edx, %eax"<<endl;
+            cout<<"\tmovl\t%eax, "<<this->asmnode()<<endl;
+        }
+        case OP_SUB:
+        {
+            this->leftparam();
+            this->rightparam();
+            cout<<"\tsubl\t%edx, %eax"<<endl;
+            cout<<"\tmovl\t%eax, "<<this->asmnode()<<endl;
+        }
+        case OP_MUL:
+        {
+            this->leftparam();
+            this->rightparam();
+            cout<<"\timull\t%edx, %eax"<<endl;
+            cout<<"\tmovl\t%eax, "<<this->asmnode()<<endl;
+        }
+        case OP_DIV:
+        {
+            this->leftparam();
+            cout<<"\tcltd"<<endl;
+            if(this->child->sibling->nodeType!=NODE_CONST)
+            {
+                cout<<"\tidivl\t"<<this->child->sibling->setval()<<endl;
+            }
+            else{
+                cout<<"\tmovl\t"<<this->child->sibling->setval()<<", "<<this->setval()<<endl;
+                cout<<"\tidivl\t"<<this->setval()<<endl;
+            }
             cout<<"\tmovl\t%eax, "<<this->asmnode()<<endl;
         }
     }
