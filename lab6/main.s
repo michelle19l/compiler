@@ -1,32 +1,11 @@
-0	@0	program	children: @1		类型：
-1	@1	statement	children: @2 @3 @4	stmt: func define	类型：
-1	@2	type	children:	type: int	类型：Integer
-1	@3	variable	children:	var_name: main field: 0	类型：Integer	0
-7	@4	statement	children: @5 @10 @13 @17	stmt: block	类型：
-2	@5	statement	children: @6 @7	stmt: define	类型：
-2	@6	type	children:	type: int	类型：Integer
-2	@7	statement	children: @8 @9	stmt: assign	类型：Integer
-2	@8	variable	children:	var_name: a field: 0_1_1	类型：Integer	-16
-2	@9	const	children:	const: const: int 1	类型：Integer
-3	@10	statement	children: @11 @12	stmt: printf	类型：
-3	@11	const	children:	const: const: string "%d"	类型：String
-3	@12	const	children:	const: const: int 1	类型：Integer
-4	@13	statement	children: @14 @15	stmt: scanf	类型：
-4	@14	const	children:	const: const: string "%d"	类型：String
-4	@15	expression	children: @16	op: &	类型：	-20
-4	@16	variable	children:	var_name: a field: 0_1_1	类型：Integer	-16
-6	@17	statement	children: @18 @19	stmt: printf	类型：
-6	@18	const	children:	const: const: string "%d"	类型：String
-6	@19	variable	children:	var_name: a field: 0_1_1	类型：Integer	-16
 	.section	.rodata
-L_11:
+L_9:
 	.string "%d"
-L_14:
-	.string "%d"
-L_18:
-	.string "%d"
+L_23:
+	.string "test:%d\n"
 	.text
 	.data
+	.comm	a,4,4
 	.text
 	.globl	main
 	.type	main,@function
@@ -39,31 +18,28 @@ main:
 	pushl	%ecx
 	subl	$104, %esp
 
-	movl	$1, %eax
+	leal	a, %eax
 	movl	%eax, -16(%ebp)
-	subl	$12, %esp
-	movl	$1, %eax
-	pushl	%eax
-	pushl	$L_11
-	call	printf
-	addl	$16, %esp
-
-	
-	leal	-16(%ebp), %eax
-	movl	%eax, -20(%ebp)
-	subl	$12, %esp
-	movl	-20(%ebp), %eax
-	pushl	%eax
-	pushl	$L_14
-	call	__isoc99_scanf
-	addl	$16, %esp
-
 	subl	$12, %esp
 	movl	-16(%ebp), %eax
 	pushl	%eax
-	pushl	$L_18
+	pushl	$L_9
+	call	__isoc99_scanf
+	addl	$16, %esp
+	movl	a, %eax
+	movl	$0, %edx
+	cmpl	%edx, %eax
+	je	L_21
+	movl	$20, %eax
+	movl	%eax, a
+L_21:
+	subl	$12, %esp
+	movl	a, %eax
+	pushl	%eax
+	pushl	$L_23
 	call	printf
 	addl	$16, %esp
+	movl	$0, %eax
 
 	movl	$0, %eax
 	movl	-4(%ebp), %ecx

@@ -1,7 +1,9 @@
+int a;
 int main(){
-int a=1;
-printf("%d",1);
     scanf("%d",&a);
-    
-    printf("%d",a);
+    if(a!=0){
+        a=20;
+    }
+    printf("test:%d\n",a);
+    return 0;
 }

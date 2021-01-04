@@ -1297,35 +1297,38 @@ void TreeNode:: asmopnum()
 }
 void TreeNode:: asmoprel()
 {
-    
+    this->leftparam();
+    this->rightparam();
+    cout<<"\tcmpl\t%edx, %eax"<<endl;
     switch(this->optype)
     {
         case OP_EQUAL:
         {
-            this->leftparam();
-            this->rightparam();
-            cout<<"\tcmpl\t%edx, %eax"<<endl;
             cout<<"\tjne\t";
             break;
         }
         case OP_GREAT:
         {
+            cout<<"\tjle\t";
             break;
         }
         case OP_LESS:
-        {
+        {cout<<"\tjge\t";
             break;
         }
         case OP_GREAT_EQ:
         {
+            cout<<"\tjl\t";
             break;
         }
         case OP_LESS_EQ:
         {
+            cout<<"\tjg\t";
             break;
         }
         case OP_NOT_EQ:
         {
+            cout<<"\tje\t";
             break;
         }
         default:
