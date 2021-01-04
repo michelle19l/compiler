@@ -918,6 +918,11 @@ void TreeNode:: asmstmt()
             this->asmoprel();
             break;
         }
+        case OP_ADDR:
+        {
+            this->asmopaddr();
+            break;
+        }
         default:
             break;
     }
@@ -956,6 +961,10 @@ string TreeNode::setval()
         sprintf(tmp,"$%d",val);
         a=tmp;
     }
+    else if(this->scope!=nullptr&&this->scope->attribute=="0")
+    {
+        a=this->var_name;
+    }
     else if(this->nodeType==NODE_EXPR||this->nodeType==NODE_VAR)
     {
         char tmp[20];
@@ -976,8 +985,37 @@ TreeNode* TreeNode::leftsibling()
     }
     return t;
 }
+// int TreeNode::pushparam()//将参数从右至左压栈
+// {   
+//     TreeNode* t=this->sibling;
+//     int count=0;
+//     if(t!=nullptr)
+//     {
+//         count=t->pushparam();
+//     }
+//     count++;
+//     if(this->nodeType==NODE_VAR)
+//     {
+//         if(this->scope->attribute=="0")//全局
+//         {
+//             cout<<"\tmovl\t"<<this->var_name<<", %eax"<<endl;
+//         }
+//         else 
+//         {
+//             cout<<"\tmovl\t"<<asmnode()<<", %eax"<<endl;
+//         }
+//     }
+//     else if(this->nodeType==NODE_CONST)
+//     {
+//         this->asmsetvalue();
+//     }
+//     cout<<"\tpushl\t%eax"<<endl;
+//     return count;
+// }
+
 int TreeNode::pushparam()//将参数从右至左压栈
 {   
+    
     TreeNode* t=this->sibling;
     int count=0;
     if(t!=nullptr)
@@ -985,42 +1023,20 @@ int TreeNode::pushparam()//将参数从右至左压栈
         count=t->pushparam();
     }
     count++;
-    if(this->nodeType==NODE_VAR)
-    {
-        if(this->scope->attribute=="0")//全局
-        {
-            cout<<"\tmovl\t"<<this->var_name<<", %eax"<<endl;
-        }
-        else 
-        {
-            cout<<"\tmovl\t"<<asmnode()<<", %eax"<<endl;
-        }
-    }
-    else if(this->nodeType==NODE_CONST)
-    {
-        this->asmsetvalue();
-    }
-    cout<<"\tpushl\t%eax"<<endl;
-    return count;
-}
-
-int TreeNode::pushparamchild()//将参数从右至左压栈
-{   
-    TreeNode* t=this->sibling;
-    int count=0;
-    if(t!=nullptr)
-    {
-        count=t->pushparamchild();
-    }
-    count++;
-    if(this->child->scope->attribute=="0")//全局
-    {
-        cout<<"\tmovl\t"<<this->var_name<<", %eax"<<endl;
-    }
-    else 
-    {
-        cout<<"\tmovl\t"<<this->child->asmnode()<<", %eax"<<endl;
-    }
+    // if(this->child->scope->attribute=="0")//全局
+    // {
+    //     cout<<"\tmovl\t"<<this->var_name<<", %eax"<<endl;
+    // }
+    // else 
+    
+    //if(this->optype!=OP_ADDR)
+    //{
+        //this->printNodeInfo();
+        cout<<"\tmovl\t"<<this->setval()<<", %eax"<<endl;
+    //}
+    // else {//&a
+    //     cout<<"\tleal\t"<<this->setval()<<", %eax"<<endl;
+    // }
     cout<<"\tpushl\t%eax"<<endl;
     return count;
 }
@@ -1046,17 +1062,22 @@ void TreeNode::asmscanf()
     
     count*=4;
 
-    cout<<"\tpushl\t$"<<this->child->child->label<<""<<endl;;
-    cout<<"\tcall\tprintf\n\taddl\t$"<<12+count+4<<", %esp"<<endl;
+    cout<<"\tpushl\t$"<<this->child->label<<""<<endl;;
+    cout<<"\tcall\t__isoc99_scanf\n\taddl\t$"<<12+count+4<<", %esp"<<endl;
 }
 
  string TreeNode::asmnode()
  {
     string a="";
-    char tmp[20];sprintf(tmp,"%d",this->offset);
+    if(this->scope==nullptr||this->scope->attribute!="0")
+    {char tmp[20];sprintf(tmp,"%d",this->offset);
     a=tmp;
     a+="(%ebp)";
-    return a;
+    return a;}
+    else{
+        a=this->var_name;
+        return a;
+    }
  }
 
 
@@ -1309,5 +1330,19 @@ void TreeNode:: asmoprel()
         }
         default:
             break;
+    }
+}
+
+void TreeNode:: asmopaddr()
+{
+    switch(this->optype)
+    {
+        case OP_ADDR:
+        {
+            cout<<"\tleal\t"<<this->child->setval()<<", %eax"<<endl;
+            cout<<"\tmovl\t%eax, ";
+            cout<<this->asmnode()<<endl;
+            break;
+        }
     }
 }

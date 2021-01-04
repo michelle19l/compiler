@@ -224,6 +224,7 @@ public:
 
     void asmopnum();//+-*/
     void asmoprel();//大小比较
+    void asmopaddr();//&
     void asmif();
 
     string asmnode();//打印结点对应栈中的元素
