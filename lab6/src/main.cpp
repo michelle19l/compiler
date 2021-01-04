@@ -35,7 +35,11 @@ int main(int argc, char *argv[])
        getVarField(root,scope);//将变量加入作用域
 
         root->typechecking();//类型检查
-        //root->printAST();//打印语法树
+        root->printAST();//打印语法树
+
+        TreeNode* t=root->child;
+        while(t!=nullptr)
+        {t->recursivegenlabel();t=t->sibling;}
         //table::print(table::scoperoot);//打印符号表
         //table::print(table::conststringtable);
         //table::print(table::functable);

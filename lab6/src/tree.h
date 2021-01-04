@@ -104,10 +104,17 @@ enum StmtType {
 // };
 
 struct Label {
-	string true_label;
-	string false_label;
-	string begin_label;
-	string next_label;
+	int true_label;
+	int false_label;
+	int begin_label;
+	int next_label;
+    Label(){
+        true_label=0;
+        false_label=0;
+        begin_label=0;
+        next_label=0;
+    }
+    
 };
 
 // struct Node
@@ -208,7 +215,11 @@ public:
     int pushparamchild();
     string setval();
 
-    void genlabel();//打标
+    void genlabel();
+    void genlabelstmt();//打标
+    void genlabelexpr();
+    void recursivegenlabel();
+
 
 public:
     void asmout(ofstream& asmout);//输出汇编代码
