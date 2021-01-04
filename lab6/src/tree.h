@@ -222,7 +222,8 @@ public:
     void asmstmt();//输出语句的汇编
     void asmret();//return
 
-    void asmop();//+-*/
+    void asmopnum();//+-*/
+    void asmoprel();//大小比较
     void asmif();
 
     string asmnode();//打印结点对应栈中的元素

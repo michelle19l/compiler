@@ -307,9 +307,7 @@ int insertID_(TreeNode* node,table* scope)//向当前作用域插入ID,
     node->workfield=scope->attribute;
 
     int index_;
-    index_=checkID(node->var_name,scope);
-    if(index_!=-1)
-        return index_;
+
         
     scope->item[scope->size].offset=node->offset;
     scope->item[scope->size].name=node->var_name;
@@ -663,21 +661,21 @@ bool TreeNode::type_check()
         switch(this->stype)
         {
             
-            case STMT_WHILE:
-            case STMT_IF:
-            {
-                if(t->checktype==Integer||t->checktype==Boolean){
-                    return true;
-                }
-                return false;
-            }
-            case STMT_FOR:
-            {
-                if(t->sibling->checktype==Integer||t->sibling->checktype==Boolean||t->sibling->checktype==Integer){
-                    return true;
-                }
-                return false;
-            }
+            // case STMT_WHILE:
+            // case STMT_IF:
+            // {
+            //     if(t->checktype==Integer||t->checktype==Boolean){
+            //         return true;
+            //     }
+            //     return false;
+            // }
+            // case STMT_FOR:
+            // {
+            //     if(t->sibling->checktype==Integer||t->sibling->checktype==Boolean||t->sibling->checktype==Integer){
+            //         return true;
+            //     }
+            //     return false;
+            // }
             case STMT_ASSIGN: 
             case STMT_ADD_ASSIGN:
             case STMT_SUB_ASSIGN:
@@ -754,10 +752,6 @@ void TreeNode:: genlabel()
     }
 }
 
-void TreeNode::asmif()
-{
-    
-}
 
 
 int TreeNode::typechecking()
@@ -833,6 +827,23 @@ void TreeNode:: asmfunc()
 
 void TreeNode:: asmstmt()
 {
+    //带控制流的语句需要先处理，暂停深度遍历
+    switch(this->stype)
+    {
+        case STMT_ELSE:
+        {
+            cout<<this->label<<":"<<endl;
+            break;
+        }
+        case STMT_IF:
+        {
+            cout<<this->sibling->label<<endl;
+            break;
+        }
+        default:
+        break;
+    }
+
     TreeNode*t=this->child;
     while(t!=nullptr)
     {
@@ -881,6 +892,8 @@ void TreeNode:: asmstmt()
             }
             break;
         }
+        
+        
 
         default:
             break;
@@ -892,13 +905,22 @@ void TreeNode:: asmstmt()
         case OP_MUL:
         case OP_DIV:
         {
-            this->asmop();
+            this->asmopnum();
+            break;
+        }
+        case OP_EQUAL:
+        case OP_GREAT:
+        case OP_LESS:
+        case OP_GREAT_EQ:
+        case OP_LESS_EQ:
+        case OP_NOT_EQ:
+        {
+            this->asmoprel();
             break;
         }
         default:
             break;
     }
-    cout<<endl;
 }
 
 void TreeNode::asmconst(ofstream& asmout)
@@ -1206,7 +1228,7 @@ void TreeNode::rightparam()
 
 }
 
-void TreeNode:: asmop()
+void TreeNode:: asmopnum()
 {
     //当前结点是操作符
     switch(this->optype)
@@ -1250,5 +1272,42 @@ void TreeNode:: asmop()
             cout<<"\tmovl\t%eax, "<<this->asmnode()<<endl;
             break;
         }
+    }
+}
+void TreeNode:: asmoprel()
+{
+    
+    switch(this->optype)
+    {
+        case OP_EQUAL:
+        {
+            this->leftparam();
+            this->rightparam();
+            cout<<"\tcmpl\t%edx, %eax"<<endl;
+            cout<<"\tjne\t";
+            break;
+        }
+        case OP_GREAT:
+        {
+            break;
+        }
+        case OP_LESS:
+        {
+            break;
+        }
+        case OP_GREAT_EQ:
+        {
+            break;
+        }
+        case OP_LESS_EQ:
+        {
+            break;
+        }
+        case OP_NOT_EQ:
+        {
+            break;
+        }
+        default:
+            break;
     }
 }
