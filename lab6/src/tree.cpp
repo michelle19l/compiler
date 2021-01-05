@@ -739,7 +739,6 @@ void TreeNode::recursivegenlabel()
 
 void TreeNode::genlabelexpr()
 {
-    //cout<<"sssssss"<<endl;
     if(this->child==nullptr||this->nodeType!=NODE_EXPR)
         return;
     switch(this->optype)
@@ -748,11 +747,7 @@ void TreeNode::genlabelexpr()
         {
             TreeNode* left=this->child;
             TreeNode* right=left->sibling;
-            // cout<<"--------------"<<endl;
-            // this->printNodeInfo();
-            // left->printNodeInfo();
-            // right->printNodeInfo();
-            // cout<<"------------"<<endl;
+
 
             
             if(this->controllabel.begin_label==0)
@@ -768,18 +763,58 @@ void TreeNode::genlabelexpr()
             right->controllabel.true_label=this->controllabel.true_label;
             right->controllabel.false_label=this->controllabel.false_label;
 
+            left->controllabel.next_label=right->controllabel.begin_label;
+            right->controllabel.next_label=this->controllabel.next_label;
+
             left->recursivegenlabel();
             right->recursivegenlabel();
-            // if(this->sibling!=nullptr)
-            // {
-            //     if(this->)
-            //     if(this->sibling->controllabel.begin_label=="")
-            //     {
-            //         this->sibling->controllabel.begin_label=current_label++;
-                    
-            //     }
-            // }
+            break;
         }
+        case OP_OR:
+        {
+            TreeNode* left=this->child;
+            TreeNode* right=left->sibling;
+
+            if(this->controllabel.begin_label==0)
+            {
+                this->controllabel.begin_label=current_label++;
+            }
+            left->controllabel.begin_label=this->controllabel.begin_label;
+            right->controllabel.begin_label=current_label++;
+
+            left->controllabel.true_label=this->controllabel.true_label;
+            left->controllabel.false_label=right->controllabel.begin_label;
+            right->controllabel.true_label=this->controllabel.true_label;
+            right->controllabel.false_label=this->controllabel.false_label;
+            
+            left->controllabel.next_label=right->controllabel.begin_label;
+            right->controllabel.next_label=this->controllabel.next_label;
+
+            left->recursivegenlabel();
+            right->recursivegenlabel();
+            break;
+        }
+        case OP_NOT:
+        {
+            TreeNode* left=this->child;
+            if(this->controllabel.begin_label==0)
+            {
+                this->controllabel.begin_label=current_label++;
+            }
+            left->controllabel.begin_label=this->controllabel.begin_label;
+            left->controllabel.true_label=this->controllabel.false_label;
+            left->controllabel.false_label=this->controllabel.true_label;
+            
+            if(this->sibling!=nullptr)
+                {left->controllabel.next_label=this->controllabel.true_label;}
+            else{
+                left->controllabel.next_label=this->controllabel.next_label;
+            }
+            left->recursivegenlabel();
+            break;
+        }
+        default:
+        break;
     }
 }
 
@@ -793,6 +828,35 @@ void TreeNode:: genlabelstmt()
         {
             case STMT_WHILE:
             {
+                TreeNode* boolchild=this->child;
+                TreeNode* left=boolchild->sibling;
+
+                if(this->controllabel.begin_label==0)
+                {
+                    this->controllabel.begin_label=current_label++;
+                }
+                boolchild->controllabel.begin_label=this->controllabel.begin_label;
+
+                boolchild->controllabel.true_label=current_label++;
+                left->controllabel.begin_label=boolchild->controllabel.true_label;
+
+                if(this->controllabel.next_label==0)
+                {
+                    if(this->sibling!=nullptr)
+                    {
+                        if(this->sibling->controllabel.begin_label==0)
+                        {
+                            this->controllabel.next_label=current_label++;
+                            this->sibling->controllabel.begin_label=this->controllabel.next_label;
+                        }
+                        else{
+                        this->controllabel.next_label=this->sibling->controllabel.begin_label;
+                    }
+                    }
+                }
+
+                boolchild->controllabel.false_label=this->controllabel.next_label;
+                left->controllabel.next_label=this->controllabel.begin_label;
                 break;
             }
             case STMT_FOR:
@@ -802,8 +866,8 @@ void TreeNode:: genlabelstmt()
 
             case STMT_IF_ELSE:
             {//都是block的编号
-                TreeNode* boolchild=this->child;
-                TreeNode* left=boolchild->sibling;
+                TreeNode* boolchild=this->child->child;
+                TreeNode* left=this->child->sibling;
                 TreeNode* right=left->sibling;
 
                 if(this->controllabel.begin_label==0)
@@ -818,15 +882,24 @@ void TreeNode:: genlabelstmt()
                 boolchild->controllabel.false_label=current_label++;
                 right->controllabel.begin_label=boolchild->controllabel.false_label;
 
+
+
+                    
                 if(this->controllabel.next_label==0)
                 {
-                    this->controllabel.next_label=current_label++;
+                    if(this->sibling!=nullptr)
+                    {
+                        if(this->sibling->controllabel.begin_label==0)
+                        {
+                            this->controllabel.next_label=current_label++;
+                            this->sibling->controllabel.begin_label=this->controllabel.next_label;
+                        }
+                        else{
+                        this->controllabel.next_label=this->sibling->controllabel.begin_label;
+                    }
+                    }
                 }
-                if(this->sibling!=nullptr)
-                {
-                    this->sibling->controllabel.begin_label=this->controllabel.next_label;
-                }
-
+                boolchild->controllabel.next_label=left->controllabel.begin_label;
                 left->controllabel.next_label=this->controllabel.next_label;
                 right->controllabel.next_label=this->controllabel.next_label;
                 
@@ -929,6 +1002,11 @@ void TreeNode::asmstmt()
     //带控制流的语句需要先处理，暂停深度遍历
     switch(this->stype)
     {
+        case STMT_WHILE:
+        {
+            cout<<"s_"<<this->controllabel.begin_label<<":"<<endl;
+            break;
+        }
         case STMT_IF_ELSE:
         {
             cout<<"s_"<<this->controllabel.begin_label<<":"<<endl;
@@ -936,7 +1014,8 @@ void TreeNode::asmstmt()
         }
         case STMT_IF:
         {
-            cout<<"s_"<<this->controllabel.begin_label<<":"<<endl;//判断值为假
+            //cout<<"\tjmp\ts_"<<this->sibling->controllabel.begin_label<<endl;
+            //cout<<"s_"<<this->controllabel.begin_label<<":"<<endl;//判断值为假
             break;
         }
         case STMT_ELSE:
@@ -949,7 +1028,13 @@ void TreeNode::asmstmt()
         default:
         break;
     }
-
+    // switch(this->optype)
+    // {
+    //     case OP_NOT:
+    //     {
+    //         cout<<"\tjmp\ts_"<<this->controllabel
+    //     }
+    // }
     TreeNode*t=this->child;
     while(t!=nullptr)
     {
@@ -1004,17 +1089,19 @@ void TreeNode::asmstmt()
         case STMT_DIV_ASSIGN:
         case STMT_MOD_ASSIGN:
         {
-            // cout<<"ssssssssss";
-            // this->printNodeInfo();
-            // this->child->printNodeInfo();
-            // this->child->sibling->printNodeInfo();
-            //cout<<"\tmovl\t%eax, "<<this->child->var_name<<endl;
             this->asmopassign();
             break;
         }
         case STMT_ELSE:
         {
             cout<<"s_"<<this->controllabel.next_label<<":"<<endl;
+            break;
+        }
+        case STMT_WHILE:
+        {
+            cout<<"\tjmp\ts_"<<this->controllabel.begin_label<<endl;
+            cout<<"s_"<<this->controllabel.next_label<<":"<<endl;
+            break;
         }
         default:
             break;
@@ -1291,6 +1378,8 @@ void TreeNode::asmstatic()//打印全局变量
                 {
 
                 }
+                default:
+                break;
             }
         }
         else if(t->stype==STMT_DECL)
@@ -1312,6 +1401,8 @@ void TreeNode::asmstatic()//打印全局变量
                 {
                     break;
                 }
+                default:
+                break;
             }
         }
         t=t->sibling;
@@ -1322,11 +1413,12 @@ void TreeNode::asmstatic()//打印全局变量
 void TreeNode::asmsetvalue()
 {//movl	%eax, -12(%ebp)
     cout<<"\tmovl\t";
-    if(this->sibling->nodeType==contype)
-    {
-        cout<<"$"<<this->sibling->setval();
-    }
-    else cout<<"%eax";
+    // if(this->sibling->nodeType==NODE_CONST)
+    // {
+    //     cout<<this->sibling->setval();
+    // }
+    // else 
+    cout<<"%eax";
     cout<<", "<<this->asmnode();
     cout<<endl;
 }
@@ -1424,31 +1516,73 @@ void TreeNode:: asmoprel()
     {
         case OP_EQUAL:
         {
-            cout<<"\tjne\t"<<"s_"<<this->controllabel.false_label<<endl;
+            cout<<"\tjne\t"<<"s_"<<this->controllabel.false_label<<endl;cout<<"\tje\t"<<"s_"<<this->controllabel.true_label<<endl;
+            if(this->sibling!=nullptr)
+            {
+                cout<<"s_"<<this->sibling->controllabel.begin_label<<":"<<endl;
+            }
+            else
+                cout<<"s_"<<this->controllabel.next_label<<":"<<endl;
             break;
         }
         case OP_GREAT:
         {
-            cout<<"\tjle\t"<<"s_"<<this->controllabel.false_label<<endl;
+            cout<<"\tjle\t"<<"s_"<<this->controllabel.false_label<<endl;cout<<"\tjg\t"<<"s_"<<this->controllabel.true_label<<endl;
+            if(this->sibling!=nullptr)
+            {
+                cout<<"s_"<<this->sibling->controllabel.begin_label<<":"<<endl;
+            }
+            else{
+                cout<<"s_"<<this->controllabel.next_label<<":"<<endl;
+            }
             break;
         }
         case OP_LESS:
-        {cout<<"\tjge\t"<<"s_"<<this->controllabel.false_label<<endl;
+        {
+            cout<<"\tjge\t"<<"s_"<<this->controllabel.false_label<<endl;cout<<"\tjl\t"<<"s_"<<this->controllabel.true_label<<endl;
+            if(this->sibling!=nullptr)
+            {
+                cout<<"s_"<<this->sibling->controllabel.begin_label<<":"<<endl;
+            }
+            else
+                cout<<"s_"<<this->controllabel.next_label<<":"<<endl;
+
             break;
         }
         case OP_GREAT_EQ:
         {
-            cout<<"\tjl\t"<<"s_"<<this->controllabel.false_label<<endl;
+            cout<<"\tjl\t"<<"s_"<<this->controllabel.false_label<<endl;cout<<"\tjge\t"<<"s_"<<this->controllabel.true_label<<endl;
+        
+            if(this->sibling!=nullptr)
+            {
+                cout<<"s_"<<this->sibling->controllabel.begin_label<<":"<<endl;
+            }
+            else
+                cout<<"s_"<<this->controllabel.next_label<<":"<<endl;
             break;
         }
         case OP_LESS_EQ:
         {
-            cout<<"\tjg\t"<<"s_"<<this->controllabel.false_label<<endl;
+            cout<<"\tjg\t"<<"s_"<<this->controllabel.false_label<<endl;cout<<"\tjle\t"<<"s_"<<this->controllabel.true_label<<endl;
+        
+            if(this->sibling!=nullptr)
+            {
+                cout<<"s_"<<this->sibling->controllabel.begin_label<<":"<<endl;
+            }
+            else
+                cout<<"s_"<<this->controllabel.next_label<<":"<<endl;
             break;
         }
         case OP_NOT_EQ:
         {
-            cout<<"\tje\t"<<"s_"<<this->controllabel.false_label<<endl;
+            cout<<"\tje\t"<<"s_"<<this->controllabel.false_label<<endl;cout<<"\tjne\t"<<"s_"<<this->controllabel.true_label<<endl;
+            
+            if(this->sibling!=nullptr)
+            {
+                cout<<"s_"<<this->sibling->controllabel.begin_label<<":"<<endl;
+            }
+            else
+                cout<<"s_"<<this->controllabel.next_label<<":"<<endl;
             break;
         }
         default:
@@ -1531,5 +1665,7 @@ void TreeNode:: asmopaddr()
             cout<<this->asmnode()<<endl;
             break;
         }
+        default:
+        break;
     }
 }
