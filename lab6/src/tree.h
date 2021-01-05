@@ -234,6 +234,7 @@ public:
     void asmret();//return
 
     void asmopnum();//+-*/
+    void asmopassign();//+=
     void asmoprel();//大小比较
     void asmopaddr();//&
     void asmif();

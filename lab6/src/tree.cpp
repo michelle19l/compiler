@@ -716,20 +716,20 @@ void TreeNode::recursivegenlabel()
     TreeNode* t=this;
     if(t!=nullptr)
     {
-        t->printNodeInfo();
+        //t->printNodeInfo();
         if(t->nodeType==NODE_EXPR)
         {
-            cout<<"11111"<<endl;
+            //cout<<"11111"<<endl;
             t->genlabelexpr();
         }
         else if(t->nodeType==NODE_STMT)
         {
-            cout<<"1222221"<<endl;
+            //cout<<"1222221"<<endl;
             t->genlabelstmt();
         }
         else 
         {   
-            cout<<"3331"<<endl;
+            //cout<<"3331"<<endl;
             t->child->recursivegenlabel();
             
         }
@@ -739,7 +739,7 @@ void TreeNode::recursivegenlabel()
 
 void TreeNode::genlabelexpr()
 {
-    cout<<"sssssss"<<endl;
+    //cout<<"sssssss"<<endl;
     if(this->child==nullptr||this->nodeType!=NODE_EXPR)
         return;
     switch(this->optype)
@@ -748,11 +748,11 @@ void TreeNode::genlabelexpr()
         {
             TreeNode* left=this->child;
             TreeNode* right=left->sibling;
-            cout<<"--------------"<<endl;
-            this->printNodeInfo();
-            left->printNodeInfo();
-            right->printNodeInfo();
-            cout<<"------------"<<endl;
+            // cout<<"--------------"<<endl;
+            // this->printNodeInfo();
+            // left->printNodeInfo();
+            // right->printNodeInfo();
+            // cout<<"------------"<<endl;
 
             
             if(this->controllabel.begin_label==0)
@@ -941,6 +941,7 @@ void TreeNode::asmstmt()
         }
         case STMT_ELSE:
         {
+            cout<<"\tjmp\ts_"<<this->controllabel.next_label<<endl;
             cout<<"s_"<<this->controllabel.begin_label<<":"<<endl;
             break;
         }
@@ -997,8 +998,24 @@ void TreeNode::asmstmt()
             }
             break;
         }
-        
-
+        case STMT_ADD_ASSIGN:
+        case STMT_SUB_ASSIGN:
+        case STMT_MUL_ASSIGN:
+        case STMT_DIV_ASSIGN:
+        case STMT_MOD_ASSIGN:
+        {
+            // cout<<"ssssssssss";
+            // this->printNodeInfo();
+            // this->child->printNodeInfo();
+            // this->child->sibling->printNodeInfo();
+            //cout<<"\tmovl\t%eax, "<<this->child->var_name<<endl;
+            this->asmopassign();
+            break;
+        }
+        case STMT_ELSE:
+        {
+            cout<<"s_"<<this->controllabel.next_label<<":"<<endl;
+        }
         default:
             break;
     }
@@ -1008,6 +1025,9 @@ void TreeNode::asmstmt()
         case OP_SUB:
         case OP_MUL:
         case OP_DIV:
+        case OP_MOD:
+        case OP_NEG:
+        case OP_POS:
         {
             this->asmopnum();
             break;
@@ -1045,11 +1065,14 @@ void TreeNode::asmconst(ofstream& asmout)
 
 string TreeNode::setval()
 {
+    // cout<<"------"<<endl;
+    // this->printNodeInfo();
+    // cout<<"---=====----"<<endl;
     string a="";
     val=0;
     if(this->nodeType==NODE_CONST)
     {
-        
+        //cout<<"1"<<endl;
         if(int_val)
             {val=int_val;}
         else if(ch_val)
@@ -1067,10 +1090,12 @@ string TreeNode::setval()
     }
     else if(this->scope!=nullptr&&this->scope->attribute=="0")
     {
+        //cout<<"2"<<endl;
         a=this->var_name;
     }
     else if(this->nodeType==NODE_EXPR||this->nodeType==NODE_VAR)
     {
+        //cout<<"3"<<endl;
         char tmp[20];
         sprintf(tmp,"%d",offset);
         a=tmp;
@@ -1134,16 +1159,18 @@ void TreeNode::asmscanf()
 
  string TreeNode::asmnode()
  {
-    string a="";
-    if(this->scope==nullptr||this->scope->attribute!="0")
-    {char tmp[20];sprintf(tmp,"%d",this->offset);
-    a=tmp;
-    a+="(%ebp)";
-    return a;}
-    else{
-        a=this->var_name;
-        return a;
-    }
+    // string a="";
+    // if(this->scope==nullptr||this->scope->attribute!="0")
+    // {char tmp[20];sprintf(tmp,"%d",this->offset);
+    // a=tmp;
+    // a+="(%ebp)";
+    // return a;}
+    // else{
+    //     a=this->var_name;
+    //     return a;
+    // }
+    
+    return setval();
  }
 
 
@@ -1235,52 +1262,59 @@ void TreeNode::asmstatic()//打印全局变量
 {
     cout<<"\t.text"<<endl;
     cout<<"\t.data"<<endl;
-    for(int i=0;i<table::scoperoot->size;i++)
+
+    TreeNode* t=this->child;
+    
+    while(t!=nullptr)
     {
-        if(table::scoperoot->item[i].var_func==1)
-            continue;
-        if(this->sibling!=nullptr&&this->sibling->nodeType==NODE_EXPR)
-        {//定义
-            cout<<"\t.globl\t"<<table::scoperoot->item[i].name<<endl;
-            switch(table::scoperoot->item[i].type)
+        if(t->stype==STMT_DEFINE)
+        {
+            cout<<"\t.globl\t"<<t->child->sibling->child->setval()<<endl;
+            switch(t->child->checktype)
             {
                 case Integer:
                 {
                     cout<<"\t.align 4"<<endl;
-                    cout<<"\t.type\t"<<table::scoperoot->item[i].name<<", @object"<<endl;
-                    cout<<table::scoperoot->item[i].name<<":"<<endl;
-                    cout<<"\t.long\t"<<table::scoperoot->item[i].int_val<<endl;
+                    cout<<"\t.type\t"<<t->child->sibling->child->setval()<<", @object"<<endl;
+                    cout<<t->child->sibling->child->setval()<<":"<<endl;
+                    cout<<"\t.long "<<t->child->sibling->child->sibling->int_val<<endl;
                     break;
                 }
                 case Char:
                 {
-                    cout<<"\t.type\t"<<table::scoperoot->item[i].name<<", @object"<<endl;
-                    cout<<table::scoperoot->item[i].name<<":"<<endl;
-                    cout<<"\t.byte\t"<<(int)table::scoperoot->item[i].char_val<<endl;
-                }
-                default:
+                    cout<<"\t.type\t"<<t->child->sibling->child->setval()<<", @object"<<endl;
+                    cout<<t->child->sibling->child->setval()<<":"<<endl;
+                    cout<<"\t.byte "<<(int)t->child->sibling->child->sibling->ch_val<<endl;
                     break;
+                }
+                case String:
+                {
+
+                }
             }
         }
-        else{
-            //声明
-            cout<<"\t.comm\t"<<table::scoperoot->item[i].name;
-            switch(table::scoperoot->item[i].type)
+        else if(t->stype==STMT_DECL)
+        {
+            cout<<"\t.comm\t"<<t->child->sibling->setval();
+            switch(t->child->checktype)
             {
                 case Integer:
-                { 
-                    cout<<",4,4"<<endl;
+                {
+                    cout<<", 4,4"<<endl;
                     break;
                 }
                 case Char:
                 {
-                    cout<<",1,1"<<endl;
+                    cout<<", 1,1"<<endl;
                     break;
                 }
-                default:
+                case String:
+                {
                     break;
+                }
             }
         }
+        t=t->sibling;
     }
 }
 
@@ -1359,6 +1393,26 @@ void TreeNode:: asmopnum()
             cout<<"\tmovl\t%eax, "<<this->asmnode()<<endl;
             break;
         }
+        case OP_MOD:
+        {
+            this->leftparam();
+            cout<<"\tmovl\t"<<this->child->sibling->setval()<<", %ecx"<<endl;
+            cout<<"\tcltd"<<endl;
+            cout<<"\tidivl\t%ecx"<<endl;
+            cout<<"\tmovl\t%edx, %eax"<<endl;
+            cout<<"\tmovl\t%eax, "<<this->asmnode()<<endl;
+            
+            break;
+        }
+        case OP_NEG:
+        {
+            this->leftparam();
+            cout<<"\tnegl\t%eax"<<endl;
+            cout<<"\tmovl\t%eax, "<<this->setval()<<endl;
+            break;
+        }
+        default:
+            break;
     }
 }
 void TreeNode:: asmoprel()
@@ -1375,26 +1429,90 @@ void TreeNode:: asmoprel()
         }
         case OP_GREAT:
         {
-            cout<<"\tjle\t";
+            cout<<"\tjle\t"<<"s_"<<this->controllabel.false_label<<endl;
             break;
         }
         case OP_LESS:
-        {cout<<"\tjge\t";
+        {cout<<"\tjge\t"<<"s_"<<this->controllabel.false_label<<endl;
             break;
         }
         case OP_GREAT_EQ:
         {
-            cout<<"\tjl\t";
+            cout<<"\tjl\t"<<"s_"<<this->controllabel.false_label<<endl;
             break;
         }
         case OP_LESS_EQ:
         {
-            cout<<"\tjg\t";
+            cout<<"\tjg\t"<<"s_"<<this->controllabel.false_label<<endl;
             break;
         }
         case OP_NOT_EQ:
         {
             cout<<"\tje\t"<<"s_"<<this->controllabel.false_label<<endl;
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+void TreeNode::asmopassign()//+=
+{
+    switch(this->stype)
+    {
+        case STMT_ADD_ASSIGN:
+        {
+            // this->child->printNodeInfo();
+            // this->child->sibling->printNodeInfo();
+            //cout<<"1"<<endl;
+            this->leftparam();
+            //cout<<"2"<<endl;
+            this->rightparam();
+            //cout<<"3"<<endl;
+            cout<<"\taddl\t%edx, %eax"<<endl;
+            cout<<"\tmovl\t%eax, "<<this->child->asmnode()<<endl;
+            break;
+        }
+        case STMT_SUB_ASSIGN:
+        {
+            this->leftparam();
+            this->rightparam();
+            cout<<"\tsubl\t%edx, %eax"<<endl;
+            cout<<"\tmovl\t%eax, "<<this->child->asmnode()<<endl;
+            break;
+        }
+        case STMT_MUL_ASSIGN:
+        {
+            this->leftparam();
+            this->rightparam();
+            cout<<"\timull\t%edx, %eax"<<endl;
+            cout<<"\tmovl\t%eax, "<<this->child->asmnode()<<endl;
+            break;
+        }
+        case STMT_DIV_ASSIGN:
+        {
+            this->leftparam();
+            cout<<"\tcltd"<<endl;
+            if(this->child->sibling->nodeType!=NODE_CONST)
+            {
+                cout<<"\tidivl\t"<<this->child->sibling->setval()<<endl;
+            }
+            else{
+                cout<<"\tmovl\t"<<this->child->sibling->setval()<<", "<<this->setval()<<endl;
+                cout<<"\tidivl\t"<<this->setval()<<endl;
+            }
+            cout<<"\tmovl\t%eax, "<<this->child->asmnode()<<endl;
+            break;
+        }
+        case STMT_MOD_ASSIGN:
+        {
+            this->leftparam();
+            cout<<"\tmovl\t"<<this->child->sibling->setval()<<", %ecx";
+            cout<<"\tcltd"<<endl;
+            cout<<"\tidivl\t%ecx"<<endl;
+            cout<<"\tmovl\t%edx, %eax"<<endl;
+            cout<<"\tmovl\t%eax, "<<this->child->asmnode()<<endl;
+            
             break;
         }
         default:

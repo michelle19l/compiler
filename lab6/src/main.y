@@ -202,6 +202,13 @@ printf
     $$->stype=STMT_PRT;
     $$->addChild($3);
 }
+| PRINTF LPAREN STRING COMMA address_idlist RPAREN{
+    //直接打印字符串
+    $$=new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_PRT;
+    $$->addChild($3);
+    $$->addChild($5);
+}
 ;
 
 scanf

@@ -1,9 +1,12 @@
 int a;
+int b;
 int main(){
     scanf("%d",&a);
-    if(a!=0&&a!=2){
-        a=20;
+    scanf("%d",&b);
+    if(a<b){
+        printf("Success\n");
+    }else{
+        printf("Failed\n");
     }
-    printf("test:%d\n",a);
     return 0;
 }
