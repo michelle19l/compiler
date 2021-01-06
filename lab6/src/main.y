@@ -83,8 +83,22 @@ for
 : FOR LPAREN declaration SEMICOLON bool_statements SEMICOLON assigns RPAREN block{
     $$=new TreeNode(lineno,NODE_STMT);
     $$->stype=STMT_FOR;
+    TreeNode* t=new TreeNode ($5->lineno,NODE_STMT);
+    t->stype=STMT_BOOL;
+    t->addChild($5);
     $$->addChild($3);
-    $$->addChild($5);
+    $$->addChild(t);
+    $$->addChild($7);
+    $$->addChild($9);
+}
+| FOR LPAREN assigns SEMICOLON bool_statements SEMICOLON assigns RPAREN block{
+    $$=new TreeNode(lineno,NODE_STMT);
+    $$->stype=STMT_FOR;
+    TreeNode* t=new TreeNode ($5->lineno,NODE_STMT);
+    t->stype=STMT_BOOL;
+    t->addChild($5);
+    $$->addChild($3);
+    $$->addChild(t);
     $$->addChild($7);
     $$->addChild($9);
 }
@@ -94,7 +108,10 @@ for
     TreeNode* temp= new TreeNode(lineno,NODE_STMT);
     temp->stype=STMT_SKIP;
     $$->addChild(temp);
-    $$->addChild($4);
+    TreeNode* t=new TreeNode ($4->lineno,NODE_STMT);
+    t->stype=STMT_BOOL;
+    t->addChild($4);
+    $$->addChild(t);
     $$->addChild($6);
     $$->addChild($8);
 }
@@ -243,7 +260,10 @@ while
 : WHILE LPAREN bool_statements RPAREN block{
     TreeNode *node=new TreeNode(lineno,NODE_STMT);
     node->stype=STMT_WHILE;
-    node->addChild($3);
+    TreeNode* t=new TreeNode($3->lineno,NODE_STMT);
+    t->stype=STMT_BOOL;
+    t->addChild($3);
+    node->addChild(t);
     node->addChild($5);
     $$=node;
 }
@@ -270,7 +290,8 @@ if_else
     $$=new TreeNode(lineno,NODE_STMT);
     $$->stype=STMT_IF_ELSE;
 
-    TreeNode* m=new TreeNode($3->lineno,NODE_EXPR);
+    TreeNode* m=new TreeNode($3->lineno,NODE_STMT);
+    m->stype=STMT_BOOL;
     m->addChild($3);//bool表达式
     $$->addChild(m);
     
@@ -290,7 +311,11 @@ if_else
     //if (..) {..}
     $$=new TreeNode(lineno,NODE_STMT);
     $$->stype=STMT_IF_ELSE;
-    $$->addChild($3);//bool表达式
+
+    TreeNode* m=new TreeNode($3->lineno,NODE_STMT);
+    m->stype=STMT_BOOL;
+    m->addChild($3);
+    $$->addChild(m);//bool表达式
 
     TreeNode *node=new TreeNode(lineno,NODE_STMT);
     node->stype=STMT_IF;

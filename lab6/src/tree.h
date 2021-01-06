@@ -84,6 +84,8 @@ enum StmtType {
     STMT_ELSE,
 
     STMT_BLOCK,//语句块
+
+    STMT_BOOL,//表示if for else 中的bool部分，没有运算符号的结点
     
 };
 

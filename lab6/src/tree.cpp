@@ -828,16 +828,20 @@ void TreeNode:: genlabelstmt()
         {
             case STMT_WHILE:
             {
-                TreeNode* boolchild=this->child;
-                TreeNode* left=boolchild->sibling;
+                TreeNode* boolchild=this->child->child;
+                TreeNode* boolchildf=this->child;
+                
+                TreeNode* left=boolchildf->sibling;
 
                 if(this->controllabel.begin_label==0)
                 {
                     this->controllabel.begin_label=current_label++;
                 }
                 boolchild->controllabel.begin_label=this->controllabel.begin_label;
+                boolchildf->controllabel.begin_label=this->controllabel.begin_label;
 
-                boolchild->controllabel.true_label=current_label++;
+                boolchild->controllabel.true_label=current_label;
+                boolchildf->controllabel.true_label=current_label++;
                 left->controllabel.begin_label=boolchild->controllabel.true_label;
 
                 if(this->controllabel.next_label==0)
@@ -856,35 +860,43 @@ void TreeNode:: genlabelstmt()
                 }
 
                 boolchild->controllabel.false_label=this->controllabel.next_label;
+                boolchildf->controllabel.false_label=this->controllabel.next_label;
+
+                boolchild->controllabel.next_label=left->controllabel.begin_label;
+                boolchildf->controllabel.next_label=left->controllabel.begin_label;
                 left->controllabel.next_label=this->controllabel.begin_label;
                 break;
             }
             case STMT_FOR:
             {
-                break;
-            }
+                TreeNode* c1=this->child;
+                TreeNode* boolchildf=this->child->sibling;
+                TreeNode* boolchild=boolchildf->child;
 
-            case STMT_IF_ELSE:
-            {//都是block的编号
-                TreeNode* boolchild=this->child->child;
-                TreeNode* left=this->child->sibling;
-                TreeNode* right=left->sibling;
+                TreeNode*c3=boolchildf->sibling;
+                TreeNode* left=boolchildf->sibling->sibling;
 
                 if(this->controllabel.begin_label==0)
                 {
                     this->controllabel.begin_label=current_label++;
                 }
-                boolchild->controllabel.begin_label=this->controllabel.begin_label;
+                c1->controllabel.begin_label=this->controllabel.begin_label;
 
-                boolchild->controllabel.true_label=current_label++;
-                left->controllabel.begin_label=boolchild->controllabel.true_label;
+                boolchild->controllabel.begin_label=current_label;
+                boolchildf->controllabel.begin_label=current_label++;
+                if(c3->controllabel.begin_label==0)
+                {
+                    c3->controllabel.begin_label=current_label++;
+                }
+                if(left->controllabel.begin_label==0)
+                {
+                    left->controllabel.begin_label=current_label++;
+                }
+                boolchild->controllabel.true_label=left->controllabel.begin_label;
+                boolchildf->controllabel.true_label=left->controllabel.begin_label;
 
-                boolchild->controllabel.false_label=current_label++;
-                right->controllabel.begin_label=boolchild->controllabel.false_label;
 
 
-
-                    
                 if(this->controllabel.next_label==0)
                 {
                     if(this->sibling!=nullptr)
@@ -899,7 +911,62 @@ void TreeNode:: genlabelstmt()
                     }
                     }
                 }
+
+                boolchild->controllabel.false_label=this->controllabel.next_label;
+                boolchildf->controllabel.false_label=this->controllabel.next_label;
+
                 boolchild->controllabel.next_label=left->controllabel.begin_label;
+                boolchildf->controllabel.next_label=left->controllabel.begin_label;
+                
+
+                left->controllabel.next_label=c3->controllabel.begin_label;
+                c3->controllabel.next_label=boolchild->controllabel.begin_label;
+                break;
+            }
+
+            case STMT_IF_ELSE:
+            {//都是block的编号
+                TreeNode* boolchild=this->child->child;
+                TreeNode* boolchildf=this->child;
+                TreeNode* left=this->child->sibling;
+                TreeNode* right=left->sibling;
+
+                if(this->controllabel.begin_label==0)
+                {
+                    this->controllabel.begin_label=current_label++;
+                }
+                boolchild->controllabel.begin_label=this->controllabel.begin_label;
+                boolchildf->controllabel.begin_label=this->controllabel.begin_label;
+
+                boolchild->controllabel.true_label=current_label++;
+                boolchildf->controllabel.true_label=boolchild->controllabel.true_label;
+
+                left->controllabel.begin_label=boolchild->controllabel.true_label;
+
+                boolchild->controllabel.false_label=current_label++;
+                boolchildf->controllabel.false_label=boolchild->controllabel.false_label;
+
+                right->controllabel.begin_label=boolchild->controllabel.false_label;
+
+
+                if(this->controllabel.next_label==0)
+                {
+                    if(this->sibling!=nullptr)
+                    {
+                        if(this->sibling->controllabel.begin_label==0)
+                        {
+                            this->controllabel.next_label=current_label++;
+                            this->sibling->controllabel.begin_label=this->controllabel.next_label;
+                        }
+                        else{
+                        this->controllabel.next_label=this->sibling->controllabel.begin_label;
+                        }
+                    }
+                    else this->controllabel.next_label=current_label++;
+                }
+                boolchild->controllabel.next_label=left->controllabel.begin_label;
+                boolchildf->controllabel.next_label=left->controllabel.begin_label;
+
                 left->controllabel.next_label=this->controllabel.next_label;
                 right->controllabel.next_label=this->controllabel.next_label;
                 
@@ -1002,14 +1069,19 @@ void TreeNode::asmstmt()
     //带控制流的语句需要先处理，暂停深度遍历
     switch(this->stype)
     {
-        case STMT_WHILE:
+        case STMT_BOOL:
         {
             cout<<"s_"<<this->controllabel.begin_label<<":"<<endl;
             break;
         }
+        case STMT_WHILE:
+        {
+            //cout<<"s_"<<this->controllabel.begin_label<<":"<<endl;
+            break;
+        }
         case STMT_IF_ELSE:
         {
-            cout<<"s_"<<this->controllabel.begin_label<<":"<<endl;
+            //cout<<"s_"<<this->controllabel.begin_label<<":"<<endl;
             break;
         }
         case STMT_IF:
@@ -1100,6 +1172,12 @@ void TreeNode::asmstmt()
         case STMT_WHILE:
         {
             cout<<"\tjmp\ts_"<<this->controllabel.begin_label<<endl;
+            cout<<"s_"<<this->controllabel.next_label<<":"<<endl;
+            break;
+        }
+        case STMT_FOR:
+        {
+            cout<<"\tjmp\ts_"<<this->child->sibling->controllabel.begin_label<<endl;
             cout<<"s_"<<this->controllabel.next_label<<":"<<endl;
             break;
         }
