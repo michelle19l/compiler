@@ -48,7 +48,7 @@ Grammar
    25 function_def: T IDENTIFIER LPAREN params RPAREN block
    26             | T IDENTIFIER LPAREN RPAREN block
 
-   27 function_use: IDENTIFIER LPAREN idlist RPAREN
+   27 function_use: IDENTIFIER LPAREN exprs RPAREN
    28             | IDENTIFIER LPAREN RPAREN
 
    29 params: params COMMA param
@@ -266,9 +266,9 @@ eq_assign (85)
 opassign (86)
     on left: 66 67 68 69 70 71 72 73 74, on right: 15 61
 idlist (87)
-    on left: 75 76, on right: 27 34 58 75
+    on left: 75 76, on right: 34 58 75
 exprs (88)
-    on left: 77 78, on right: 33 77
+    on left: 77 78, on right: 27 33 77
 expr (89)
     on left: 79 80 81 82 83 84 85 86 87 88 89 90 91, on right: 18 50
     65 66 67 68 69 70 77 78 80 81 82 83 84 85 86 87
@@ -480,7 +480,7 @@ State 15
 
 State 16
 
-   27 function_use: IDENTIFIER . LPAREN idlist RPAREN
+   27 function_use: IDENTIFIER . LPAREN exprs RPAREN
    28             | IDENTIFIER . LPAREN RPAREN
    65 eq_assign: IDENTIFIER . LOP_ASSIGN expr
    66 opassign: IDENTIFIER . ADD_ASSIGN expr
@@ -767,7 +767,7 @@ State 39
 
 State 40
 
-   27 function_use: IDENTIFIER . LPAREN idlist RPAREN
+   27 function_use: IDENTIFIER . LPAREN exprs RPAREN
    28             | IDENTIFIER . LPAREN RPAREN
    88 expr: IDENTIFIER .
 
@@ -1075,13 +1075,21 @@ State 60
 
 State 61
 
-   27 function_use: IDENTIFIER LPAREN . idlist RPAREN
+   27 function_use: IDENTIFIER LPAREN . exprs RPAREN
    28             | IDENTIFIER LPAREN . RPAREN
 
+    LPAREN      shift, and go to state 93
     RPAREN      shift, and go to state 121
-    IDENTIFIER  shift, and go to state 110
+    IDENTIFIER  shift, and go to state 40
+    INTEGER     shift, and go to state 41
+    CHAR        shift, and go to state 42
+    STRING      shift, and go to state 43
+    ADD         shift, and go to state 44
+    SUB         shift, and go to state 45
 
-    idlist  go to state 122
+    function_use  go to state 47
+    exprs         go to state 122
+    expr          go to state 123
 
 
 State 62
@@ -1192,7 +1200,7 @@ State 76
    76 idlist: IDENTIFIER .
 
     LOP_ASSIGN  shift, and go to state 55
-    LPAREN      shift, and go to state 123
+    LPAREN      shift, and go to state 124
 
     $default  reduce using rule 76 (idlist)
 
@@ -1202,7 +1210,7 @@ State 77
    57 declaration: T eq_assigns .
    63 eq_assigns: eq_assigns . COMMA eq_assign
 
-    COMMA  shift, and go to state 124
+    COMMA  shift, and go to state 125
 
     $default  reduce using rule 57 (declaration)
 
@@ -1219,7 +1227,7 @@ State 79
    58 declaration: T idlist .
    75 idlist: idlist . COMMA IDENTIFIER
 
-    COMMA  shift, and go to state 125
+    COMMA  shift, and go to state 126
 
     $default  reduce using rule 58 (declaration)
 
@@ -1231,7 +1239,7 @@ State 80
    46 bool_statements: bool_statements . AND bool_statements
    47                | bool_statements . OR bool_statements
 
-    RPAREN  shift, and go to state 126
+    RPAREN  shift, and go to state 127
     OR      shift, and go to state 97
     AND     shift, and go to state 98
 
@@ -1260,7 +1268,7 @@ State 82
    46 bool_statements: bool_statements . AND bool_statements
    47                | bool_statements . OR bool_statements
 
-    RPAREN  shift, and go to state 127
+    RPAREN  shift, and go to state 128
     OR      shift, and go to state 97
     AND     shift, and go to state 98
 
@@ -1279,7 +1287,7 @@ State 83
     NOT         shift, and go to state 46
 
     function_use     go to state 47
-    bool_statements  go to state 128
+    bool_statements  go to state 129
     bool_statement   go to state 49
     expr             go to state 81
 
@@ -1309,7 +1317,7 @@ State 85
 
    20 for: FOR LPAREN declaration . SEMICOLON bool_statements SEMICOLON assigns RPAREN block
 
-    SEMICOLON  shift, and go to state 129
+    SEMICOLON  shift, and go to state 130
 
 
 State 86
@@ -1317,8 +1325,8 @@ State 86
    21 for: FOR LPAREN assigns . SEMICOLON bool_statements SEMICOLON assigns RPAREN block
    59 assigns: assigns . COMMA assign
 
-    SEMICOLON  shift, and go to state 130
-    COMMA      shift, and go to state 131
+    SEMICOLON  shift, and go to state 131
+    COMMA      shift, and go to state 132
 
 
 State 87
@@ -1347,7 +1355,7 @@ State 90
    57 declaration: T . eq_assigns
    58            | T . idlist
 
-    IDENTIFIER  shift, and go to state 132
+    IDENTIFIER  shift, and go to state 133
 
     eq_assigns  go to state 77
     eq_assign   go to state 78
@@ -1360,7 +1368,7 @@ State 91
    46                | bool_statements . AND bool_statements
    47                | bool_statements . OR bool_statements
 
-    RPAREN  shift, and go to state 133
+    RPAREN  shift, and go to state 134
     OR      shift, and go to state 97
     AND     shift, and go to state 98
 
@@ -1375,7 +1383,7 @@ State 92
    86     | expr . DIV expr
    87     | expr . MOD expr
 
-    RPAREN  shift, and go to state 134
+    RPAREN  shift, and go to state 135
     ADD     shift, and go to state 105
     SUB     shift, and go to state 106
     MUL     shift, and go to state 107
@@ -1399,7 +1407,7 @@ State 93
     SUB         shift, and go to state 45
 
     function_use  go to state 47
-    expr          go to state 135
+    expr          go to state 136
 
 
 State 94
@@ -1449,7 +1457,7 @@ State 97
     NOT         shift, and go to state 46
 
     function_use     go to state 47
-    bool_statements  go to state 136
+    bool_statements  go to state 137
     bool_statement   go to state 49
     expr             go to state 81
 
@@ -1468,7 +1476,7 @@ State 98
     NOT         shift, and go to state 46
 
     function_use     go to state 47
-    bool_statements  go to state 137
+    bool_statements  go to state 138
     bool_statement   go to state 49
     expr             go to state 81
 
@@ -1486,7 +1494,7 @@ State 99
     SUB         shift, and go to state 45
 
     function_use    go to state 47
-    bool_statement  go to state 138
+    bool_statement  go to state 139
     expr            go to state 81
 
 
@@ -1503,7 +1511,7 @@ State 100
     SUB         shift, and go to state 45
 
     function_use    go to state 47
-    bool_statement  go to state 139
+    bool_statement  go to state 140
     expr            go to state 81
 
 
@@ -1520,7 +1528,7 @@ State 101
     SUB         shift, and go to state 45
 
     function_use    go to state 47
-    bool_statement  go to state 140
+    bool_statement  go to state 141
     expr            go to state 81
 
 
@@ -1537,7 +1545,7 @@ State 102
     SUB         shift, and go to state 45
 
     function_use    go to state 47
-    bool_statement  go to state 141
+    bool_statement  go to state 142
     expr            go to state 81
 
 
@@ -1554,7 +1562,7 @@ State 103
     SUB         shift, and go to state 45
 
     function_use    go to state 47
-    bool_statement  go to state 142
+    bool_statement  go to state 143
     expr            go to state 81
 
 
@@ -1571,7 +1579,7 @@ State 104
     SUB         shift, and go to state 45
 
     function_use    go to state 47
-    bool_statement  go to state 143
+    bool_statement  go to state 144
     expr            go to state 81
 
 
@@ -1588,7 +1596,7 @@ State 105
     SUB         shift, and go to state 45
 
     function_use  go to state 47
-    expr          go to state 144
+    expr          go to state 145
 
 
 State 106
@@ -1604,7 +1612,7 @@ State 106
     SUB         shift, and go to state 45
 
     function_use  go to state 47
-    expr          go to state 145
+    expr          go to state 146
 
 
 State 107
@@ -1620,7 +1628,7 @@ State 107
     SUB         shift, and go to state 45
 
     function_use  go to state 47
-    expr          go to state 146
+    expr          go to state 147
 
 
 State 108
@@ -1636,7 +1644,7 @@ State 108
     SUB         shift, and go to state 45
 
     function_use  go to state 47
-    expr          go to state 147
+    expr          go to state 148
 
 
 State 109
@@ -1652,7 +1660,7 @@ State 109
     SUB         shift, and go to state 45
 
     function_use  go to state 47
-    expr          go to state 148
+    expr          go to state 149
 
 
 State 110
@@ -1668,8 +1676,8 @@ State 111
    33       | PRINTF LPAREN STRING . COMMA exprs RPAREN
    35       | PRINTF LPAREN STRING . COMMA address_idlist RPAREN
 
-    COMMA   shift, and go to state 149
-    RPAREN  shift, and go to state 150
+    COMMA   shift, and go to state 150
+    RPAREN  shift, and go to state 151
 
 
 State 112
@@ -1677,15 +1685,15 @@ State 112
    34 printf: PRINTF LPAREN idlist . RPAREN
    75 idlist: idlist . COMMA IDENTIFIER
 
-    COMMA   shift, and go to state 125
-    RPAREN  shift, and go to state 151
+    COMMA   shift, and go to state 126
+    RPAREN  shift, and go to state 152
 
 
 State 113
 
    36 scanf: SCANF LPAREN STRING . COMMA address_idlist RPAREN
 
-    COMMA  shift, and go to state 152
+    COMMA  shift, and go to state 153
 
 
 State 114
@@ -1812,540 +1820,14 @@ State 121
 
 State 122
 
-   27 function_use: IDENTIFIER LPAREN idlist . RPAREN
-   75 idlist: idlist . COMMA IDENTIFIER
+   27 function_use: IDENTIFIER LPAREN exprs . RPAREN
+   77 exprs: exprs . COMMA expr
 
-    COMMA   shift, and go to state 125
-    RPAREN  shift, and go to state 153
+    COMMA   shift, and go to state 154
+    RPAREN  shift, and go to state 155
 
 
 State 123
-
-   23 function_decl: T IDENTIFIER LPAREN . RPAREN
-   24              | T IDENTIFIER LPAREN . params RPAREN
-   25 function_def: T IDENTIFIER LPAREN . params RPAREN block
-   26             | T IDENTIFIER LPAREN . RPAREN block
-
-    T_CHAR          shift, and go to state 5
-    T_INT           shift, and go to state 6
-    T_STRING        shift, and go to state 7
-    T_BOOL          shift, and go to state 8
-    T_INT_POINTER   shift, and go to state 9
-    T_CHAR_POINTER  shift, and go to state 10
-    T_VOID          shift, and go to state 11
-    RPAREN          shift, and go to state 154
-
-    params  go to state 155
-    param   go to state 156
-    T       go to state 157
-
-
-State 124
-
-   63 eq_assigns: eq_assigns COMMA . eq_assign
-
-    IDENTIFIER  shift, and go to state 158
-
-    eq_assign  go to state 159
-
-
-State 125
-
-   75 idlist: idlist COMMA . IDENTIFIER
-
-    IDENTIFIER  shift, and go to state 160
-
-
-State 126
-
-   43 if_else: IF LPAREN bool_statements RPAREN . block ELSE block
-   44        | IF LPAREN bool_statements RPAREN . block
-
-    LBRACE  shift, and go to state 15
-
-    block  go to state 161
-
-
-State 127
-
-   40 while: WHILE LPAREN bool_statements RPAREN . block
-
-    LBRACE  shift, and go to state 15
-
-    block  go to state 162
-
-
-State 128
-
-   22 for: FOR LPAREN SEMICOLON bool_statements . SEMICOLON assigns RPAREN block
-   46 bool_statements: bool_statements . AND bool_statements
-   47                | bool_statements . OR bool_statements
-
-    SEMICOLON  shift, and go to state 163
-    OR         shift, and go to state 97
-    AND        shift, and go to state 98
-
-
-State 129
-
-   20 for: FOR LPAREN declaration SEMICOLON . bool_statements SEMICOLON assigns RPAREN block
-
-    LPAREN      shift, and go to state 39
-    IDENTIFIER  shift, and go to state 40
-    INTEGER     shift, and go to state 41
-    CHAR        shift, and go to state 42
-    STRING      shift, and go to state 43
-    ADD         shift, and go to state 44
-    SUB         shift, and go to state 45
-    NOT         shift, and go to state 46
-
-    function_use     go to state 47
-    bool_statements  go to state 164
-    bool_statement   go to state 49
-    expr             go to state 81
-
-
-State 130
-
-   21 for: FOR LPAREN assigns SEMICOLON . bool_statements SEMICOLON assigns RPAREN block
-
-    LPAREN      shift, and go to state 39
-    IDENTIFIER  shift, and go to state 40
-    INTEGER     shift, and go to state 41
-    CHAR        shift, and go to state 42
-    STRING      shift, and go to state 43
-    ADD         shift, and go to state 44
-    SUB         shift, and go to state 45
-    NOT         shift, and go to state 46
-
-    function_use     go to state 47
-    bool_statements  go to state 165
-    bool_statement   go to state 49
-    expr             go to state 81
-
-
-State 131
-
-   59 assigns: assigns COMMA . assign
-
-    IDENTIFIER  shift, and go to state 84
-    SELF_INC    shift, and go to state 17
-    SELF_DEC    shift, and go to state 18
-
-    assign     go to state 166
-    eq_assign  go to state 88
-    opassign   go to state 89
-
-
-State 132
-
-   65 eq_assign: IDENTIFIER . LOP_ASSIGN expr
-   76 idlist: IDENTIFIER .
-
-    LOP_ASSIGN  shift, and go to state 55
-
-    $default  reduce using rule 76 (idlist)
-
-
-State 133
-
-   45 bool_statements: LPAREN bool_statements RPAREN .
-
-    $default  reduce using rule 45 (bool_statements)
-
-
-State 134
-
-   80 expr: LPAREN expr RPAREN .
-
-    $default  reduce using rule 80 (expr)
-
-
-State 135
-
-   80 expr: LPAREN expr . RPAREN
-   81     | expr . ADD expr
-   82     | expr . SUB expr
-   85     | expr . MUL expr
-   86     | expr . DIV expr
-   87     | expr . MOD expr
-
-    RPAREN  shift, and go to state 134
-    ADD     shift, and go to state 105
-    SUB     shift, and go to state 106
-    MUL     shift, and go to state 107
-    DIV     shift, and go to state 108
-    MOD     shift, and go to state 109
-
-
-State 136
-
-   46 bool_statements: bool_statements . AND bool_statements
-   47                | bool_statements . OR bool_statements
-   47                | bool_statements OR bool_statements .
-
-    AND  shift, and go to state 98
-
-    $default  reduce using rule 47 (bool_statements)
-
-
-State 137
-
-   46 bool_statements: bool_statements . AND bool_statements
-   46                | bool_statements AND bool_statements .
-   47                | bool_statements . OR bool_statements
-
-    $default  reduce using rule 46 (bool_statements)
-
-
-State 138
-
-   51 bool_statement: bool_statement . GREAT bool_statement
-   52               | bool_statement . LESS bool_statement
-   53               | bool_statement . GREAT_EQ bool_statement
-   54               | bool_statement . LESS_EQ bool_statement
-   55               | bool_statement . LOP_EQ bool_statement
-   55               | bool_statement LOP_EQ bool_statement .
-   56               | bool_statement . NOT_EQ bool_statement
-
-    $default  reduce using rule 55 (bool_statement)
-
-
-State 139
-
-   51 bool_statement: bool_statement . GREAT bool_statement
-   51               | bool_statement GREAT bool_statement .
-   52               | bool_statement . LESS bool_statement
-   53               | bool_statement . GREAT_EQ bool_statement
-   54               | bool_statement . LESS_EQ bool_statement
-   55               | bool_statement . LOP_EQ bool_statement
-   56               | bool_statement . NOT_EQ bool_statement
-
-    $default  reduce using rule 51 (bool_statement)
-
-
-State 140
-
-   51 bool_statement: bool_statement . GREAT bool_statement
-   52               | bool_statement . LESS bool_statement
-   52               | bool_statement LESS bool_statement .
-   53               | bool_statement . GREAT_EQ bool_statement
-   54               | bool_statement . LESS_EQ bool_statement
-   55               | bool_statement . LOP_EQ bool_statement
-   56               | bool_statement . NOT_EQ bool_statement
-
-    $default  reduce using rule 52 (bool_statement)
-
-
-State 141
-
-   51 bool_statement: bool_statement . GREAT bool_statement
-   52               | bool_statement . LESS bool_statement
-   53               | bool_statement . GREAT_EQ bool_statement
-   53               | bool_statement GREAT_EQ bool_statement .
-   54               | bool_statement . LESS_EQ bool_statement
-   55               | bool_statement . LOP_EQ bool_statement
-   56               | bool_statement . NOT_EQ bool_statement
-
-    $default  reduce using rule 53 (bool_statement)
-
-
-State 142
-
-   51 bool_statement: bool_statement . GREAT bool_statement
-   52               | bool_statement . LESS bool_statement
-   53               | bool_statement . GREAT_EQ bool_statement
-   54               | bool_statement . LESS_EQ bool_statement
-   54               | bool_statement LESS_EQ bool_statement .
-   55               | bool_statement . LOP_EQ bool_statement
-   56               | bool_statement . NOT_EQ bool_statement
-
-    $default  reduce using rule 54 (bool_statement)
-
-
-State 143
-
-   51 bool_statement: bool_statement . GREAT bool_statement
-   52               | bool_statement . LESS bool_statement
-   53               | bool_statement . GREAT_EQ bool_statement
-   54               | bool_statement . LESS_EQ bool_statement
-   55               | bool_statement . LOP_EQ bool_statement
-   56               | bool_statement . NOT_EQ bool_statement
-   56               | bool_statement NOT_EQ bool_statement .
-
-    $default  reduce using rule 56 (bool_statement)
-
-
-State 144
-
-   81 expr: expr . ADD expr
-   81     | expr ADD expr .
-   82     | expr . SUB expr
-   85     | expr . MUL expr
-   86     | expr . DIV expr
-   87     | expr . MOD expr
-
-    MUL  shift, and go to state 107
-    DIV  shift, and go to state 108
-    MOD  shift, and go to state 109
-
-    $default  reduce using rule 81 (expr)
-
-
-State 145
-
-   81 expr: expr . ADD expr
-   82     | expr . SUB expr
-   82     | expr SUB expr .
-   85     | expr . MUL expr
-   86     | expr . DIV expr
-   87     | expr . MOD expr
-
-    MUL  shift, and go to state 107
-    DIV  shift, and go to state 108
-    MOD  shift, and go to state 109
-
-    $default  reduce using rule 82 (expr)
-
-
-State 146
-
-   81 expr: expr . ADD expr
-   82     | expr . SUB expr
-   85     | expr . MUL expr
-   85     | expr MUL expr .
-   86     | expr . DIV expr
-   87     | expr . MOD expr
-
-    $default  reduce using rule 85 (expr)
-
-
-State 147
-
-   81 expr: expr . ADD expr
-   82     | expr . SUB expr
-   85     | expr . MUL expr
-   86     | expr . DIV expr
-   86     | expr DIV expr .
-   87     | expr . MOD expr
-
-    $default  reduce using rule 86 (expr)
-
-
-State 148
-
-   81 expr: expr . ADD expr
-   82     | expr . SUB expr
-   85     | expr . MUL expr
-   86     | expr . DIV expr
-   87     | expr . MOD expr
-   87     | expr MOD expr .
-
-    $default  reduce using rule 87 (expr)
-
-
-State 149
-
-   33 printf: PRINTF LPAREN STRING COMMA . exprs RPAREN
-   35       | PRINTF LPAREN STRING COMMA . address_idlist RPAREN
-
-    LPAREN       shift, and go to state 93
-    IDENTIFIER   shift, and go to state 40
-    INTEGER      shift, and go to state 41
-    CHAR         shift, and go to state 42
-    STRING       shift, and go to state 43
-    ADD          shift, and go to state 44
-    SUB          shift, and go to state 45
-    GET_ADDRESS  shift, and go to state 167
-
-    function_use    go to state 47
-    address_idlist  go to state 168
-    get_address_id  go to state 169
-    exprs           go to state 170
-    expr            go to state 171
-
-
-State 150
-
-   32 printf: PRINTF LPAREN STRING RPAREN .
-
-    $default  reduce using rule 32 (printf)
-
-
-State 151
-
-   34 printf: PRINTF LPAREN idlist RPAREN .
-
-    $default  reduce using rule 34 (printf)
-
-
-State 152
-
-   36 scanf: SCANF LPAREN STRING COMMA . address_idlist RPAREN
-
-    GET_ADDRESS  shift, and go to state 167
-
-    address_idlist  go to state 172
-    get_address_id  go to state 169
-
-
-State 153
-
-   27 function_use: IDENTIFIER LPAREN idlist RPAREN .
-
-    $default  reduce using rule 27 (function_use)
-
-
-State 154
-
-   23 function_decl: T IDENTIFIER LPAREN RPAREN .
-   26 function_def: T IDENTIFIER LPAREN RPAREN . block
-
-    LBRACE  shift, and go to state 15
-
-    $default  reduce using rule 23 (function_decl)
-
-    block  go to state 173
-
-
-State 155
-
-   24 function_decl: T IDENTIFIER LPAREN params . RPAREN
-   25 function_def: T IDENTIFIER LPAREN params . RPAREN block
-   29 params: params . COMMA param
-
-    COMMA   shift, and go to state 174
-    RPAREN  shift, and go to state 175
-
-
-State 156
-
-   30 params: param .
-
-    $default  reduce using rule 30 (params)
-
-
-State 157
-
-   31 param: T . IDENTIFIER
-
-    IDENTIFIER  shift, and go to state 176
-
-
-State 158
-
-   65 eq_assign: IDENTIFIER . LOP_ASSIGN expr
-
-    LOP_ASSIGN  shift, and go to state 55
-
-
-State 159
-
-   63 eq_assigns: eq_assigns COMMA eq_assign .
-
-    $default  reduce using rule 63 (eq_assigns)
-
-
-State 160
-
-   75 idlist: idlist COMMA IDENTIFIER .
-
-    $default  reduce using rule 75 (idlist)
-
-
-State 161
-
-   43 if_else: IF LPAREN bool_statements RPAREN block . ELSE block
-   44        | IF LPAREN bool_statements RPAREN block .
-
-    ELSE  shift, and go to state 177
-
-    $default  reduce using rule 44 (if_else)
-
-
-State 162
-
-   40 while: WHILE LPAREN bool_statements RPAREN block .
-
-    $default  reduce using rule 40 (while)
-
-
-State 163
-
-   22 for: FOR LPAREN SEMICOLON bool_statements SEMICOLON . assigns RPAREN block
-
-    IDENTIFIER  shift, and go to state 84
-    SELF_INC    shift, and go to state 17
-    SELF_DEC    shift, and go to state 18
-
-    assigns    go to state 178
-    assign     go to state 87
-    eq_assign  go to state 88
-    opassign   go to state 89
-
-
-State 164
-
-   20 for: FOR LPAREN declaration SEMICOLON bool_statements . SEMICOLON assigns RPAREN block
-   46 bool_statements: bool_statements . AND bool_statements
-   47                | bool_statements . OR bool_statements
-
-    SEMICOLON  shift, and go to state 179
-    OR         shift, and go to state 97
-    AND        shift, and go to state 98
-
-
-State 165
-
-   21 for: FOR LPAREN assigns SEMICOLON bool_statements . SEMICOLON assigns RPAREN block
-   46 bool_statements: bool_statements . AND bool_statements
-   47                | bool_statements . OR bool_statements
-
-    SEMICOLON  shift, and go to state 180
-    OR         shift, and go to state 97
-    AND        shift, and go to state 98
-
-
-State 166
-
-   59 assigns: assigns COMMA assign .
-
-    $default  reduce using rule 59 (assigns)
-
-
-State 167
-
-   39 get_address_id: GET_ADDRESS . IDENTIFIER
-
-    IDENTIFIER  shift, and go to state 181
-
-
-State 168
-
-   35 printf: PRINTF LPAREN STRING COMMA address_idlist . RPAREN
-   37 address_idlist: address_idlist . COMMA get_address_id
-
-    COMMA   shift, and go to state 182
-    RPAREN  shift, and go to state 183
-
-
-State 169
-
-   38 address_idlist: get_address_id .
-
-    $default  reduce using rule 38 (address_idlist)
-
-
-State 170
-
-   33 printf: PRINTF LPAREN STRING COMMA exprs . RPAREN
-   77 exprs: exprs . COMMA expr
-
-    COMMA   shift, and go to state 184
-    RPAREN  shift, and go to state 185
-
-
-State 171
 
    78 exprs: expr .
    81 expr: expr . ADD expr
@@ -2363,25 +1845,12 @@ State 171
     $default  reduce using rule 78 (exprs)
 
 
-State 172
+State 124
 
-   36 scanf: SCANF LPAREN STRING COMMA address_idlist . RPAREN
-   37 address_idlist: address_idlist . COMMA get_address_id
-
-    COMMA   shift, and go to state 182
-    RPAREN  shift, and go to state 186
-
-
-State 173
-
-   26 function_def: T IDENTIFIER LPAREN RPAREN block .
-
-    $default  reduce using rule 26 (function_def)
-
-
-State 174
-
-   29 params: params COMMA . param
+   23 function_decl: T IDENTIFIER LPAREN . RPAREN
+   24              | T IDENTIFIER LPAREN . params RPAREN
+   25 function_def: T IDENTIFIER LPAREN . params RPAREN block
+   26             | T IDENTIFIER LPAREN . RPAREN block
 
     T_CHAR          shift, and go to state 5
     T_INT           shift, and go to state 6
@@ -2390,100 +1859,363 @@ State 174
     T_INT_POINTER   shift, and go to state 9
     T_CHAR_POINTER  shift, and go to state 10
     T_VOID          shift, and go to state 11
+    RPAREN          shift, and go to state 156
 
-    param  go to state 187
-    T      go to state 157
+    params  go to state 157
+    param   go to state 158
+    T       go to state 159
 
 
-State 175
+State 125
 
-   24 function_decl: T IDENTIFIER LPAREN params RPAREN .
-   25 function_def: T IDENTIFIER LPAREN params RPAREN . block
+   63 eq_assigns: eq_assigns COMMA . eq_assign
+
+    IDENTIFIER  shift, and go to state 160
+
+    eq_assign  go to state 161
+
+
+State 126
+
+   75 idlist: idlist COMMA . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 162
+
+
+State 127
+
+   43 if_else: IF LPAREN bool_statements RPAREN . block ELSE block
+   44        | IF LPAREN bool_statements RPAREN . block
 
     LBRACE  shift, and go to state 15
 
-    $default  reduce using rule 24 (function_decl)
-
-    block  go to state 188
+    block  go to state 163
 
 
-State 176
+State 128
 
-   31 param: T IDENTIFIER .
-
-    $default  reduce using rule 31 (param)
-
-
-State 177
-
-   43 if_else: IF LPAREN bool_statements RPAREN block ELSE . block
+   40 while: WHILE LPAREN bool_statements RPAREN . block
 
     LBRACE  shift, and go to state 15
 
-    block  go to state 189
+    block  go to state 164
 
 
-State 178
+State 129
 
-   22 for: FOR LPAREN SEMICOLON bool_statements SEMICOLON assigns . RPAREN block
-   59 assigns: assigns . COMMA assign
+   22 for: FOR LPAREN SEMICOLON bool_statements . SEMICOLON assigns RPAREN block
+   46 bool_statements: bool_statements . AND bool_statements
+   47                | bool_statements . OR bool_statements
 
-    COMMA   shift, and go to state 131
-    RPAREN  shift, and go to state 190
+    SEMICOLON  shift, and go to state 165
+    OR         shift, and go to state 97
+    AND        shift, and go to state 98
 
 
-State 179
+State 130
 
-   20 for: FOR LPAREN declaration SEMICOLON bool_statements SEMICOLON . assigns RPAREN block
+   20 for: FOR LPAREN declaration SEMICOLON . bool_statements SEMICOLON assigns RPAREN block
+
+    LPAREN      shift, and go to state 39
+    IDENTIFIER  shift, and go to state 40
+    INTEGER     shift, and go to state 41
+    CHAR        shift, and go to state 42
+    STRING      shift, and go to state 43
+    ADD         shift, and go to state 44
+    SUB         shift, and go to state 45
+    NOT         shift, and go to state 46
+
+    function_use     go to state 47
+    bool_statements  go to state 166
+    bool_statement   go to state 49
+    expr             go to state 81
+
+
+State 131
+
+   21 for: FOR LPAREN assigns SEMICOLON . bool_statements SEMICOLON assigns RPAREN block
+
+    LPAREN      shift, and go to state 39
+    IDENTIFIER  shift, and go to state 40
+    INTEGER     shift, and go to state 41
+    CHAR        shift, and go to state 42
+    STRING      shift, and go to state 43
+    ADD         shift, and go to state 44
+    SUB         shift, and go to state 45
+    NOT         shift, and go to state 46
+
+    function_use     go to state 47
+    bool_statements  go to state 167
+    bool_statement   go to state 49
+    expr             go to state 81
+
+
+State 132
+
+   59 assigns: assigns COMMA . assign
 
     IDENTIFIER  shift, and go to state 84
     SELF_INC    shift, and go to state 17
     SELF_DEC    shift, and go to state 18
 
-    assigns    go to state 191
-    assign     go to state 87
+    assign     go to state 168
     eq_assign  go to state 88
     opassign   go to state 89
 
 
-State 180
+State 133
 
-   21 for: FOR LPAREN assigns SEMICOLON bool_statements SEMICOLON . assigns RPAREN block
+   65 eq_assign: IDENTIFIER . LOP_ASSIGN expr
+   76 idlist: IDENTIFIER .
 
-    IDENTIFIER  shift, and go to state 84
-    SELF_INC    shift, and go to state 17
-    SELF_DEC    shift, and go to state 18
+    LOP_ASSIGN  shift, and go to state 55
 
-    assigns    go to state 192
-    assign     go to state 87
-    eq_assign  go to state 88
-    opassign   go to state 89
+    $default  reduce using rule 76 (idlist)
 
 
-State 181
+State 134
 
-   39 get_address_id: GET_ADDRESS IDENTIFIER .
+   45 bool_statements: LPAREN bool_statements RPAREN .
 
-    $default  reduce using rule 39 (get_address_id)
-
-
-State 182
-
-   37 address_idlist: address_idlist COMMA . get_address_id
-
-    GET_ADDRESS  shift, and go to state 167
-
-    get_address_id  go to state 193
+    $default  reduce using rule 45 (bool_statements)
 
 
-State 183
+State 135
 
-   35 printf: PRINTF LPAREN STRING COMMA address_idlist RPAREN .
+   80 expr: LPAREN expr RPAREN .
 
-    $default  reduce using rule 35 (printf)
+    $default  reduce using rule 80 (expr)
 
 
-State 184
+State 136
+
+   80 expr: LPAREN expr . RPAREN
+   81     | expr . ADD expr
+   82     | expr . SUB expr
+   85     | expr . MUL expr
+   86     | expr . DIV expr
+   87     | expr . MOD expr
+
+    RPAREN  shift, and go to state 135
+    ADD     shift, and go to state 105
+    SUB     shift, and go to state 106
+    MUL     shift, and go to state 107
+    DIV     shift, and go to state 108
+    MOD     shift, and go to state 109
+
+
+State 137
+
+   46 bool_statements: bool_statements . AND bool_statements
+   47                | bool_statements . OR bool_statements
+   47                | bool_statements OR bool_statements .
+
+    AND  shift, and go to state 98
+
+    $default  reduce using rule 47 (bool_statements)
+
+
+State 138
+
+   46 bool_statements: bool_statements . AND bool_statements
+   46                | bool_statements AND bool_statements .
+   47                | bool_statements . OR bool_statements
+
+    $default  reduce using rule 46 (bool_statements)
+
+
+State 139
+
+   51 bool_statement: bool_statement . GREAT bool_statement
+   52               | bool_statement . LESS bool_statement
+   53               | bool_statement . GREAT_EQ bool_statement
+   54               | bool_statement . LESS_EQ bool_statement
+   55               | bool_statement . LOP_EQ bool_statement
+   55               | bool_statement LOP_EQ bool_statement .
+   56               | bool_statement . NOT_EQ bool_statement
+
+    $default  reduce using rule 55 (bool_statement)
+
+
+State 140
+
+   51 bool_statement: bool_statement . GREAT bool_statement
+   51               | bool_statement GREAT bool_statement .
+   52               | bool_statement . LESS bool_statement
+   53               | bool_statement . GREAT_EQ bool_statement
+   54               | bool_statement . LESS_EQ bool_statement
+   55               | bool_statement . LOP_EQ bool_statement
+   56               | bool_statement . NOT_EQ bool_statement
+
+    $default  reduce using rule 51 (bool_statement)
+
+
+State 141
+
+   51 bool_statement: bool_statement . GREAT bool_statement
+   52               | bool_statement . LESS bool_statement
+   52               | bool_statement LESS bool_statement .
+   53               | bool_statement . GREAT_EQ bool_statement
+   54               | bool_statement . LESS_EQ bool_statement
+   55               | bool_statement . LOP_EQ bool_statement
+   56               | bool_statement . NOT_EQ bool_statement
+
+    $default  reduce using rule 52 (bool_statement)
+
+
+State 142
+
+   51 bool_statement: bool_statement . GREAT bool_statement
+   52               | bool_statement . LESS bool_statement
+   53               | bool_statement . GREAT_EQ bool_statement
+   53               | bool_statement GREAT_EQ bool_statement .
+   54               | bool_statement . LESS_EQ bool_statement
+   55               | bool_statement . LOP_EQ bool_statement
+   56               | bool_statement . NOT_EQ bool_statement
+
+    $default  reduce using rule 53 (bool_statement)
+
+
+State 143
+
+   51 bool_statement: bool_statement . GREAT bool_statement
+   52               | bool_statement . LESS bool_statement
+   53               | bool_statement . GREAT_EQ bool_statement
+   54               | bool_statement . LESS_EQ bool_statement
+   54               | bool_statement LESS_EQ bool_statement .
+   55               | bool_statement . LOP_EQ bool_statement
+   56               | bool_statement . NOT_EQ bool_statement
+
+    $default  reduce using rule 54 (bool_statement)
+
+
+State 144
+
+   51 bool_statement: bool_statement . GREAT bool_statement
+   52               | bool_statement . LESS bool_statement
+   53               | bool_statement . GREAT_EQ bool_statement
+   54               | bool_statement . LESS_EQ bool_statement
+   55               | bool_statement . LOP_EQ bool_statement
+   56               | bool_statement . NOT_EQ bool_statement
+   56               | bool_statement NOT_EQ bool_statement .
+
+    $default  reduce using rule 56 (bool_statement)
+
+
+State 145
+
+   81 expr: expr . ADD expr
+   81     | expr ADD expr .
+   82     | expr . SUB expr
+   85     | expr . MUL expr
+   86     | expr . DIV expr
+   87     | expr . MOD expr
+
+    MUL  shift, and go to state 107
+    DIV  shift, and go to state 108
+    MOD  shift, and go to state 109
+
+    $default  reduce using rule 81 (expr)
+
+
+State 146
+
+   81 expr: expr . ADD expr
+   82     | expr . SUB expr
+   82     | expr SUB expr .
+   85     | expr . MUL expr
+   86     | expr . DIV expr
+   87     | expr . MOD expr
+
+    MUL  shift, and go to state 107
+    DIV  shift, and go to state 108
+    MOD  shift, and go to state 109
+
+    $default  reduce using rule 82 (expr)
+
+
+State 147
+
+   81 expr: expr . ADD expr
+   82     | expr . SUB expr
+   85     | expr . MUL expr
+   85     | expr MUL expr .
+   86     | expr . DIV expr
+   87     | expr . MOD expr
+
+    $default  reduce using rule 85 (expr)
+
+
+State 148
+
+   81 expr: expr . ADD expr
+   82     | expr . SUB expr
+   85     | expr . MUL expr
+   86     | expr . DIV expr
+   86     | expr DIV expr .
+   87     | expr . MOD expr
+
+    $default  reduce using rule 86 (expr)
+
+
+State 149
+
+   81 expr: expr . ADD expr
+   82     | expr . SUB expr
+   85     | expr . MUL expr
+   86     | expr . DIV expr
+   87     | expr . MOD expr
+   87     | expr MOD expr .
+
+    $default  reduce using rule 87 (expr)
+
+
+State 150
+
+   33 printf: PRINTF LPAREN STRING COMMA . exprs RPAREN
+   35       | PRINTF LPAREN STRING COMMA . address_idlist RPAREN
+
+    LPAREN       shift, and go to state 93
+    IDENTIFIER   shift, and go to state 40
+    INTEGER      shift, and go to state 41
+    CHAR         shift, and go to state 42
+    STRING       shift, and go to state 43
+    ADD          shift, and go to state 44
+    SUB          shift, and go to state 45
+    GET_ADDRESS  shift, and go to state 169
+
+    function_use    go to state 47
+    address_idlist  go to state 170
+    get_address_id  go to state 171
+    exprs           go to state 172
+    expr            go to state 123
+
+
+State 151
+
+   32 printf: PRINTF LPAREN STRING RPAREN .
+
+    $default  reduce using rule 32 (printf)
+
+
+State 152
+
+   34 printf: PRINTF LPAREN idlist RPAREN .
+
+    $default  reduce using rule 34 (printf)
+
+
+State 153
+
+   36 scanf: SCANF LPAREN STRING COMMA . address_idlist RPAREN
+
+    GET_ADDRESS  shift, and go to state 169
+
+    address_idlist  go to state 173
+    get_address_id  go to state 171
+
+
+State 154
 
    77 exprs: exprs COMMA . expr
 
@@ -2496,79 +2228,175 @@ State 184
     SUB         shift, and go to state 45
 
     function_use  go to state 47
-    expr          go to state 194
+    expr          go to state 174
 
 
-State 185
+State 155
 
-   33 printf: PRINTF LPAREN STRING COMMA exprs RPAREN .
+   27 function_use: IDENTIFIER LPAREN exprs RPAREN .
 
-    $default  reduce using rule 33 (printf)
-
-
-State 186
-
-   36 scanf: SCANF LPAREN STRING COMMA address_idlist RPAREN .
-
-    $default  reduce using rule 36 (scanf)
+    $default  reduce using rule 27 (function_use)
 
 
-State 187
+State 156
 
-   29 params: params COMMA param .
-
-    $default  reduce using rule 29 (params)
-
-
-State 188
-
-   25 function_def: T IDENTIFIER LPAREN params RPAREN block .
-
-    $default  reduce using rule 25 (function_def)
-
-
-State 189
-
-   43 if_else: IF LPAREN bool_statements RPAREN block ELSE block .
-
-    $default  reduce using rule 43 (if_else)
-
-
-State 190
-
-   22 for: FOR LPAREN SEMICOLON bool_statements SEMICOLON assigns RPAREN . block
+   23 function_decl: T IDENTIFIER LPAREN RPAREN .
+   26 function_def: T IDENTIFIER LPAREN RPAREN . block
 
     LBRACE  shift, and go to state 15
 
-    block  go to state 195
+    $default  reduce using rule 23 (function_decl)
+
+    block  go to state 175
 
 
-State 191
+State 157
 
-   20 for: FOR LPAREN declaration SEMICOLON bool_statements SEMICOLON assigns . RPAREN block
-   59 assigns: assigns . COMMA assign
+   24 function_decl: T IDENTIFIER LPAREN params . RPAREN
+   25 function_def: T IDENTIFIER LPAREN params . RPAREN block
+   29 params: params . COMMA param
 
-    COMMA   shift, and go to state 131
-    RPAREN  shift, and go to state 196
-
-
-State 192
-
-   21 for: FOR LPAREN assigns SEMICOLON bool_statements SEMICOLON assigns . RPAREN block
-   59 assigns: assigns . COMMA assign
-
-    COMMA   shift, and go to state 131
-    RPAREN  shift, and go to state 197
+    COMMA   shift, and go to state 176
+    RPAREN  shift, and go to state 177
 
 
-State 193
+State 158
 
-   37 address_idlist: address_idlist COMMA get_address_id .
+   30 params: param .
 
-    $default  reduce using rule 37 (address_idlist)
+    $default  reduce using rule 30 (params)
 
 
-State 194
+State 159
+
+   31 param: T . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 178
+
+
+State 160
+
+   65 eq_assign: IDENTIFIER . LOP_ASSIGN expr
+
+    LOP_ASSIGN  shift, and go to state 55
+
+
+State 161
+
+   63 eq_assigns: eq_assigns COMMA eq_assign .
+
+    $default  reduce using rule 63 (eq_assigns)
+
+
+State 162
+
+   75 idlist: idlist COMMA IDENTIFIER .
+
+    $default  reduce using rule 75 (idlist)
+
+
+State 163
+
+   43 if_else: IF LPAREN bool_statements RPAREN block . ELSE block
+   44        | IF LPAREN bool_statements RPAREN block .
+
+    ELSE  shift, and go to state 179
+
+    $default  reduce using rule 44 (if_else)
+
+
+State 164
+
+   40 while: WHILE LPAREN bool_statements RPAREN block .
+
+    $default  reduce using rule 40 (while)
+
+
+State 165
+
+   22 for: FOR LPAREN SEMICOLON bool_statements SEMICOLON . assigns RPAREN block
+
+    IDENTIFIER  shift, and go to state 84
+    SELF_INC    shift, and go to state 17
+    SELF_DEC    shift, and go to state 18
+
+    assigns    go to state 180
+    assign     go to state 87
+    eq_assign  go to state 88
+    opassign   go to state 89
+
+
+State 166
+
+   20 for: FOR LPAREN declaration SEMICOLON bool_statements . SEMICOLON assigns RPAREN block
+   46 bool_statements: bool_statements . AND bool_statements
+   47                | bool_statements . OR bool_statements
+
+    SEMICOLON  shift, and go to state 181
+    OR         shift, and go to state 97
+    AND        shift, and go to state 98
+
+
+State 167
+
+   21 for: FOR LPAREN assigns SEMICOLON bool_statements . SEMICOLON assigns RPAREN block
+   46 bool_statements: bool_statements . AND bool_statements
+   47                | bool_statements . OR bool_statements
+
+    SEMICOLON  shift, and go to state 182
+    OR         shift, and go to state 97
+    AND        shift, and go to state 98
+
+
+State 168
+
+   59 assigns: assigns COMMA assign .
+
+    $default  reduce using rule 59 (assigns)
+
+
+State 169
+
+   39 get_address_id: GET_ADDRESS . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 183
+
+
+State 170
+
+   35 printf: PRINTF LPAREN STRING COMMA address_idlist . RPAREN
+   37 address_idlist: address_idlist . COMMA get_address_id
+
+    COMMA   shift, and go to state 184
+    RPAREN  shift, and go to state 185
+
+
+State 171
+
+   38 address_idlist: get_address_id .
+
+    $default  reduce using rule 38 (address_idlist)
+
+
+State 172
+
+   33 printf: PRINTF LPAREN STRING COMMA exprs . RPAREN
+   77 exprs: exprs . COMMA expr
+
+    COMMA   shift, and go to state 154
+    RPAREN  shift, and go to state 186
+
+
+State 173
+
+   36 scanf: SCANF LPAREN STRING COMMA address_idlist . RPAREN
+   37 address_idlist: address_idlist . COMMA get_address_id
+
+    COMMA   shift, and go to state 184
+    RPAREN  shift, and go to state 187
+
+
+State 174
 
    77 exprs: exprs COMMA expr .
    81 expr: expr . ADD expr
@@ -2584,6 +2412,186 @@ State 194
     MOD  shift, and go to state 109
 
     $default  reduce using rule 77 (exprs)
+
+
+State 175
+
+   26 function_def: T IDENTIFIER LPAREN RPAREN block .
+
+    $default  reduce using rule 26 (function_def)
+
+
+State 176
+
+   29 params: params COMMA . param
+
+    T_CHAR          shift, and go to state 5
+    T_INT           shift, and go to state 6
+    T_STRING        shift, and go to state 7
+    T_BOOL          shift, and go to state 8
+    T_INT_POINTER   shift, and go to state 9
+    T_CHAR_POINTER  shift, and go to state 10
+    T_VOID          shift, and go to state 11
+
+    param  go to state 188
+    T      go to state 159
+
+
+State 177
+
+   24 function_decl: T IDENTIFIER LPAREN params RPAREN .
+   25 function_def: T IDENTIFIER LPAREN params RPAREN . block
+
+    LBRACE  shift, and go to state 15
+
+    $default  reduce using rule 24 (function_decl)
+
+    block  go to state 189
+
+
+State 178
+
+   31 param: T IDENTIFIER .
+
+    $default  reduce using rule 31 (param)
+
+
+State 179
+
+   43 if_else: IF LPAREN bool_statements RPAREN block ELSE . block
+
+    LBRACE  shift, and go to state 15
+
+    block  go to state 190
+
+
+State 180
+
+   22 for: FOR LPAREN SEMICOLON bool_statements SEMICOLON assigns . RPAREN block
+   59 assigns: assigns . COMMA assign
+
+    COMMA   shift, and go to state 132
+    RPAREN  shift, and go to state 191
+
+
+State 181
+
+   20 for: FOR LPAREN declaration SEMICOLON bool_statements SEMICOLON . assigns RPAREN block
+
+    IDENTIFIER  shift, and go to state 84
+    SELF_INC    shift, and go to state 17
+    SELF_DEC    shift, and go to state 18
+
+    assigns    go to state 192
+    assign     go to state 87
+    eq_assign  go to state 88
+    opassign   go to state 89
+
+
+State 182
+
+   21 for: FOR LPAREN assigns SEMICOLON bool_statements SEMICOLON . assigns RPAREN block
+
+    IDENTIFIER  shift, and go to state 84
+    SELF_INC    shift, and go to state 17
+    SELF_DEC    shift, and go to state 18
+
+    assigns    go to state 193
+    assign     go to state 87
+    eq_assign  go to state 88
+    opassign   go to state 89
+
+
+State 183
+
+   39 get_address_id: GET_ADDRESS IDENTIFIER .
+
+    $default  reduce using rule 39 (get_address_id)
+
+
+State 184
+
+   37 address_idlist: address_idlist COMMA . get_address_id
+
+    GET_ADDRESS  shift, and go to state 169
+
+    get_address_id  go to state 194
+
+
+State 185
+
+   35 printf: PRINTF LPAREN STRING COMMA address_idlist RPAREN .
+
+    $default  reduce using rule 35 (printf)
+
+
+State 186
+
+   33 printf: PRINTF LPAREN STRING COMMA exprs RPAREN .
+
+    $default  reduce using rule 33 (printf)
+
+
+State 187
+
+   36 scanf: SCANF LPAREN STRING COMMA address_idlist RPAREN .
+
+    $default  reduce using rule 36 (scanf)
+
+
+State 188
+
+   29 params: params COMMA param .
+
+    $default  reduce using rule 29 (params)
+
+
+State 189
+
+   25 function_def: T IDENTIFIER LPAREN params RPAREN block .
+
+    $default  reduce using rule 25 (function_def)
+
+
+State 190
+
+   43 if_else: IF LPAREN bool_statements RPAREN block ELSE block .
+
+    $default  reduce using rule 43 (if_else)
+
+
+State 191
+
+   22 for: FOR LPAREN SEMICOLON bool_statements SEMICOLON assigns RPAREN . block
+
+    LBRACE  shift, and go to state 15
+
+    block  go to state 195
+
+
+State 192
+
+   20 for: FOR LPAREN declaration SEMICOLON bool_statements SEMICOLON assigns . RPAREN block
+   59 assigns: assigns . COMMA assign
+
+    COMMA   shift, and go to state 132
+    RPAREN  shift, and go to state 196
+
+
+State 193
+
+   21 for: FOR LPAREN assigns SEMICOLON bool_statements SEMICOLON assigns . RPAREN block
+   59 assigns: assigns . COMMA assign
+
+    COMMA   shift, and go to state 132
+    RPAREN  shift, and go to state 197
+
+
+State 194
+
+   37 address_idlist: address_idlist COMMA get_address_id .
+
+    $default  reduce using rule 37 (address_idlist)
 
 
 State 195

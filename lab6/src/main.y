@@ -163,7 +163,7 @@ function_def
 
 ;
 function_use
-: IDENTIFIER LPAREN idlist RPAREN{
+: IDENTIFIER LPAREN exprs RPAREN{
     $$=new TreeNode ($1->lineno,NODE_EXPR);
     $$->optype=OP_FUNC_USE;
     $$->addChild($1);

@@ -33,6 +33,7 @@ TreeNode::TreeNode(int lineno, NodeType type) {
     this->checktype=Notype;
     var_name=-1;
     set=0;
+    offset=0;
 }
 
 
@@ -865,6 +866,8 @@ void TreeNode:: genlabelstmt()
                 boolchild->controllabel.next_label=left->controllabel.begin_label;
                 boolchildf->controllabel.next_label=left->controllabel.begin_label;
                 left->controllabel.next_label=this->controllabel.begin_label;
+                boolchild->recursivegenlabel();
+                left->recursivegenlabel();
                 break;
             }
             case STMT_FOR:
@@ -921,6 +924,10 @@ void TreeNode:: genlabelstmt()
 
                 left->controllabel.next_label=c3->controllabel.begin_label;
                 c3->controllabel.next_label=boolchild->controllabel.begin_label;
+                boolchild->recursivegenlabel();
+                left->recursivegenlabel();
+                c1->recursivegenlabel();
+                c3->recursivegenlabel();
                 break;
             }
 
@@ -1047,18 +1054,20 @@ void TreeNode:: asmfunc()
         cout<<"\tmovl\t$0, %eax"<<endl;
         cout<<"\tmovl\t-4(%ebp), %ecx"<<endl;cout<<"\tleave"<<endl;cout<<"\tleal\t-4(%ecx), %esp"<<endl;cout<<"\tret"<<endl;cout<<"\t.section\t.note.GNU-stack,\"\",@progbits"<<endl;
 
-
-        // cout<<"\tpushl\t%ebp"<<endl;
-        // cout<<"\tmovl\t%esp, %ebp"<<endl;
-        // cout<<"\tsubl\t$"<<(scope->size+1)*4<<", %esp"<<endl;
-        // this->child->sibling->sibling->asmstmt();
-        
-        
-        // //cout<<"\tmovl\t$0, %eax"<<endl;
-        // cout<<"\tleave"<<endl;
-        // cout<<"\tret"<<endl;
-        // cout<<"\t.section\t.note.GNU-stack,\"\",@progbits"<<endl;
-        
+    }
+    else
+    {
+        cout<<"\tpushl\t%ebp"<<endl;cout<<"\tmovl\t%esp, %ebp"<<endl;
+        cout<<"\tsubl\t$"<<(this->scope->size+1)*4+100<<", %esp"<<endl;
+        TreeNode* m=this->child;
+        while(m->sibling!=nullptr)
+        {
+            m=m->sibling;
+        }
+        m->asmstmt();
+        cout<<endl;
+        cout<<"\tleave"<<endl;
+        cout<<"\tret"<<endl;
     }
 
     
@@ -1100,13 +1109,6 @@ void TreeNode::asmstmt()
         default:
         break;
     }
-    // switch(this->optype)
-    // {
-    //     case OP_NOT:
-    //     {
-    //         cout<<"\tjmp\ts_"<<this->controllabel
-    //     }
-    // }
     TreeNode*t=this->child;
     while(t!=nullptr)
     {
@@ -1125,6 +1127,7 @@ void TreeNode::asmstmt()
     }
     switch(this->stype)
     {
+
         case STMT_PRT:
         {
             this->asmprintf();
@@ -1137,6 +1140,7 @@ void TreeNode::asmstmt()
         }
         case STMT_RET:
         {
+            //cout<<"sssssss"<<endl;
             this->asmret();
             break;
         }
@@ -1181,6 +1185,7 @@ void TreeNode::asmstmt()
             cout<<"s_"<<this->controllabel.next_label<<":"<<endl;
             break;
         }
+
         default:
             break;
     }
@@ -1211,6 +1216,10 @@ void TreeNode::asmstmt()
         {
             this->asmopaddr();
             break;
+        }
+        case OP_FUNC_USE:
+        {
+            this->asmfuncuse();
         }
         default:
             break;
@@ -1296,6 +1305,21 @@ int TreeNode::pushparam()//将参数从右至左压栈
     cout<<"\tpushl\t%eax"<<endl;
     return count;
 }
+
+void TreeNode::asmfuncuse()
+{
+    cout<<"\tsubl\t$12, %esp"<<endl;
+    int count=0;
+    if(this->child->sibling!=nullptr)
+        int count=this->child->sibling->pushparam();
+    
+    count*=4;
+
+    //cout<<"\tpushl\t$"<<this->child->label<<""<<endl;;
+    cout<<"\tcall\t"<<this->child->var_name<<"\n\taddl\t$"<<12+count+4<<", %esp"<<endl;
+    cout<<"\tmovl\t%eax, "<<this->offset<<"(%ebp)"<<endl;
+}
+
 void TreeNode::asmprintf()
 {
     cout<<"\tsubl\t$12, %esp"<<endl;
@@ -1314,7 +1338,10 @@ void TreeNode::asmscanf()
     cout<<"\tsubl\t$12, %esp"<<endl;
     int count=0;
     if(this->child->sibling!=nullptr)
+    {
+
         int count=this->child->sibling->pushparam();
+    }
     
     count*=4;
 
@@ -1390,7 +1417,7 @@ void TreeNode:: genoffset()
     if(this->nodeType==NODE_EXPR)
     {
         current_offset-=4;
-        this->offset=current_offset;
+        this->offset+=current_offset;
     }
     else if(this->nodeType==NODE_STMT)
     {
@@ -1402,7 +1429,7 @@ void TreeNode:: genoffset()
                 if(t->child!=nullptr)
                 {
                     current_offset-=4;
-                    t->child->offset=current_offset;
+                    t->child->offset+=current_offset;
                 }
             }
         }
@@ -1417,7 +1444,15 @@ void TreeNode:: genoffset()
         }
         else if(this->stype==STMT_FUNC_DEF)
         {
-            current_offset=-12;
+            current_offset=8;
+            TreeNode* t=this->child->sibling->sibling;
+            while(t->sibling!=nullptr)
+            {
+                t->child->sibling->offset=current_offset;
+                current_offset+=4;
+                t=t->sibling;
+            }
+            current_offset=-4;
         }
     }
     

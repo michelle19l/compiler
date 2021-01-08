@@ -1,18 +1,14 @@
-int main(){
-    int a;
-    a = 0;
-    int b;
-    b = 0;
-
-    while(1){
-        if (a == 5) {
-            b = 25;
-        }else {
-            
-        }
-    a = a + 1;
-    }
-    printf("%d\n",a);
-    printf("%d\n",b); 
-    return 0;
+int f(int a,int b)
+{
+    printf("%d",a);
+    int i=a*2+b;
+    printf("%d",i);
+    return i;
 }
+int main()
+{
+    int a=1;
+    a=f(1,2);
+    printf("%d",a);
+}
+
