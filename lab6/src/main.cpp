@@ -32,10 +32,16 @@ int main(int argc, char *argv[])
         
        getBlock(root,scope);//获得作用域树
        
-       getVarField(root,scope);//将变量加入作用域
+       if(!getVarField(root,scope))
+            {cout<<"作用域检查出错";return 0;//将变量加入作用域
+            }
 
-        root->typechecking();//类型检查
-        root->printAST();//打印语法树
+        if(!root->typechecking())
+            {//return 0;//类型检查
+            cout<<"类型检查出错";
+            return 0;
+            }
+        //root->printAST();//打印语法树
 
         TreeNode* t=root->child;
         while(t!=nullptr)

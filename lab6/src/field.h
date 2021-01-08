@@ -42,6 +42,7 @@ public:
 	fielditem();
 
 	int offset;
+
 	int set;//是否有初值
 };
 
@@ -58,8 +59,10 @@ public:
 	//全局变量，初值为0
 	// string lexms;//ID词素存储
 	// int lexmspointer;//词素数组下一位的索引（长度）
+	int maxoffset;
 	table()//用于根的生成
 	{
+		maxoffset=0;
 		father = NULL;
 		child=NULL;
 		sibling=NULL;
@@ -71,6 +74,7 @@ public:
 	}
 	table(table* f) {
 		//对表f生成子表
+		maxoffset=0;
 		child=NULL;
 		sibling=NULL;
 		father = f;

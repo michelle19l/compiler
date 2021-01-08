@@ -254,4 +254,4 @@ int insertID_(TreeNode* root,table* scope);
 int insertID(TreeNode* root,table* scope);//向当前作用域插入IDint
 //static int checkID(string yytext,table*scope);//在当前作用域查找是否存在该ID
 void getBlock(TreeNode* root,table* scope);//根据ast得到作用域树
-void getVarField(TreeNode* root,table*scope);//为变量分配作用域
+int getVarField(TreeNode* root,table*scope);//为变量分配作用域

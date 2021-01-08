@@ -1058,7 +1058,7 @@ YY_RULE_SETUP
 {
     TreeNode* node = new TreeNode(lineno, NODE_CONST);
     node->type = TYPE_INT;
-    node->int_val = tovalue(yytext);
+    node->int_val = tovalue_(yytext);
     node->int_val_=yytext;
     node->contype=CON_INT;
     yylval = node;

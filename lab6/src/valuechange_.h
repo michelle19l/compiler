@@ -1,9 +1,6 @@
 #ifndef VALUECHANGE
 #define VALUECHANGE
 
-#include<string.h>
-int tovalue(char a[])
-{
-	
-}
+#include "pch.h"
+int tovalue_(char a[]);
 #endif

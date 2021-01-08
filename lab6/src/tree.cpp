@@ -393,10 +393,13 @@ void getBlock(TreeNode* root,table* scope)
 	}
 }
 
-void getVarField(TreeNode* root,table*scope)
+int getVarField(TreeNode* root,table*scope)
 {
+    int flag=1;
     root->genoffset();
-	if(root==nullptr)return;
+    
+	if(root==nullptr)return 1;
+
 	TreeNode* t=root->child;
 	if(root->scope!=nullptr)
     {
@@ -404,6 +407,7 @@ void getVarField(TreeNode* root,table*scope)
     }
 	while(t!=nullptr)
 	{
+            
 		if(t->scope==nullptr)
 		{
 			if(t->nodeType==NODE_VAR)
@@ -413,13 +417,14 @@ void getVarField(TreeNode* root,table*scope)
 					//直接加入作用域
                     t->set=-1;//未设置初值
 
-					insertID(t,scope);
+					if(insertID(t,scope)==-1){flag=0;}
 				}
                 else if(root->stype==STMT_FUNC_DECL)
                 {
                     if(checkID(t->var_name,scope->father)==-1)
 					{
                         int index=insertID(t,scope->father);
+                        if(index==-1){flag=0;}
                         if(t->sibling!=nullptr)
                         {
                         TreeNode*m=t->sibling->child;
@@ -444,6 +449,8 @@ void getVarField(TreeNode* root,table*scope)
                     if(checkID(t->var_name,scope->father)==-1)
 					{
                         int index=insertID(t,scope->father);
+                        if(index==-1)
+                            {flag=0;}
                         if(t->sibling!=nullptr)
                         {
                         TreeNode*m=t->sibling->child;
@@ -471,6 +478,7 @@ void getVarField(TreeNode* root,table*scope)
                     if(wfield==nullptr)
                     {
                         cout<<"第"<<t->lineno<<"行"<<"变量"<<t->var_name<<"未声明"<<endl;
+                        {flag=0;}
                         t->scope=nullptr;
                         t->workfield="";
                         t->checktype=Notype;
@@ -532,11 +540,11 @@ void getVarField(TreeNode* root,table*scope)
                             }
                         }
                     }
-                    insertID(m,scope);
+                    if(insertID(m,scope)==-1){flag=0;}
                 }
                 else{
                     cout<<"第"<<m->lineno<<"行"<<"该变量名"<<m->var_name<<"已经占用"<<endl;
-                
+                    {flag=0;}
 				// for(;t!=nullptr;t=t->sibling)
 				// {
                 //     TreeNode* m=t->child;
@@ -563,9 +571,11 @@ void getVarField(TreeNode* root,table*scope)
             }
         }
         
-        getVarField(t,scope);
+        if(getVarField(t,scope)==0)
+            {flag=0;}
         t=t->sibling;
     }	
+    return flag;
 }
 
 
@@ -726,6 +736,8 @@ void TreeNode::recursivegenlabel()
         else if(t->nodeType==NODE_STMT)
         {
             //cout<<"1222221"<<endl;
+            // t->printNodeInfo();
+            // cout<<"xxxx"<<endl;
             t->genlabelstmt();
         }
         else 
@@ -847,18 +859,25 @@ void TreeNode:: genlabelstmt()
 
                 if(this->controllabel.next_label==0)
                 {
+                    //cout<<"0"<<endl;
                     if(this->sibling!=nullptr)
                     {
+                        //cout<<"1"<<endl;
                         if(this->sibling->controllabel.begin_label==0)
                         {
                             this->controllabel.next_label=current_label++;
                             this->sibling->controllabel.begin_label=this->controllabel.next_label;
                         }
                         else{
+                            //cout<<"2"<<endl;
                         this->controllabel.next_label=this->sibling->controllabel.begin_label;
-                    }
+                        }
+                    }else{
+                        this->controllabel.next_label=current_label++;
                     }
                 }
+                // this->printNodeInfo();
+                // cout<<this->controllabel.next_label<<endl;
 
                 boolchild->controllabel.false_label=this->controllabel.next_label;
                 boolchildf->controllabel.false_label=this->controllabel.next_label;
@@ -886,7 +905,7 @@ void TreeNode:: genlabelstmt()
                 c1->controllabel.begin_label=this->controllabel.begin_label;
 
                 boolchild->controllabel.begin_label=current_label;
-                boolchildf->controllabel.begin_label=current_label++;
+                boolchildf->controllabel.begin_label=boolchild->controllabel.begin_label;
                 if(c3->controllabel.begin_label==0)
                 {
                     c3->controllabel.begin_label=current_label++;
@@ -912,7 +931,8 @@ void TreeNode:: genlabelstmt()
                         else{
                         this->controllabel.next_label=this->sibling->controllabel.begin_label;
                     }
-                    }
+                    
+                    }else this->controllabel.next_label=current_label++;
                 }
 
                 boolchild->controllabel.false_label=this->controllabel.next_label;
@@ -924,6 +944,8 @@ void TreeNode:: genlabelstmt()
 
                 left->controllabel.next_label=c3->controllabel.begin_label;
                 c3->controllabel.next_label=boolchild->controllabel.begin_label;
+                c1->controllabel.next_label=boolchild->controllabel.begin_label;
+
                 boolchild->recursivegenlabel();
                 left->recursivegenlabel();
                 c1->recursivegenlabel();
@@ -1002,22 +1024,23 @@ void TreeNode:: genlabelstmt()
 
 int TreeNode::typechecking()
 {
+    int flag=1;
     TreeNode* t=this->child;
     while(t!=nullptr)
     {
         if(t->typechecking()==0)//失败
         {
             cout<<"第"<<t->lineno<<"行结点"<<this->nodeID<<"类型检查失败"<<endl;
-            return 0;
+            {flag=0;}
         }
         t=t->sibling;
     }
     if(this->type_check()==0)
     {
         cout<<"第"<<this->lineno<<"行结点"<<this->nodeID<<"类型检查失败"<<endl;
-            return 0;
+            {flag=0;}
     }
-    return 1;
+    return flag;
 }
 
 
@@ -1401,6 +1424,7 @@ void TreeNode::asmret()
         cout<<this->child->offset<<"(%ebp)";
     }
     cout<<", %eax"<<endl;
+    cout<<"\tleave\n\tret\n";
 }
 
 

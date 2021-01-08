@@ -1,5 +1,5 @@
-#include "valuechange.h"
-int tovalue(char a[])
+#include "valuechange_.h"
+int tovalue_(char a[])
 {
 	int val = 0;
 	if (strlen(a) == 1) {
