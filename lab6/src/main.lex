@@ -9,7 +9,7 @@ LINECOMMENT \/\/[^\n]*
 EOL	(\r\n|\r|\n)
 WHILTESPACE [[:blank:]]
 
-INTEGER [0-9]+
+INTEGER ([1-9]|[0-9]*)|(0[0-9]*)|(0x[0-9]*)
 
 CHAR (\'.?\')|(\'\\t\')|(\'\\n\')|(\'\\r\') 
 
@@ -87,13 +87,14 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 {INTEGER} {
     TreeNode* node = new TreeNode(lineno, NODE_CONST);
     node->type = TYPE_INT;
-    node->int_val = atoi(yytext);
+    node->int_val = tovalue(yytext);
     node->int_val_=yytext;
     node->contype=CON_INT;
     yylval = node;
     node->checktype=Integer;
     return INTEGER;
 }
+
 
 {CHAR} {
     TreeNode* node = new TreeNode(lineno, NODE_CONST);

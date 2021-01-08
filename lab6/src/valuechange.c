@@ -1,4 +1,4 @@
-#include<string.h>
+#include "valuechange.h"
 int tovalue(char a[])
 {
 	int val = 0;
