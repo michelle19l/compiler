@@ -1434,53 +1434,63 @@ void TreeNode::asmstatic()//打印全局变量
     {
         if(t->stype==STMT_DEFINE)
         {
-            cout<<"\t.globl\t"<<t->child->sibling->child->setval()<<endl;
-            switch(t->child->checktype)
+            TreeNode* m=t->child->sibling;
+            while(m!=nullptr)
             {
-                case Integer:
+                switch(t->child->checktype)
                 {
-                    cout<<"\t.align 4"<<endl;
-                    cout<<"\t.type\t"<<t->child->sibling->child->setval()<<", @object"<<endl;
-                    cout<<t->child->sibling->child->setval()<<":"<<endl;
-                    cout<<"\t.long "<<t->child->sibling->child->sibling->int_val<<endl;
-                    break;
-                }
-                case Char:
-                {
-                    cout<<"\t.type\t"<<t->child->sibling->child->setval()<<", @object"<<endl;
-                    cout<<t->child->sibling->child->setval()<<":"<<endl;
-                    cout<<"\t.byte "<<(int)t->child->sibling->child->sibling->ch_val<<endl;
-                    break;
-                }
-                case String:
-                {
+                    cout<<"\t.globl\t"<<m->child->setval()<<endl;
+                    case Integer:
+                    {
+                        cout<<"\t.align 4"<<endl;
+                        cout<<"\t.type\t"<<m->child->setval()<<", @object"<<endl;
+                        cout<<m->child->setval()<<":"<<endl;
+                        cout<<"\t.long "<<m->child->sibling->int_val<<endl;
+                        break;
+                    }
+                    case Char:
+                    {
+                        cout<<"\t.type\t"<<m->child->setval()<<", @object"<<endl;
+                        cout<<m->child->setval()<<":"<<endl;
+                        cout<<"\t.byte "<<(int)m->child->sibling->ch_val<<endl;
+                        break;
+                    }
+                    case String:
+                    {
 
+                    }
+                    default:
+                    break;
                 }
-                default:
-                break;
+                m=m->sibling;
             }
         }
         else if(t->stype==STMT_DECL)
         {
-            cout<<"\t.comm\t"<<t->child->sibling->setval();
-            switch(t->child->checktype)
+            TreeNode* m=t->child->sibling;
+            while(m!=nullptr)
             {
-                case Integer:
+                cout<<"\t.comm\t"<<m->setval();
+                switch(t->child->checktype)
                 {
-                    cout<<", 4,4"<<endl;
+                    case Integer:
+                    {
+                        cout<<", 4,4"<<endl;
+                        break;
+                    }
+                    case Char:
+                    {
+                        cout<<", 1,1"<<endl;
+                        break;
+                    }
+                    case String:
+                    {
+                        break;
+                    }
+                    default:
                     break;
                 }
-                case Char:
-                {
-                    cout<<", 1,1"<<endl;
-                    break;
-                }
-                case String:
-                {
-                    break;
-                }
-                default:
-                break;
+                m=m->sibling;
             }
         }
         t=t->sibling;

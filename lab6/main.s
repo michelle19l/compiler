@@ -1,11 +1,10 @@
 	.section	.rodata
-L_23:
-	.string "In Loop\n"
-L_25:
-	.string "End Loop\n"
+L_40:
+	.string "%d\n"
+L_43:
+	.string "%d\n"
 	.text
 	.data
-	.comm	a, 4,4
 	.text
 	.globl	main
 	.type	main,@function
@@ -19,28 +18,40 @@ main:
 	subl	$104, %esp
 
 	movl	$0, %eax
-	movl	%eax, a
-s_2:
-	movl	a, %eax
-	movl	$200, %edx
+	movl	%eax, -16(%ebp)
+	movl	$0, %eax
+	movl	%eax, -20(%ebp)
+s_1:
+s_0:
+	movl	-16(%ebp), %eax
+	movl	$5, %edx
 	cmpl	%edx, %eax
-	jge	s_5
-	jl	s_4
-s_4:
-	movl	a, %eax
+	jne	s_0
+	je	s_0
+s_0:
+	movl	$25, %eax
+	movl	%eax, -20(%ebp)
+	jmp	s_0
+s_0:
+s_0:
+	movl	-16(%ebp), %eax
 	movl	$1, %edx
 	addl	%edx, %eax
-	movl	%eax, -20(%ebp)
-	movl	-20(%ebp), %eax
-	movl	%eax, a
+	movl	%eax, -28(%ebp)
+	movl	-28(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	jmp	s_1
+s_3:
 	subl	$12, %esp
-	pushl	$L_23
+	movl	-16(%ebp), %eax
+	pushl	%eax
+	pushl	$L_40
 	call	printf
 	addl	$16, %esp
-	jmp	s_2
-s_5:
 	subl	$12, %esp
-	pushl	$L_25
+	movl	-20(%ebp), %eax
+	pushl	%eax
+	pushl	$L_43
 	call	printf
 	addl	$16, %esp
 	movl	$0, %eax

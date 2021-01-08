@@ -11,7 +11,8 @@ WHILTESPACE [[:blank:]]
 
 INTEGER [0-9]+
 
-CHAR \'.?\'
+CHAR (\'.?\')|(\'\\t\')|(\'\\n\')|(\'\\r\') 
+
 STRING \".+\"
 
 IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
@@ -99,7 +100,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
     node->type = TYPE_CHAR;
     node->int_val = yytext[1];
     node->ch_val=yytext[1];
-    //cout<<"char        "<<node->ch_val;
+    
     node->contype=CON_CHAR;
     yylval = node;
     node->checktype=Char;
